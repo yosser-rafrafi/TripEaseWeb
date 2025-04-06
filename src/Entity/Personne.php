@@ -36,9 +36,10 @@ class Personne
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -50,9 +51,10 @@ class Personne
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): self
+    public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
         return $this;
     }
 
@@ -64,9 +66,10 @@ class Personne
         return $this->age;
     }
 
-    public function setAge(int $age): self
+    public function setAge(int $age): static
     {
         $this->age = $age;
+
         return $this;
     }
 

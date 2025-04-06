@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -37,9 +38,10 @@ class Flight
         return $this->voyage;
     }
 
-    public function setVoyage(?Voyage $voyage): self
+    public function setVoyage(?Voyage $voyage): static
     {
         $this->voyage = $voyage;
+
         return $this;
     }
 
@@ -65,9 +67,10 @@ class Flight
         return $this->airline;
     }
 
-    public function setAirline(string $airline): self
+    public function setAirline(string $airline): static
     {
         $this->airline = $airline;
+
         return $this;
     }
 
@@ -124,6 +127,66 @@ class Flight
     public function setArrival_airport(string $arrival_airport): self
     {
         $this->arrival_airport = $arrival_airport;
+        return $this;
+    }
+
+    public function getFlightNumber(): ?string
+    {
+        return $this->flight_number;
+    }
+
+    public function setFlightNumber(string $flight_number): static
+    {
+        $this->flight_number = $flight_number;
+
+        return $this;
+    }
+
+    public function getDepartureDatetime(): ?\DateTimeInterface
+    {
+        return $this->departure_datetime;
+    }
+
+    public function setDepartureDatetime(\DateTimeInterface $departure_datetime): static
+    {
+        $this->departure_datetime = $departure_datetime;
+
+        return $this;
+    }
+
+    public function getDepartureAirport(): ?string
+    {
+        return $this->departure_airport;
+    }
+
+    public function setDepartureAirport(string $departure_airport): static
+    {
+        $this->departure_airport = $departure_airport;
+
+        return $this;
+    }
+
+    public function getArrivalDatetime(): ?\DateTimeInterface
+    {
+        return $this->arrival_datetime;
+    }
+
+    public function setArrivalDatetime(\DateTimeInterface $arrival_datetime): static
+    {
+        $this->arrival_datetime = $arrival_datetime;
+
+        return $this;
+    }
+
+    public function getArrivalAirport(): ?string
+    {
+        return $this->arrival_airport;
+    }
+
+    public function setArrivalAirport(string $arrival_airport): static
+    {
+        $this->arrival_airport = $arrival_airport;
+
         return $this;
     }
 

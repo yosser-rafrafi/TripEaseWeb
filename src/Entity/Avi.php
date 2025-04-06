@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -36,9 +37,10 @@ class Avi
         return $this->idUser;
     }
 
-    public function setIdUser(int $idUser): self
+    public function setIdUser(int $idUser): static
     {
         $this->idUser = $idUser;
+
         return $this;
     }
 
@@ -50,9 +52,10 @@ class Avi
         return $this->idHotel;
     }
 
-    public function setIdHotel(int $idHotel): self
+    public function setIdHotel(int $idHotel): static
     {
         $this->idHotel = $idHotel;
+
         return $this;
     }
 
@@ -64,9 +67,10 @@ class Avi
         return $this->commentaire;
     }
 
-    public function setCommentaire(?string $commentaire): self
+    public function setCommentaire(?string $commentaire): static
     {
         $this->commentaire = $commentaire;
+
         return $this;
     }
 
@@ -78,9 +82,10 @@ class Avi
         return $this->note;
     }
 
-    public function setNote(?int $note): self
+    public function setNote(?int $note): static
     {
         $this->note = $note;
+
         return $this;
     }
 
@@ -92,9 +97,10 @@ class Avi
         return $this->dateAvis;
     }
 
-    public function setDateAvis(\DateTimeInterface $dateAvis): self
+    public function setDateAvis(\DateTimeInterface $dateAvis): static
     {
         $this->dateAvis = $dateAvis;
+
         return $this;
     }
 

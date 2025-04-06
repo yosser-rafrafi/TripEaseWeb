@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -92,9 +93,10 @@ class AvanceFrai
         return $this->devise;
     }
 
-    public function setDevise(string $devise): self
+    public function setDevise(string $devise): static
     {
         $this->devise = $devise;
+
         return $this;
     }
 
@@ -106,9 +108,10 @@ class AvanceFrai
         return $this->motif;
     }
 
-    public function setMotif(string $motif): self
+    public function setMotif(string $motif): static
     {
         $this->motif = $motif;
+
         return $this;
     }
 
@@ -134,9 +137,10 @@ class AvanceFrai
         return $this->statut;
     }
 
-    public function setStatut(string $statut): self
+    public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
 
@@ -179,6 +183,102 @@ class AvanceFrai
     public function setCommentaire_manager(?string $commentaire_manager): self
     {
         $this->commentaire_manager = $commentaire_manager;
+        return $this;
+    }
+
+    public function getEmployeId(): ?int
+    {
+        return $this->employe_id;
+    }
+
+    public function setEmployeId(int $employe_id): static
+    {
+        $this->employe_id = $employe_id;
+
+        return $this;
+    }
+
+    public function getVoyageId(): ?int
+    {
+        return $this->voyage_id;
+    }
+
+    public function setVoyageId(int $voyage_id): static
+    {
+        $this->voyage_id = $voyage_id;
+
+        return $this;
+    }
+
+    public function getMontantDemande(): ?string
+    {
+        return $this->montant_demande;
+    }
+
+    public function setMontantDemande(string $montant_demande): static
+    {
+        $this->montant_demande = $montant_demande;
+
+        return $this;
+    }
+
+    public function getMontantAccorde(): ?string
+    {
+        return $this->montant_accorde;
+    }
+
+    public function setMontantAccorde(?string $montant_accorde): static
+    {
+        $this->montant_accorde = $montant_accorde;
+
+        return $this;
+    }
+
+    public function getTypeAvance(): ?string
+    {
+        return $this->type_avance;
+    }
+
+    public function setTypeAvance(string $type_avance): static
+    {
+        $this->type_avance = $type_avance;
+
+        return $this;
+    }
+
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->date_demande;
+    }
+
+    public function setDateDemande(\DateTimeInterface $date_demande): static
+    {
+        $this->date_demande = $date_demande;
+
+        return $this;
+    }
+
+    public function getDateValidation(): ?\DateTimeInterface
+    {
+        return $this->date_validation;
+    }
+
+    public function setDateValidation(?\DateTimeInterface $date_validation): static
+    {
+        $this->date_validation = $date_validation;
+
+        return $this;
+    }
+
+    public function getCommentaireManager(): ?string
+    {
+        return $this->commentaire_manager;
+    }
+
+    public function setCommentaireManager(?string $commentaire_manager): static
+    {
+        $this->commentaire_manager = $commentaire_manager;
+
         return $this;
     }
 

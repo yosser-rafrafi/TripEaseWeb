@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -129,28 +130,114 @@ class Transport
     #[ORM\Column(type: 'decimal', nullable: true)]
     private ?float $latitude = null;
 
-    public function getLatitude(): ?float
+    public function getLatitude(): ?string
     {
         return $this->latitude;
     }
 
-    public function setLatitude(?float $latitude): self
+    public function setLatitude(?string $latitude): static
     {
         $this->latitude = $latitude;
+
         return $this;
     }
 
     #[ORM\Column(type: 'decimal', nullable: true)]
     private ?float $longitude = null;
 
-    public function getLongitude(): ?float
+    public function getLongitude(): ?string
     {
         return $this->longitude;
     }
 
-    public function setLongitude(?float $longitude): self
+    public function setLongitude(?string $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getTransportName(): ?string
+    {
+        return $this->transport_name;
+    }
+
+    public function setTransportName(string $transport_name): static
+    {
+        $this->transport_name = $transport_name;
+
+        return $this;
+    }
+
+    public function getTransportDescription(): ?string
+    {
+        return $this->transport_description;
+    }
+
+    public function setTransportDescription(string $transport_description): static
+    {
+        $this->transport_description = $transport_description;
+
+        return $this;
+    }
+
+    public function getTransportLocation(): ?string
+    {
+        return $this->transport_location;
+    }
+
+    public function setTransportLocation(string $transport_location): static
+    {
+        $this->transport_location = $transport_location;
+
+        return $this;
+    }
+
+    public function getTransportType(): ?string
+    {
+        return $this->transport_type;
+    }
+
+    public function setTransportType(string $transport_type): static
+    {
+        $this->transport_type = $transport_type;
+
+        return $this;
+    }
+
+    public function getTransportDisponibilite(): ?string
+    {
+        return $this->transport_disponibilite;
+    }
+
+    public function setTransportDisponibilite(string $transport_disponibilite): static
+    {
+        $this->transport_disponibilite = $transport_disponibilite;
+
+        return $this;
+    }
+
+    public function getTransportPays(): ?string
+    {
+        return $this->transport_pays;
+    }
+
+    public function setTransportPays(string $transport_pays): static
+    {
+        $this->transport_pays = $transport_pays;
+
+        return $this;
+    }
+
+    public function getTransportPrix(): ?float
+    {
+        return $this->transport_prix;
+    }
+
+    public function setTransportPrix(float $transport_prix): static
+    {
+        $this->transport_prix = $transport_prix;
+
         return $this;
     }
 

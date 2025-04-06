@@ -36,9 +36,10 @@ class Hotel
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -50,9 +51,10 @@ class Hotel
         return $this->adresse;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
+
         return $this;
     }
 
@@ -64,9 +66,10 @@ class Hotel
         return $this->ville;
     }
 
-    public function setVille(string $ville): self
+    public function setVille(string $ville): static
     {
         $this->ville = $ville;
+
         return $this;
     }
 
@@ -78,9 +81,10 @@ class Hotel
         return $this->pays;
     }
 
-    public function setPays(string $pays): self
+    public function setPays(string $pays): static
     {
         $this->pays = $pays;
+
         return $this;
     }
 
@@ -106,9 +110,10 @@ class Hotel
         return $this->telephone;
     }
 
-    public function setTelephone(string $telephone): self
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -120,9 +125,10 @@ class Hotel
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -137,6 +143,30 @@ class Hotel
     public function setSite_web(?string $site_web): self
     {
         $this->site_web = $site_web;
+        return $this;
+    }
+
+    public function getNombreEtoiles(): ?int
+    {
+        return $this->nombre_etoiles;
+    }
+
+    public function setNombreEtoiles(int $nombre_etoiles): static
+    {
+        $this->nombre_etoiles = $nombre_etoiles;
+
+        return $this;
+    }
+
+    public function getSiteWeb(): ?string
+    {
+        return $this->site_web;
+    }
+
+    public function setSiteWeb(?string $site_web): static
+    {
+        $this->site_web = $site_web;
+
         return $this;
     }
 

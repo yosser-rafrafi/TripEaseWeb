@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -36,9 +37,10 @@ class Voyage
         return $this->destination;
     }
 
-    public function setDestination(string $destination): self
+    public function setDestination(string $destination): static
     {
         $this->destination = $destination;
+
         return $this;
     }
 
@@ -78,9 +80,10 @@ class Voyage
         return $this->budget;
     }
 
-    public function setBudget(int $budget): self
+    public function setBudget(int $budget): static
     {
         $this->budget = $budget;
+
         return $this;
     }
 
@@ -92,9 +95,10 @@ class Voyage
         return $this->etat;
     }
 
-    public function setEtat(?string $etat): self
+    public function setEtat(?string $etat): static
     {
         $this->etat = $etat;
+
         return $this;
     }
 
@@ -106,9 +110,10 @@ class Voyage
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -120,9 +125,10 @@ class Voyage
         return $this->userId;
     }
 
-    public function setUserId(?int $userId): self
+    public function setUserId(?int $userId): static
     {
         $this->userId = $userId;
+
         return $this;
     }
 
@@ -134,37 +140,72 @@ class Voyage
         return $this->numeroVol;
     }
 
-    public function setNumeroVol(string $numeroVol): self
+    public function setNumeroVol(string $numeroVol): static
     {
         $this->numeroVol = $numeroVol;
+
         return $this;
     }
 
     #[ORM\OneToMany(targetEntity: Flight::class, mappedBy: 'voyage')]
     private Collection $flights;
 
+    public function __construct()
+    {
+        $this->flights = new ArrayCollection();
+    }
+
     /**
      * @return Collection<int, Flight>
      */
     public function getFlights(): Collection
     {
-        if (!$this->flights instanceof Collection) {
-            $this->flights = new ArrayCollection();
-        }
         return $this->flights;
     }
 
-    public function addFlight(Flight $flight): self
+    public function addFlight(Flight $flight): static
     {
-        if (!$this->getFlights()->contains($flight)) {
-            $this->getFlights()->add($flight);
+        if (!$this->flights->contains($flight)) {
+            $this->flights->add($flight);
+            $flight->setVoyage($this);
         }
+
         return $this;
     }
 
-    public function removeFlight(Flight $flight): self
+    public function removeFlight(Flight $flight): static
     {
-        $this->getFlights()->removeElement($flight);
+        if ($this->flights->removeElement($flight)) {
+            // set the owning side to null (unless already changed)
+            if ($flight->getVoyage() === $this) {
+                $flight->setVoyage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDateDepart(): ?\DateTimeInterface
+    {
+        return $this->date_depart;
+    }
+
+    public function setDateDepart(\DateTimeInterface $date_depart): static
+    {
+        $this->date_depart = $date_depart;
+
+        return $this;
+    }
+
+    public function getDateRetour(): ?\DateTimeInterface
+    {
+        return $this->date_retour;
+    }
+
+    public function setDateRetour(\DateTimeInterface $date_retour): static
+    {
+        $this->date_retour = $date_retour;
+
         return $this;
     }
 

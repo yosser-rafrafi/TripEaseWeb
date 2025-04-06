@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -78,9 +79,51 @@ class Chambre
         return $this->disponibilite;
     }
 
-    public function setDisponibilite(int $disponibilite): self
+    public function setDisponibilite(int $disponibilite): static
     {
         $this->disponibilite = $disponibilite;
+
+        return $this;
+    }
+
+    public function getIdChambre(): ?int
+    {
+        return $this->id_chambre;
+    }
+
+    public function getHotelId(): ?int
+    {
+        return $this->hotel_id;
+    }
+
+    public function setHotelId(int $hotel_id): static
+    {
+        $this->hotel_id = $hotel_id;
+
+        return $this;
+    }
+
+    public function getTypeChambre(): ?string
+    {
+        return $this->type_chambre;
+    }
+
+    public function setTypeChambre(string $type_chambre): static
+    {
+        $this->type_chambre = $type_chambre;
+
+        return $this;
+    }
+
+    public function getPrixParNuit(): ?string
+    {
+        return $this->prix_par_nuit;
+    }
+
+    public function setPrixParNuit(string $prix_par_nuit): static
+    {
+        $this->prix_par_nuit = $prix_par_nuit;
+
         return $this;
     }
 

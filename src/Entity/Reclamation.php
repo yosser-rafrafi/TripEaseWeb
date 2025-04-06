@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -36,9 +37,10 @@ class Reclamation
         return $this->employeID;
     }
 
-    public function setEmployeID(int $employeID): self
+    public function setEmployeID(int $employeID): static
     {
         $this->employeID = $employeID;
+
         return $this;
     }
 
@@ -50,9 +52,10 @@ class Reclamation
         return $this->objet;
     }
 
-    public function setObjet(string $objet): self
+    public function setObjet(string $objet): static
     {
         $this->objet = $objet;
+
         return $this;
     }
 
@@ -64,9 +67,10 @@ class Reclamation
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -78,9 +82,10 @@ class Reclamation
         return $this->statut;
     }
 
-    public function setStatut(string $statut): self
+    public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
 
@@ -95,6 +100,18 @@ class Reclamation
     public function setDate_reclamation(\DateTimeInterface $date_reclamation): self
     {
         $this->date_reclamation = $date_reclamation;
+        return $this;
+    }
+
+    public function getDateReclamation(): ?\DateTimeInterface
+    {
+        return $this->date_reclamation;
+    }
+
+    public function setDateReclamation(\DateTimeInterface $date_reclamation): static
+    {
+        $this->date_reclamation = $date_reclamation;
+
         return $this;
     }
 

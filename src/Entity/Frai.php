@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -64,23 +65,25 @@ class Frai
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
     #[ORM\Column(type: 'decimal', nullable: false)]
     private ?float $montant = null;
 
-    public function getMontant(): ?float
+    public function getMontant(): ?string
     {
         return $this->montant;
     }
 
-    public function setMontant(float $montant): self
+    public function setMontant(string $montant): static
     {
         $this->montant = $montant;
+
         return $this;
     }
 
@@ -101,14 +104,51 @@ class Frai
     #[ORM\Column(type: 'blob', nullable: false)]
     private ?string $pdf = null;
 
-    public function getPdf(): ?string
+    public function getPdf(): mixed
     {
         return $this->pdf;
     }
 
-    public function setPdf(string $pdf): self
+    public function setPdf(mixed $pdf): static
     {
         $this->pdf = $pdf;
+
+        return $this;
+    }
+
+    public function getIdAvanceFrais(): ?int
+    {
+        return $this->id_avance_frais;
+    }
+
+    public function setIdAvanceFrais(int $id_avance_frais): static
+    {
+        $this->id_avance_frais = $id_avance_frais;
+
+        return $this;
+    }
+
+    public function getEmployeId(): ?int
+    {
+        return $this->employe_id;
+    }
+
+    public function setEmployeId(int $employe_id): static
+    {
+        $this->employe_id = $employe_id;
+
+        return $this;
+    }
+
+    public function getDateDepense(): ?\DateTimeInterface
+    {
+        return $this->date_depense;
+    }
+
+    public function setDateDepense(\DateTimeInterface $date_depense): static
+    {
+        $this->date_depense = $date_depense;
+
         return $this;
     }
 

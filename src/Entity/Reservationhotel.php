@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -64,9 +65,10 @@ class Reservationhotel
         return $this->dateReservation;
     }
 
-    public function setDateReservation(?string $dateReservation): self
+    public function setDateReservation(?string $dateReservation): static
     {
         $this->dateReservation = $dateReservation;
+
         return $this;
     }
 
@@ -78,9 +80,10 @@ class Reservationhotel
         return $this->dateDebut;
     }
 
-    public function setDateDebut(?string $dateDebut): self
+    public function setDateDebut(?string $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
+
         return $this;
     }
 
@@ -92,9 +95,10 @@ class Reservationhotel
         return $this->dateFin;
     }
 
-    public function setDateFin(?string $dateFin): self
+    public function setDateFin(?string $dateFin): static
     {
         $this->dateFin = $dateFin;
+
         return $this;
     }
 
@@ -106,9 +110,10 @@ class Reservationhotel
         return $this->statut;
     }
 
-    public function setStatut(?string $statut): self
+    public function setStatut(?string $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
 
@@ -134,9 +139,46 @@ class Reservationhotel
         return $this->qrcode;
     }
 
-    public function setQrcode(?string $qrcode): self
+    public function setQrcode(?string $qrcode): static
     {
         $this->qrcode = $qrcode;
+
+        return $this;
+    }
+
+    public function getHotelId(): ?int
+    {
+        return $this->hotel_id;
+    }
+
+    public function setHotelId(int $hotel_id): static
+    {
+        $this->hotel_id = $hotel_id;
+
+        return $this;
+    }
+
+    public function getChambreId(): ?int
+    {
+        return $this->chambre_id;
+    }
+
+    public function setChambreId(int $chambre_id): static
+    {
+        $this->chambre_id = $chambre_id;
+
+        return $this;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?int $user_id): static
+    {
+        $this->user_id = $user_id;
+
         return $this;
     }
 

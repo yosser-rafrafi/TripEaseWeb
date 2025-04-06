@@ -56,4 +56,28 @@ class VoyageUser
         return $this;
     }
 
+    public function getVoyageId(): ?int
+    {
+        return $this->voyage_id;
+    }
+
+    public function setVoyageId(?int $voyage_id): static
+    {
+        $this->voyage_id = $voyage_id;
+
+        return $this;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?int $user_id): static
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
 }

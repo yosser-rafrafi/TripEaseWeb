@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -37,9 +38,10 @@ class Statut
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -65,9 +67,10 @@ class Statut
         return $this->contenu;
     }
 
-    public function setContenu(string $contenu): self
+    public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
+
         return $this;
     }
 
@@ -107,23 +110,28 @@ class Statut
      */
     public function getCommentaires(): Collection
     {
-        if (!$this->commentaires instanceof Collection) {
-            $this->commentaires = new ArrayCollection();
-        }
         return $this->commentaires;
     }
 
-    public function addCommentaire(Commentaire $commentaire): self
+    public function addCommentaire(Commentaire $commentaire): static
     {
-        if (!$this->getCommentaires()->contains($commentaire)) {
-            $this->getCommentaires()->add($commentaire);
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setStatut($this);
         }
+
         return $this;
     }
 
-    public function removeCommentaire(Commentaire $commentaire): self
+    public function removeCommentaire(Commentaire $commentaire): static
     {
-        $this->getCommentaires()->removeElement($commentaire);
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getStatut() === $this) {
+                $commentaire->setStatut(null);
+            }
+        }
+
         return $this;
     }
 
@@ -139,66 +147,73 @@ class Statut
     )]
     private Collection $users;
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function __construct()
     {
-        if (!$this->users instanceof Collection) {
-            $this->users = new ArrayCollection();
-        }
-        return $this->users;
+        $this->commentaires = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->getUsers()->contains($user)) {
-            $this->getUsers()->add($user);
-        }
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        $this->getUsers()->removeElement($user);
-        return $this;
-    }
-
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'statuts')]
-    #[ORM\JoinTable(
-        name: 'reactions',
-        joinColumns: [
-            new ORM\JoinColumn(name: 'statut_id', referencedColumnName: 'id')
-        ],
-        inverseJoinColumns: [
-            new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')
-        ]
-    )]
-    private Collection $users;
 
     /**
      * @return Collection<int, User>
      */
     public function getUsers(): Collection
     {
-        if (!$this->users instanceof Collection) {
-            $this->users = new ArrayCollection();
-        }
         return $this->users;
     }
 
-    public function addUser(User $user): self
+    public function addUser(User $user): static
     {
-        if (!$this->getUsers()->contains($user)) {
-            $this->getUsers()->add($user);
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
         }
+
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeUser(User $user): static
     {
-        $this->getUsers()->removeElement($user);
+        $this->users->removeElement($user);
+
         return $this;
     }
+
+    public function getTypeContenu(): ?string
+    {
+        return $this->type_contenu;
+    }
+
+    public function setTypeContenu(string $type_contenu): static
+    {
+        $this->type_contenu = $type_contenu;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->date_creation;
+    }
+
+    public function setDateCreation(?\DateTimeInterface $date_creation): static
+    {
+        $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    public function getMediaUrl(): ?string
+    {
+        return $this->media_url;
+    }
+
+    public function setMediaUrl(?string $media_url): static
+    {
+        $this->media_url = $media_url;
+
+        return $this;
+    }
+
+   
+  
 
 }

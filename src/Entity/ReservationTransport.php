@@ -112,4 +112,76 @@ class ReservationTransport
         return $this;
     }
 
+    public function getIdEmploye(): ?int
+    {
+        return $this->id_employe;
+    }
+
+    public function setIdEmploye(int $id_employe): static
+    {
+        $this->id_employe = $id_employe;
+
+        return $this;
+    }
+
+    public function getIdTransport(): ?int
+    {
+        return $this->id_transport;
+    }
+
+    public function setIdTransport(int $id_transport): static
+    {
+        $this->id_transport = $id_transport;
+
+        return $this;
+    }
+
+    public function getDateReservation(): ?string
+    {
+        return $this->date_reservation;
+    }
+
+    public function setDateReservation(string $date_reservation): static
+    {
+        $this->date_reservation = $date_reservation;
+
+        return $this;
+    }
+
+    public function getTypeReservation(): ?string
+    {
+        return $this->type_reservation;
+    }
+
+    public function setTypeReservation(string $type_reservation): static
+    {
+        $this->type_reservation = $type_reservation;
+
+        return $this;
+    }
+
+    public function getPrioriteReservation(): ?string
+    {
+        return $this->priorite_reservation;
+    }
+
+    public function setPrioriteReservation(string $priorite_reservation): static
+    {
+        $this->priorite_reservation = $priorite_reservation;
+
+        return $this;
+    }
+
+    public function getNotesReservation(): ?string
+    {
+        return $this->notes_reservation;
+    }
+
+    public function setNotesReservation(string $notes_reservation): static
+    {
+        $this->notes_reservation = $notes_reservation;
+
+        return $this;
+    }
+
 }

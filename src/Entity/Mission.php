@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -36,9 +37,10 @@ class Mission
         return $this->title;
     }
 
-    public function setTitle(?string $title): self
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -50,9 +52,10 @@ class Mission
         return $this->lieu;
     }
 
-    public function setLieu(string $lieu): self
+    public function setLieu(string $lieu): static
     {
         $this->lieu = $lieu;
+
         return $this;
     }
 
@@ -64,9 +67,10 @@ class Mission
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -78,9 +82,10 @@ class Mission
         return $this->dateDebut;
     }
 
-    public function setDateDebut(?\DateTimeInterface $dateDebut): self
+    public function setDateDebut(?\DateTimeInterface $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
+
         return $this;
     }
 
@@ -92,9 +97,10 @@ class Mission
         return $this->dateFin;
     }
 
-    public function setDateFin(?\DateTimeInterface $dateFin): self
+    public function setDateFin(?\DateTimeInterface $dateFin): static
     {
         $this->dateFin = $dateFin;
+
         return $this;
     }
 
@@ -106,9 +112,10 @@ class Mission
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -120,9 +127,10 @@ class Mission
         return $this->duree;
     }
 
-    public function setDuree(string $duree): self
+    public function setDuree(string $duree): static
     {
         $this->duree = $duree;
+
         return $this;
     }
 
@@ -134,9 +142,10 @@ class Mission
         return $this->voyageId;
     }
 
-    public function setVoyageId(int $voyageId): self
+    public function setVoyageId(int $voyageId): static
     {
         $this->voyageId = $voyageId;
+
         return $this;
     }
 
@@ -148,9 +157,10 @@ class Mission
         return $this->userId;
     }
 
-    public function setUserId(?int $userId): self
+    public function setUserId(?int $userId): static
     {
         $this->userId = $userId;
+
         return $this;
     }
 

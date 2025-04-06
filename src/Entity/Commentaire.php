@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -37,9 +38,10 @@ class Commentaire
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -52,9 +54,10 @@ class Commentaire
         return $this->statut;
     }
 
-    public function setStatut(?Statut $statut): self
+    public function setStatut(?Statut $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
 
@@ -80,9 +83,10 @@ class Commentaire
         return $this->contenu;
     }
 
-    public function setContenu(string $contenu): self
+    public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
+
         return $this;
     }
 
@@ -112,28 +116,56 @@ class Commentaire
     )]
     private Collection $statuts;
 
+    public function __construct()
+    {
+        $this->statuts = new ArrayCollection();
+    }
+
     /**
      * @return Collection<int, Statut>
      */
     public function getStatuts(): Collection
     {
-        if (!$this->statuts instanceof Collection) {
-            $this->statuts = new ArrayCollection();
-        }
         return $this->statuts;
     }
 
-    public function addStatut(Statut $statut): self
+    public function addStatut(Statut $statut): static
     {
-        if (!$this->getStatuts()->contains($statut)) {
-            $this->getStatuts()->add($statut);
+        if (!$this->statuts->contains($statut)) {
+            $this->statuts->add($statut);
         }
+
         return $this;
     }
 
-    public function removeStatut(Statut $statut): self
+    public function removeStatut(Statut $statut): static
     {
-        $this->getStatuts()->removeElement($statut);
+        $this->statuts->removeElement($statut);
+
+        return $this;
+    }
+
+    public function getCommentaireParentId(): ?int
+    {
+        return $this->commentaire_parent_id;
+    }
+
+    public function setCommentaireParentId(?int $commentaire_parent_id): static
+    {
+        $this->commentaire_parent_id = $commentaire_parent_id;
+
+        return $this;
+    }
+
+    public function getDatePublication(): ?\DateTimeInterface
+    {
+        return $this->date_publication;
+    }
+
+    public function setDatePublication(?\DateTimeInterface $date_publication): static
+    {
+        $this->date_publication = $date_publication;
+
         return $this;
     }
 
