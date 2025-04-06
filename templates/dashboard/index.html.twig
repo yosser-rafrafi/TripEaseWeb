@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Analytics{% endblock %}
+
+{% block body %}
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        {# Breadcrumb Section #}
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Dashboard Analytics</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ path('dashboard') }}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Dashboard Analytics</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Main Content Start #}
+        <div class="row">
+            {# Stats Cards Section 1 #}
+            <div class="col-md-12 col-xl-4">
+                <div class="card flat-card">
+                    <div class="row-table">
+                        <div class="col-sm-6 card-body br">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-eye text-c-green mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.visitors|default('10k') }}</h5>
+                                    <span>Visitors</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-music text-c-red mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.volume|default('100%') }}</h5>
+                                    <span>Volume</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div class="col-sm-6 card-body br">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-file-text text-c-blue mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.files|default('2000+') }}</h5>
+                                    <span>Files</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-mail text-c-yellow mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.mails|default('120') }}</h5>
+                                    <span>Mails</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Ratings Widget #}
+                <div class="card flat-card widget-primary-card">
+                    <div class="row-table">
+                        <div class="col-sm-3 card-body">
+                            <i class="feather icon-star-on"></i>
+                        </div>
+                        <div class="col-sm-9">
+                            <h4>{{ stats.ratings|default('4000+') }}</h4>
+                            <h6>Ratings Received</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Stats Cards Section 2 #}
+            <div class="col-md-12 col-xl-4">
+                <div class="card flat-card">
+                    <div class="row-table">
+                        <div class="col-sm-6 card-body br">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-share-2 text-c-blue mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.shares|default('1000') }}</h5>
+                                    <span>Shares</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <i class="icon feather icon-wifi text-c-blue mb-1 d-block"></i>
+                                </div>
+                                <div class="col-sm-8 text-md-center">
+                                    <h5>{{ stats.network|default('600') }}</h5>
+                                    <span>Network</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# ... Additional stats rows ... #}
+                </div>
+
+                {# Achievements Widget #}
+                <div class="card flat-card widget-purple-card">
+                    <div class="row-table">
+                        <div class="col-sm-3 card-body">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="col-sm-9">
+                            <h4>{{ stats.achievements|default('17') }}</h4>
+                            <h6>Achievements</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Support Requests Section #}
+            <div class="col-md-12 col-xl-4">
+                <div class="card support-bar overflow-hidden">
+                    <div class="card-body pb-0">
+                        <h2 class="m-0">{{ support.total|default('350') }}</h2>
+                        <span class="text-c-blue">Support Requests</span>
+                        <p class="mb-3 mt-3">Total number of support requests that come in.</p>
+                    </div>
+                    <div id="support-chart"></div>
+                    <div class="card-footer bg-primary text-white">
+                        <div class="row text-center">
+                            <div class="col">
+                                <h4 class="m-0 text-white">{{ support.open|default('10') }}</h4>
+                                <span>Open</span>
+                            </div>
+                            <div class="col">
+                                <h4 class="m-0 text-white">{{ support.running|default('5') }}</h4>
+                                <span>Running</span>
+                            </div>
+                            <div class="col">
+                                <h4 class="m-0 text-white">{{ support.solved|default('3') }}</h4>
+                                <span>Solved</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Projects Table Section #}
+            <div class="col-xl-6 col-md-12">
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h5>Projects</h5>
+                 
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="chk-option">
+                                                <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                                                    <input type="checkbox" class="custom-control-input">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+                                            </div>
+                                            Assigned
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Due Date</th>
+                                        <th class="text-right">Priority</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for project in projects|default([]) %}
+                                        <tr>
+                                            <td>
+                                                <div class="chk-option">
+                                                    <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                                                        <input type="checkbox" class="custom-control-input">
+                                                        <span class="custom-control-label"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="d-inline-block align-middle">
+                                                    <img src="{{ asset(project.image) }}" alt="user image" class="img-radius wid-40 align-top m-r-15">
+                                                    <div class="d-inline-block">
+                                                        <h6>{{ project.assignedTo }}</h6>
+                                                        <p class="text-muted m-b-0">{{ project.role }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ project.name }}</td>
+                                            <td>{{ project.dueDate }}</td>
+                                            <td class="text-right">
+                                                <label class="badge badge-light-{{ project.priorityColor }}">
+                                                    {{ project.priority }}
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Support chart initialization
+            initSupportChart();
+            
+            // SEO charts initialization
+            initSeoCharts();
+            
+            // Other chart initializations...
+        });
+    </script>
+{% endblock %}
