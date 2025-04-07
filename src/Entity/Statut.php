@@ -100,7 +100,7 @@ class Statut
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'statut')]
+    #[ORM\OneToMany(mappedBy: 'statut', targetEntity: Commentaire::class, orphanRemoval: true)]
     private Collection $commentaires;
 
     /**
