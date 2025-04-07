@@ -29,16 +29,21 @@
 
     {# Navigation menu #}
     {% block navigation %}
-        {% include 'partials/_navigation.html.twig' %}
+        {% include 'back/partials/_navigation.html.twig' %}
     {% endblock %}
 
     {# Header #}
     {% block header %}
-        {% include 'partials/_header.html.twig' %}
+        {% include 'back/partials/_header.html.twig' %}
     {% endblock %}
 
     {# Main Content #}
-    {% block body %}{% endblock %}
+    <div class="pcoded-main-container">
+
+        {# Bloc principal de la page #}
+        {% block body %}{% endblock %}
+
+    </div>
 
     {# JavaScript #}
     {% block javascripts %}

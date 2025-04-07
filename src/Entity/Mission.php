@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
@@ -71,7 +70,7 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $dateDebut = null;
 
     public function getDateDebut(): ?\DateTimeInterface
@@ -85,7 +84,7 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $dateFin = null;
 
     public function getDateFin(): ?\DateTimeInterface
@@ -127,7 +126,7 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
+    #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
     private ?int $voyageId = null;
 
     public function getVoyageId(): ?int
@@ -141,7 +140,7 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(name:'userId', type: 'integer', nullable: true)]
     private ?int $userId = null;
 
     public function getUserId(): ?int
@@ -155,4 +154,36 @@ class Mission
         return $this;
     }
 
+    // Ajout de la relation avec Voyage
+    #[ORM\ManyToOne(targetEntity: Voyage::class, inversedBy: 'missions')]
+    #[ORM\JoinColumn(name: 'voyageId', referencedColumnName: 'id', nullable: false)]
+    private ?Voyage $voyage = null;
+
+    public function getVoyage(): ?Voyage
+    {
+        return $this->voyage;
+    }
+
+    public function setVoyage(?Voyage $voyage): self
+    {
+        $this->voyage = $voyage;
+        return $this;
+    }
+
+    // Ajout de la relation avec User
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'userId', referencedColumnName: 'id', nullable: true)]
+    private ?User $user = null;
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
 }
+

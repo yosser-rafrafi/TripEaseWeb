@@ -36,9 +36,10 @@ class User
         return $this->nom;
     }
 
-    public function setNom(?string $nom): self
+    public function setNom(?string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -50,9 +51,10 @@ class User
         return $this->prenom;
     }
 
-    public function setPrenom(?string $prenom): self
+    public function setPrenom(?string $prenom): static
     {
         $this->prenom = $prenom;
+
         return $this;
     }
 
@@ -64,9 +66,10 @@ class User
         return $this->identifiant;
     }
 
-    public function setIdentifiant(?string $identifiant): self
+    public function setIdentifiant(?string $identifiant): static
     {
         $this->identifiant = $identifiant;
+
         return $this;
     }
 
@@ -78,9 +81,10 @@ class User
         return $this->role;
     }
 
-    public function setRole(?string $role): self
+    public function setRole(?string $role): static
     {
         $this->role = $role;
+
         return $this;
     }
 
@@ -92,9 +96,10 @@ class User
         return $this->adresse;
     }
 
-    public function setAdresse(?string $adresse): self
+    public function setAdresse(?string $adresse): static
     {
         $this->adresse = $adresse;
+
         return $this;
     }
 
@@ -106,13 +111,14 @@ class User
         return $this->email;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'numTel', type: 'string', nullable: true)]
     private ?string $numTel = null;
 
     public function getNumTel(): ?string
@@ -120,9 +126,10 @@ class User
         return $this->numTel;
     }
 
-    public function setNumTel(?string $numTel): self
+    public function setNumTel(?string $numTel): static
     {
         $this->numTel = $numTel;
+
         return $this;
     }
 
@@ -134,13 +141,14 @@ class User
         return $this->password;
     }
 
-    public function setPassword(?string $password): self
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'photoDeProfile',type: 'string', nullable: true)]
     private ?string $photoDeProfile = null;
 
     public function getPhotoDeProfile(): ?string
@@ -148,9 +156,10 @@ class User
         return $this->photoDeProfile;
     }
 
-    public function setPhotoDeProfile(?string $photoDeProfile): self
+    public function setPhotoDeProfile(?string $photoDeProfile): static
     {
         $this->photoDeProfile = $photoDeProfile;
+
         return $this;
     }
 
@@ -162,55 +171,31 @@ class User
      */
     public function getCommentaires(): Collection
     {
-        if (!$this->commentaires instanceof Collection) {
-            $this->commentaires = new ArrayCollection();
-        }
         return $this->commentaires;
     }
 
-    public function addCommentaire(Commentaire $commentaire): self
+    public function addCommentaire(Commentaire $commentaire): static
     {
-        if (!$this->getCommentaires()->contains($commentaire)) {
-            $this->getCommentaires()->add($commentaire);
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setUser($this);
         }
+
         return $this;
     }
 
-    public function removeCommentaire(Commentaire $commentaire): self
+    public function removeCommentaire(Commentaire $commentaire): static
     {
-        $this->getCommentaires()->removeElement($commentaire);
-        return $this;
-    }
-
-    #[ORM\OneToMany(targetEntity: Reservationtransport::class, mappedBy: 'user')]
-    private Collection $reservationtransports;
-
-    /**
-     * @return Collection<int, Reservationtransport>
-     */
-    public function getReservationtransports(): Collection
-    {
-        if (!$this->reservationtransports instanceof Collection) {
-            $this->reservationtransports = new ArrayCollection();
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getUser() === $this) {
+                $commentaire->setUser(null);
+            }
         }
-        return $this->reservationtransports;
-    }
 
-    public function addReservationtransport(Reservationtransport $reservationtransport): self
-    {
-        if (!$this->getReservationtransports()->contains($reservationtransport)) {
-            $this->getReservationtransports()->add($reservationtransport);
-        }
         return $this;
     }
 
-    public function removeReservationtransport(Reservationtransport $reservationtransport): self
-    {
-        $this->getReservationtransports()->removeElement($reservationtransport);
-        return $this;
-    }
-
-    
     #[ORM\ManyToMany(targetEntity: Statut::class, inversedBy: 'users')]
     #[ORM\JoinTable(
         name: 'favorites',
@@ -222,12 +207,11 @@ class User
         ]
     )]
     private Collection $statuts;
-
+    
     public function __construct()
     {
-        $this->commentaires = new ArrayCollection();
-        $this->reservationtransports = new ArrayCollection();
         $this->statuts = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     /**
@@ -235,26 +219,24 @@ class User
      */
     public function getStatuts(): Collection
     {
-        if (!$this->statuts instanceof Collection) {
-            $this->statuts = new ArrayCollection();
-        }
         return $this->statuts;
     }
 
-    public function addStatut(Statut $statut): self
+    public function addStatut(Statut $statut): static
     {
-        if (!$this->getStatuts()->contains($statut)) {
-            $this->getStatuts()->add($statut);
+        if (!$this->statuts->contains($statut)) {
+            $this->statuts->add($statut);
         }
+
         return $this;
     }
 
-    public function removeStatut(Statut $statut): self
+    public function removeStatut(Statut $statut): static
     {
-        $this->getStatuts()->removeElement($statut);
+        $this->statuts->removeElement($statut);
+
         return $this;
     }
 
     
-
 }

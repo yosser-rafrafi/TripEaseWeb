@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\Mission;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,9 +38,10 @@ class Voyage
         return $this->destination;
     }
 
-    public function setDestination(string $destination): self
+    public function setDestination(string $destination): static
     {
         $this->destination = $destination;
+
         return $this;
     }
 
@@ -79,9 +81,10 @@ class Voyage
         return $this->budget;
     }
 
-    public function setBudget(int $budget): self
+    public function setBudget(int $budget): static
     {
         $this->budget = $budget;
+
         return $this;
     }
 
@@ -93,9 +96,10 @@ class Voyage
         return $this->etat;
     }
 
-    public function setEtat(?string $etat): self
+    public function setEtat(?string $etat): static
     {
         $this->etat = $etat;
+
         return $this;
     }
 
@@ -107,27 +111,68 @@ class Voyage
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $userId = null;
-
-    public function getUserId(): ?int
+    #[ORM\OneToMany(mappedBy: 'voyage', targetEntity: Mission::class, orphanRemoval: true)]
+    private Collection $missions;
+    
+    public function __construct()
     {
-        return $this->userId;
+        $this->missions = new ArrayCollection();
+        $this->flights = new ArrayCollection();
     }
 
-    public function setUserId(?int $userId): self
+    /**
+     * @return Collection<int, Mission>
+     */
+    public function getMissions(): Collection
     {
-        $this->userId = $userId;
+        return $this->missions;
+    }
+    
+    public function addMission(Mission $mission): static
+    {
+        if (!$this->missions->contains($mission)) {
+            $this->missions[] = $mission;
+            $mission->setVoyage($this);
+        }
+    
+        return $this;
+    }
+    
+    public function removeMission(Mission $mission): static
+    {
+        if ($this->missions->removeElement($mission)) {
+            // set the owning side to null (unless already changed)
+            if ($mission->getVoyage() === $this) {
+                $mission->setVoyage(null);
+            }
+        }
+    
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "userId", referencedColumnName: "id", nullable: true)]
+    private ?User $user = null;
+        
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    #[ORM\Column(name: 'numeroVol', type: 'string', nullable: false)]
     private ?string $numeroVol = null;
 
     public function getNumeroVol(): ?string
@@ -135,42 +180,44 @@ class Voyage
         return $this->numeroVol;
     }
 
-    public function setNumeroVol(string $numeroVol): self
+    public function setNumeroVol(string $numeroVol): static
     {
         $this->numeroVol = $numeroVol;
+
         return $this;
     }
 
     #[ORM\OneToMany(targetEntity: Flight::class, mappedBy: 'voyage')]
     private Collection $flights;
 
-    public function __construct()
-    {
-        $this->flights = new ArrayCollection();
-    }
 
     /**
      * @return Collection<int, Flight>
      */
     public function getFlights(): Collection
     {
-        if (!$this->flights instanceof Collection) {
-            $this->flights = new ArrayCollection();
-        }
         return $this->flights;
     }
 
-    public function addFlight(Flight $flight): self
+    public function addFlight(Flight $flight): static
     {
-        if (!$this->getFlights()->contains($flight)) {
-            $this->getFlights()->add($flight);
+        if (!$this->flights->contains($flight)) {
+            $this->flights->add($flight);
+            $flight->setVoyage($this);
         }
+
         return $this;
     }
 
-    public function removeFlight(Flight $flight): self
+    public function removeFlight(Flight $flight): static
     {
-        $this->getFlights()->removeElement($flight);
+        if ($this->flights->removeElement($flight)) {
+            // set the owning side to null (unless already changed)
+            if ($flight->getVoyage() === $this) {
+                $flight->setVoyage(null);
+            }
+        }
+
         return $this;
     }
 

@@ -12,7 +12,7 @@ class DashboardController extends BaseController
     #[Route('/', name: 'dashboard')]
     public function index(): Response
     {
-        return $this->render('dashboard/index.html.twig', [
+        return $this->render('back/dashboard/index.html.twig', [
             'stats' => [
                 'visitors' => '10k',
                 'volume' => '100%',
