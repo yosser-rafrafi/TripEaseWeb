@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Controller\VoyageController;
+use App\Entity\Voyage;
 use App\Entity\Mission;
 use App\Form\MissionType;
 use App\Repository\MissionRepository;
@@ -21,18 +23,29 @@ final class MissionController extends AbstractController{
         ]);
     }
 
-    #[Route('/new', name: 'app_mission_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+
+
+
+    #[Route('/new/{voyageId}', name: 'app_mission_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager , int $voyageId): Response
     {
+        $voyage = $entityManager->getRepository(Voyage::class)->find($voyageId);
+    
+    if (!$voyage) {
+        throw $this->createNotFoundException('Voyage non trouvé.');
+    }
+       
         $mission = new Mission();
-        $form = $this->createForm(MissionType::class, $mission);
-        $form->handleRequest($request);
+    $mission->setVoyage($voyage); // Associe la mission au voyage
+
+    $form = $this->createForm(MissionType::class, $mission);
+    $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($mission);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_mission_index', [], Response::HTTP_SEE_OTHER);
+    
+            return $this->redirectToRoute('app_voyage_show', ['id' => $voyage->getId()]);
         }
 
         return $this->render('back/manager/mission/new.html.twig', [

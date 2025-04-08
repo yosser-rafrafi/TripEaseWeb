@@ -14,7 +14,7 @@ class VoyageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
+        $builder 
             ->add('destination', null, [
                 'attr' => ['novalidate' => 'novalidate']
             ])

@@ -5,6 +5,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 use App\Repository\MissionRepository;
 
@@ -17,35 +19,38 @@ class Mission
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: 'Le titre ne peut pas être vide.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le titre ne peut pas dépasser 255 caractères.')]
     private ?string $title = null;
 
-    
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: 'Le lieu est requis.')]
     private ?string $lieu = null;
 
-    
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La description est requise.')]
     private ?string $description = null;
 
-    
-
     #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
+    #[Assert\NotNull(message: 'La date de début est obligatoire.')]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $dateDebut = null;
-    
+
     #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
+    #[Assert\NotNull(message: 'La date de fin est obligatoire.')]
+    #[Assert\Type(\DateTimeInterface::class)]
+    
     private ?\DateTimeInterface $dateFin = null;
 
-    
-
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le type de mission est requis.')]
     private ?string $type = null;
 
-    
-
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La durée est requise.')]
     private ?string $duree = null;
+
 
 
     #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
@@ -95,11 +100,13 @@ class Mission
         return $this->lieu;
     }
 
-    public function setLieu(string $lieu): self
+ 
+    public function setLieu(?string $lieu): self
     {
         $this->lieu = $lieu;
         return $this;
     }
+
 
 
     public function getDescription(): ?string
@@ -107,7 +114,7 @@ class Mission
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
@@ -141,7 +148,7 @@ class Mission
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
         return $this;
@@ -151,7 +158,7 @@ class Mission
         return $this->duree;
     }
 
-    public function setDuree(string $duree): self
+    public function setDuree(?string $duree): self
     {
         $this->duree = $duree;
         return $this;
