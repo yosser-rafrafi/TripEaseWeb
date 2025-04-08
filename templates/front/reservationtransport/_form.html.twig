@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+
+<div class="mb-3">
+    {{ form_label(form.transport) }}
+    {{ form_widget(form.transport, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.transport) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.date_reservation) }}
+    {{ form_widget(form.date_reservation, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.date_reservation) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.type_reservation) }}
+    {{ form_widget(form.type_reservation, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.type_reservation) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.priorite_reservation) }}
+    {{ form_widget(form.priorite_reservation, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.priorite_reservation) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.notes_reservation) }}
+    {{ form_widget(form.notes_reservation, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.notes_reservation) }}
+</div>
+
+{{ form_end(form) }}

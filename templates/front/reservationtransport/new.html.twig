@@ -1,0 +1,85 @@
+{% extends 'admin/bars.html.twig' %}
+
+{% block title %}New Reservation{% endblock %}
+
+{% block contenpage %}
+    <div class="container mt-4">
+        <div class="page-title">
+            <div class="title_left">
+                <h5>{% block LienPrecedent %}<a href="{{ path('app_transport_list') }}">Back to Transport List</a>{% endblock %}</h5>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Create New Reservation</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        {{ include('reservationtransport/_form.html.twig') }}
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <a class="btn btn-warning" href="{{ path('app_transport_list') }}">Cancel</a>
+                                <button type="submit" form="reservationtransport_form" class="btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FullCalendar integration -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Choose a Reservation Date</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FullCalendar JS and CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize the calendar
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                selectable: true,
+                selectHelper: true,
+                events: [
+                    // Example of events; you can fetch from backend or add manually
+                    {
+                        title: 'Sample Event',
+                        start: '2025-04-07',
+                        end: '2025-04-07'
+                    }
+                ],
+                select: function(start, end) {
+                    // When a date is selected, set it to the input field
+                    var selectedDate = start.format('YYYY-MM-DD');
+                    $('#reservation_date').val(selectedDate); // Assuming you have an input with id "reservation_date"
+                    $('#calendar').fullCalendar('unselect'); // Deselect after setting date
+                }
+            });
+        });
+    </script>
+{% endblock %}

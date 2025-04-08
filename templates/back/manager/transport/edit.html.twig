@@ -1,0 +1,82 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Edit Transport{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h2>Edit Transport</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5><a href="{{ path('app_transport_index') }}" class="btn btn-link">Back to list</a></h5>
+                        </div>
+
+                        <!-- Include the form -->
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                        
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_name) }}
+                            {{ form_widget(form.transport_name, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_description) }}
+                            {{ form_widget(form.transport_description, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_location) }}
+                            {{ form_widget(form.transport_location, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_type) }}
+                            {{ form_widget(form.transport_type, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_disponibilite) }}
+                            {{ form_widget(form.transport_disponibilite, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_pays) }}
+                            {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.transport_prix) }}
+                            {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.latitude) }}
+                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form_label(form.longitude) }}
+                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <div class="d-flex justify-content-between">
+                                <!-- Cancel Button -->
+                                <button type="button" class="btn btn-warning" onclick="window.history.back();">Cancel</button>
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                            </div>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
