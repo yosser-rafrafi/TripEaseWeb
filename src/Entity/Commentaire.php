@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
+<<<<<<< HEAD
+=======
+use Symfony\Component\Validator\Constraints as Assert;
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -74,6 +78,14 @@ class Commentaire
     }
 
     #[ORM\Column(type: 'text', nullable: false)]
+<<<<<<< HEAD
+=======
+    #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide.')]
+    #[Assert\Length(
+        min: 1,
+        minMessage: 'Le commentaire doit contenir au moins 1 caractère.'
+    )]
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     private ?string $contenu = null;
 
     public function getContenu(): ?string
@@ -81,7 +93,11 @@ class Commentaire
         return $this->contenu;
     }
 
+<<<<<<< HEAD
     public function setContenu(string $contenu): self
+=======
+    public function setContenu(?string $contenu): self
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {
         $this->contenu = $contenu;
         return $this;

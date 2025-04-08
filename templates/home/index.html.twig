@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to TripEase{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to TripEase</h1>
+            <p class="lead">Your one-stop solution for travel management</p>
+            
+            {% if not app.user %}
+                <div class="mt-4">
+                    <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg me-3">Register</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-lg">Login</a>
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <p>Welcome back, {{ app.user.email }}!</p>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin') }}" class="btn btn-primary">Go to Admin Dashboard</a>
+                    {% elseif is_granted('ROLE_MANAGER') %}
+                        <a href="{{ path('app_manager') }}" class="btn btn-primary">Go to Manager Dashboard</a>
+                    {% else %}
+                        <a href="#" class="btn btn-primary">Go to Dashboard</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

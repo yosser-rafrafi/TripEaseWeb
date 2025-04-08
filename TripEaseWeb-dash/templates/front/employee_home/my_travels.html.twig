@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Travels - TripEase{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>My Travels</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Destination</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Paris, France</td>
+                                    <td>2024-03-15</td>
+                                    <td>2024-03-20</td>
+                                    <td><span class="badge bg-success">Approved</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>London, UK</td>
+                                    <td>2024-04-01</td>
+                                    <td>2024-04-05</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,10 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+app_user_settings:
+    path: /user/settings
+    controller: App\Controller\UserController::settings
+    methods: [GET, POST]

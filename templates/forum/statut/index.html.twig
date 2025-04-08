@@ -69,7 +69,11 @@
                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp"
                        alt="avatar" width="40" height="40" />
                   <div class="form-outline w-100">
+<<<<<<< HEAD
                     <textarea name="contenu" class="form-control" rows="4" style="background: #fff;" required></textarea>
+=======
+<textarea name="contenu" class="form-control" rows="4" style="background: #fff;"></textarea>
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
                     <label class="form-label">Message</label>
                   </div>
                 </div>
@@ -77,6 +81,11 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ statut.id) }}">
 
                 <div class="float-end mt-2 pt-1">
+<<<<<<< HEAD
+=======
+                {# Champ caché pour passer l'ID du statut au formulaire #}
+                  <input type="hidden" name="statut_id" value="{{ statut.id }}">
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
                   <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
                   <button type="reset" class="btn btn-outline-primary btn-sm">Cancel</button>
                 </div>

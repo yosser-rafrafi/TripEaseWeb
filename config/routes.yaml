@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+<<<<<<< HEAD
+
+app_user_settings:
+    path: /user/settings
+    controller: App\Controller\UserController::settings
+    methods: [GET, POST]
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
