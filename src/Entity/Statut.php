@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -44,29 +45,39 @@ class Statut
         return $this;
     }
 
-    #[ORM\Column(type: 'text', nullable: false)]
-    private ?string $type_contenu = null;
-
     public function getType_contenu(): ?string
     {
         return $this->type_contenu;
     }
 
-    public function setType_contenu(string $type_contenu): self
+    public function setType_contenu(?string $type_contenu): self
     {
         $this->type_contenu = $type_contenu;
         return $this;
     }
 
     #[ORM\Column(type: 'text', nullable: false)]
+    #[Assert\NotBlank(message: "Le contenu ne peut pas être vide")]
+    #[Assert\Length(
+        min: 1,
+        minMessage: "Le contenu doit contenir au moins 1 caractère"
+    )]
     private ?string $contenu = null;
+
+    #[ORM\Column(type: 'text', nullable: false)]
+    #[Assert\NotBlank(message: "Le type de contenu ne peut pas être vide")]
+    #[Assert\Length(
+        min: 1,
+        minMessage: "Le type de contenu doit contenir au moins 1 caractère"
+    )]
+    private ?string $type_contenu = null;
 
     public function getContenu(): ?string
     {
         return $this->contenu;
     }
 
-    public function setContenu(string $contenu): self
+    public function setContenu(?string $contenu): self
     {
         $this->contenu = $contenu;
         return $this;

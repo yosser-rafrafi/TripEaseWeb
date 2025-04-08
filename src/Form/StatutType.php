@@ -8,27 +8,33 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class StatutType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('type_contenu')
-            ->add('contenu')
+            ->add('type_contenu', TextareaType::class, [
+                'required' => true,
+                'label' => 'Type contenu',
+                'attr' => ['minlength' => 1],
+                'empty_data' => '',
+
+            ])->add('contenu', TextareaType::class, [
+                'required' => true,
+                'label' => 'Contenu',
+                'attr' => ['minlength' => 1]
+            ])
             ->add('date_creation', null, [
                 'widget' => 'single_text'
             ])
             ->add('media_url')
             ->add('user', EntityType::class, [
                 'class' => User::class,
-'choice_label' => 'id',
+            'choice_label' => 'id',
             ])
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
+
         ;
     }
 
