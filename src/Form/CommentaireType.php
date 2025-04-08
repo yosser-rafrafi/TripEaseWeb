@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class CommentaireType extends AbstractType
 {
@@ -16,7 +17,11 @@ class CommentaireType extends AbstractType
     {
         $builder
             ->add('commentaire_parent_id')
-            ->add('contenu')
+            ->add('contenu', TextareaType::class, [
+                'required' => true,
+                'label' => 'Contenu',
+                'attr' => ['minlength' => 1]
+            ])
             ->add('date_publication', null, [
                 'widget' => 'single_text'
             ])
@@ -24,15 +29,7 @@ class CommentaireType extends AbstractType
                 'class' => User::class,
 'choice_label' => 'id',
             ])
-            ->add('statut', EntityType::class, [
-                'class' => Statut::class,
-'choice_label' => 'id',
-            ])
-            ->add('statuts', EntityType::class, [
-                'class' => Statut::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
+           
         ;
     }
 
