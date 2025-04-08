@@ -17,6 +17,30 @@ class User
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\ManyToMany(targetEntity: Voyage::class, mappedBy: 'users')]
+    private Collection $voyages;
+
+    public function getVoyages(): Collection
+    {
+        return $this->voyages;
+    }
+
+    public function addVoyage(Voyage $voyage): static
+    {
+        if (!$this->voyages->contains($voyage)) {
+            $this->voyages->add($voyage);
+        }
+
+        return $this;
+    }
+
+    public function removeVoyage(Voyage $voyage): static
+    {
+        $this->voyages->removeElement($voyage);
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -212,6 +236,8 @@ class User
     {
         $this->statuts = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->voyages = new ArrayCollection();
+
     }
 
     /**

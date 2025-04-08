@@ -15,22 +15,43 @@ class VoyageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('destination')
+            ->add('destination', null, [
+                'attr' => ['novalidate' => 'novalidate']
+            ])
             ->add('date_depart', null, [
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['novalidate' => 'novalidate']
             ])
             ->add('date_retour', null, [
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['novalidate' => 'novalidate']
             ])
-            ->add('budget')
-            ->add('etat')
-            ->add('title')
+            ->add('budget', null, [
+                'attr' => ['novalidate' => 'novalidate']
+            ])
+            ->add('etat', null, [
+                'attr' => ['novalidate' => 'novalidate']
+            ])
+            ->add('title', null, [
+                'attr' => ['novalidate' => 'novalidate']
+            ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'email', // ou un autre champ identifiable
+                'choice_label' => 'email',
+                'attr' => ['novalidate' => 'novalidate']
             ])
-            
-            ->add('numeroVol')
+            ->add('numeroVol', null, [
+                'attr' => ['novalidate' => 'novalidate']
+            ])
+
+            // Affecter des utilisateurs au voyage
+            ->add('users', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email', // ou autre propriété
+                'multiple' => true,  // Permet de sélectionner plusieurs employés
+                'expanded' => true,   // Affiche des cases à cocher plutôt qu'une liste déroulante
+                'label' => 'Sélectionner les employés',
+            ])
         ;
     }
 

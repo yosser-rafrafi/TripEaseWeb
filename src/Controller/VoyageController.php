@@ -29,6 +29,8 @@ final class VoyageController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+
             $entityManager->persist($voyage);
             $entityManager->flush();
 

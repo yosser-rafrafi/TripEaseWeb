@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 use App\Entity\Mission;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,10 +15,111 @@ use App\Repository\VoyageRepository;
 #[ORM\Table(name: 'voyage')]
 class Voyage
 {
+
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "La destination est obligatoire")]
+    #[Assert\Length(max: 255, maxMessage: "La destination ne peut pas dépasser {{ limit }} caractères")]
+    private ?string $destination = null;
+
+    #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date de départ est obligatoire")]
+    #[Assert\GreaterThan("today", message: "La date de départ doit être dans le futur")]
+    private ?\DateTimeInterface $date_depart = null;
+
+    
+    #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date de retour est obligatoire")]
+    #[Assert\Expression(
+        "this.getDateRetour() > this.getDateDepart()",
+        message: "La date de retour doit être après la date de départ"
+    )]
+    private ?\DateTimeInterface $date_retour = null;
+
+    #[ORM\Column(type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: "Le budget est obligatoire")]
+    #[Assert\Positive(message: "Le budget doit être un nombre positif")]
+    private ?int $budget = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $etat = null;
+
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le titre est obligatoire")]
+    #[Assert\Length(max: 255, maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères")]
+    private ?string $title = null;
+
+    #[ORM\OneToMany(mappedBy: 'voyage', targetEntity: Mission::class, orphanRemoval: true)]
+    private Collection $missions;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "userId", referencedColumnName: "id", nullable: true)]
+    private ?User $user = null;
+
+
+        
+
+    #[ORM\Column(name: 'numeroVol', type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le numéro de vol est obligatoire")]
+    #[Assert\Regex(
+        pattern: "/^[A-Z]{2}[0-9]{3,4}$/",
+        message: "Le numéro de vol doit commencer par 2 lettres suivies de 3 ou 4 chiffres"
+    )]
+    private ?string $numeroVol = null;
+
+    #[ORM\OneToMany(targetEntity: Flight::class, mappedBy: 'voyage')]
+    private Collection $flights;
+    
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'voyages')]
+    #[ORM\JoinTable(name: 'voyage_user')]
+    #[ORM\JoinColumn(name: 'voyage_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private Collection $users;
+
+   
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addVoyage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removeVoyage($this);
+        }
+
+        return $this;
+    }
+
+
+    public function __construct()
+    {
+        $this->missions = new ArrayCollection();
+        $this->flights = new ArrayCollection();
+        $this->users = new ArrayCollection();
+
+        
+    }
+
+
 
     public function getId(): ?int
     {
@@ -30,8 +132,6 @@ class Voyage
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $destination = null;
 
     public function getDestination(): ?string
     {
@@ -45,37 +145,31 @@ class Voyage
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $date_depart = null;
-
-    public function getDate_depart(): ?\DateTimeInterface
+    public function getDateDepart(): ?\DateTimeInterface
     {
         return $this->date_depart;
     }
-
-    public function setDate_depart(\DateTimeInterface $date_depart): self
+    
+    public function setDateDepart(?\DateTimeInterface $date_depart): static
     {
         $this->date_depart = $date_depart;
         return $this;
     }
-
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $date_retour = null;
-
-    public function getDate_retour(): ?\DateTimeInterface
+    
+    public function getDateRetour(): ?\DateTimeInterface
     {
         return $this->date_retour;
     }
-
-    public function setDate_retour(\DateTimeInterface $date_retour): self
+    
+    public function setDateRetour(?\DateTimeInterface $date_retour): static
     {
         $this->date_retour = $date_retour;
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $budget = null;
-
+   
+    
+    
     public function getBudget(): ?int
     {
         return $this->budget;
@@ -88,8 +182,6 @@ class Voyage
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $etat = null;
 
     public function getEtat(): ?string
     {
@@ -103,8 +195,6 @@ class Voyage
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $title = null;
 
     public function getTitle(): ?string
     {
@@ -118,15 +208,9 @@ class Voyage
         return $this;
     }
 
-    #[ORM\OneToMany(mappedBy: 'voyage', targetEntity: Mission::class, orphanRemoval: true)]
-    private Collection $missions;
     
-    public function __construct()
-    {
-        $this->missions = new ArrayCollection();
-        $this->flights = new ArrayCollection();
-    }
-
+    
+    
     /**
      * @return Collection<int, Mission>
      */
@@ -157,9 +241,7 @@ class Voyage
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "userId", referencedColumnName: "id", nullable: true)]
-    private ?User $user = null;
+    
         
     public function getUser(): ?User
     {
@@ -171,9 +253,12 @@ class Voyage
         $this->user = $user;
         return $this;
     }
+    
+    
+    
+    
 
-    #[ORM\Column(name: 'numeroVol', type: 'string', nullable: false)]
-    private ?string $numeroVol = null;
+
 
     public function getNumeroVol(): ?string
     {
@@ -187,8 +272,7 @@ class Voyage
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Flight::class, mappedBy: 'voyage')]
-    private Collection $flights;
+    
 
 
     /**
@@ -221,28 +305,12 @@ class Voyage
         return $this;
     }
 
-    public function getDateDepart(): ?\DateTimeInterface
-    {
-        return $this->date_depart;
-    }
+   
 
-    public function setDateDepart(\DateTimeInterface $date_depart): static
-    {
-        $this->date_depart = $date_depart;
-
-        return $this;
-    }
-
-    public function getDateRetour(): ?\DateTimeInterface
-    {
-        return $this->date_retour;
-    }
-
-    public function setDateRetour(\DateTimeInterface $date_retour): static
-    {
-        $this->date_retour = $date_retour;
-
-        return $this;
-    }
-
+    
+        
+    
+       
+       
+    
 }

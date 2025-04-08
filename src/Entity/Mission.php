@@ -17,6 +17,56 @@ class Mission
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $title = null;
+
+    
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $lieu = null;
+
+    
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $description = null;
+
+    
+
+    #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $dateDebut = null;
+    
+    #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $dateFin = null;
+
+    
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $type = null;
+
+    
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $duree = null;
+
+
+    #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
+    private ?int $voyageId = null;
+
+    #[ORM\Column(name:'userId', type: 'integer', nullable: true)]
+    private ?int $userId = null;
+
+
+    // Ajout de la relation avec Voyage
+    #[ORM\ManyToOne(targetEntity: Voyage::class, inversedBy: 'missions')]
+    #[ORM\JoinColumn(name: 'voyageId', referencedColumnName: 'id', nullable: false)]
+    private ?Voyage $voyage = null;
+
+    // Ajout de la relation avec User
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'userId', referencedColumnName: 'id', nullable: true)]
+    private ?User $user = null;
+
+    
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -27,9 +77,6 @@ class Mission
         $this->id = $id;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $title = null;
 
     public function getTitle(): ?string
     {
@@ -42,8 +89,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $lieu = null;
 
     public function getLieu(): ?string
     {
@@ -56,8 +101,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $description = null;
 
     public function getDescription(): ?string
     {
@@ -70,9 +113,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $dateDebut = null;
-
     public function getDateDebut(): ?\DateTimeInterface
     {
         return $this->dateDebut;
@@ -84,8 +124,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $dateFin = null;
 
     public function getDateFin(): ?\DateTimeInterface
     {
@@ -98,9 +136,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $type = null;
-
     public function getType(): ?string
     {
         return $this->type;
@@ -111,10 +146,6 @@ class Mission
         $this->type = $type;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $duree = null;
-
     public function getDuree(): ?string
     {
         return $this->duree;
@@ -125,9 +156,6 @@ class Mission
         $this->duree = $duree;
         return $this;
     }
-
-    #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
-    private ?int $voyageId = null;
 
     public function getVoyageId(): ?int
     {
@@ -140,9 +168,6 @@ class Mission
         return $this;
     }
 
-    #[ORM\Column(name:'userId', type: 'integer', nullable: true)]
-    private ?int $userId = null;
-
     public function getUserId(): ?int
     {
         return $this->userId;
@@ -153,12 +178,7 @@ class Mission
         $this->userId = $userId;
         return $this;
     }
-
-    // Ajout de la relation avec Voyage
-    #[ORM\ManyToOne(targetEntity: Voyage::class, inversedBy: 'missions')]
-    #[ORM\JoinColumn(name: 'voyageId', referencedColumnName: 'id', nullable: false)]
-    private ?Voyage $voyage = null;
-
+    
     public function getVoyage(): ?Voyage
     {
         return $this->voyage;
@@ -170,10 +190,6 @@ class Mission
         return $this;
     }
 
-    // Ajout de la relation avec User
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'userId', referencedColumnName: 'id', nullable: true)]
-    private ?User $user = null;
 
     public function getUser(): ?User
     {

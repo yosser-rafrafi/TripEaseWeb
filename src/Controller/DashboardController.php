@@ -43,4 +43,10 @@ class DashboardController extends BaseController
             ]
         ]);
     }
+
+    #[Route('/back/form/elements', name: 'back_form_elements')]
+    public function elements(): Response
+    {
+        return $this->render('back/form/elements.html.twig');
+    }
 }
