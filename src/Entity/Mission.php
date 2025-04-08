@@ -5,11 +5,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-<<<<<<< HEAD
-=======
 use Symfony\Component\Validator\Constraints as Assert;
 
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
 
 use App\Repository\MissionRepository;
 
@@ -22,39 +19,6 @@ class Mission
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-<<<<<<< HEAD
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $title = null;
-
-    
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $lieu = null;
-
-    
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $description = null;
-
-    
-
-    #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $dateDebut = null;
-    
-    #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $dateFin = null;
-
-    
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $type = null;
-
-    
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $duree = null;
-
-
-=======
     #[ORM\Column(type: 'string', nullable: true)]
     #[Assert\NotBlank(message: 'Le titre ne peut pas être vide.')]
     #[Assert\Length(max: 255, maxMessage: 'Le titre ne peut pas dépasser 255 caractères.')]
@@ -89,7 +53,6 @@ class Mission
 
 
 
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
     private ?int $voyageId = null;
 
@@ -137,32 +100,20 @@ class Mission
         return $this->lieu;
     }
 
-<<<<<<< HEAD
-    public function setLieu(string $lieu): self
-=======
  
     public function setLieu(?string $lieu): self
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {
         $this->lieu = $lieu;
         return $this;
     }
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-<<<<<<< HEAD
-    public function setDescription(string $description): self
-=======
     public function setDescription(?string $description): self
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {
         $this->description = $description;
         return $this;
@@ -196,11 +147,7 @@ class Mission
         return $this->type;
     }
 
-<<<<<<< HEAD
-    public function setType(string $type): self
-=======
     public function setType(?string $type): self
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {
         $this->type = $type;
         return $this;
@@ -210,11 +157,7 @@ class Mission
         return $this->duree;
     }
 
-<<<<<<< HEAD
-    public function setDuree(string $duree): self
-=======
     public function setDuree(?string $duree): self
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {
         $this->duree = $duree;
         return $this;
