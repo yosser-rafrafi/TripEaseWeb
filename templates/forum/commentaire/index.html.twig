@@ -1,0 +1,24 @@
+
+
+{% block body %}
+    {# templates/commentaire/index.html.twig #}
+{% for commentaire in commentaires %}
+  <div class="card mb-2 ms-5">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <p class="mb-1"><strong><!--{{ commentaire.user.nom }}--> tass </strong> — {{ commentaire.datePublication|date('Y-m-d H:i') }}</p>
+        <div class="btn-group">
+          <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+          <form action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" method="post" onsubmit="return confirm('Delete comment?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+            <button class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+      <p>{{ commentaire.contenu }}</p>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted ms-5">No comments yet.</p>
+{% endfor %}
+{% endblock %}

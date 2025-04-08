@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Flat Able - Premium Admin Template{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="">
+    <meta name="author" content="Phoenixcoded" />
+    
+    {# Favicon #}
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon">
+    
+    {# Stylesheets #}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    {% endblock %}
+</head>
+<body class="">
+    {# Pre-loader #}
+    {% block preloader %}
+        <div class="loader-bg">
+            <div class="loader-track">
+                <div class="loader-fill"></div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {# Navigation menu #}
+    {% block navigation %}
+        {% include 'back/partials/_navigation.html.twig' %}
+    {% endblock %}
+
+    {# Header #}
+    {% block header %}
+        {% include 'back/partials/_header.html.twig' %}
+    {% endblock %}
+
+      {# Main Content #}
+    <div class="pcoded-main-container">
+
+        {# Bloc principal de la page #}
+        {% block body %}{% endblock %}
+
+    </div>
+
+    {# JavaScript #}
+    {% block javascripts %}
+        <script src="{{ asset('assets/js/vendor-all.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pcoded.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/dashboard-main.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

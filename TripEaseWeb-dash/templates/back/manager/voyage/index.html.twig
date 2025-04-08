@@ -1,0 +1,49 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Voyage index{% endblock %}
+
+{% block body %}
+    <h1>Voyage index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Destination</th>
+                <th>Date_depart</th>
+                <th>Date_retour</th>
+                <th>Budget</th>
+                <th>Etat</th>
+                <th>Title</th>
+                <th>UserId</th>
+                <th>NumeroVol</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for voyage in voyages %}
+            <tr>
+                <td>{{ voyage.id }}</td>
+                <td>{{ voyage.destination }}</td>
+                <td>{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</td>
+                <td>{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</td>
+                <td>{{ voyage.budget }}</td>
+                <td>{{ voyage.etat }}</td>
+                <td>{{ voyage.title }}</td>
+                <td>{{ voyage.user ? voyage.user.id : '' }}</td>
+                <td>{{ voyage.numeroVol }}</td>
+                <td>
+                    <a href="{{ path('app_voyage_show', {'id': voyage.id}) }}">show</a>
+                    <a href="{{ path('app_voyage_edit', {'id': voyage.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_voyage_new') }}">Create new</a>
+{% endblock %}
