@@ -80,9 +80,45 @@
     <p>Aucune mission associée à ce voyage.</p>
 {% endif %}
 
+<<<<<<< HEAD
+=======
+
+{% if voyage.users|length > 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in voyage.users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun employe affecté à ce voyage.</p>
+{% endif %}
+
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     <a href="{{ path('app_voyage_index') }}">back to list</a>
 
     <a href="{{ path('app_voyage_edit', {'id': voyage.id}) }}">edit</a>
 
+<<<<<<< HEAD
+=======
+    <a href="{{ path('app_mission_new', { 'voyageId': voyage.id }) }}" class="btn btn-primary mb-3">
+        Ajouter une mission à ce voyage
+    </a>
+
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     {{ include('back/manager/voyage/_delete_form.html.twig') }}
 {% endblock %}

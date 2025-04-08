@@ -10206,7 +10206,11 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
+<<<<<<< HEAD
     "stability-flags": {},
+=======
+    "stability-flags": [],
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -10214,6 +10218,10 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
+<<<<<<< HEAD
     "platform-dev": {},
+=======
+    "platform-dev": [],
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     "plugin-api-version": "2.6.0"
 }

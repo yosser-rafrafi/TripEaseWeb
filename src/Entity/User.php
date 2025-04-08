@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+<<<<<<< HEAD
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,6 +13,16 @@ use App\Repository\UserRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
+=======
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\UserRepository;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,6 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+<<<<<<< HEAD
     #[ORM\ManyToMany(targetEntity: Voyage::class, mappedBy: 'users')]
     private Collection $voyages;
 
@@ -42,12 +54,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+=======
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $identifiant = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $role = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(name: 'numTel', length: 255, nullable: true)]
+    private ?string $numTel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $password = null;
+
+    #[ORM\Column(name: 'photoDeProfile', length: 255, nullable: true)]
+    private ?string $photoDeProfile = null;
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+<<<<<<< HEAD
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -57,6 +98,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $nom = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getNom(): ?string
     {
         return $this->nom;
@@ -68,9 +111,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $prenom = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getPrenom(): ?string
     {
         return $this->prenom;
@@ -82,9 +128,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $identifiant = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getIdentifiant(): ?string
     {
         return $this->identifiant;
@@ -96,9 +145,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $role = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getRole(): ?string
     {
         return $this->role;
@@ -110,9 +162,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getAdresse(): ?string
     {
         return $this->adresse;
@@ -124,9 +179,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getEmail(): ?string
     {
         return $this->email;
@@ -138,9 +196,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'numTel', length: 255, nullable: true)]
     private ?string $numTel = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getNumTel(): ?string
     {
         return $this->numTel;
@@ -152,9 +213,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $password = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getPassword(): ?string
     {
         return $this->password;
@@ -166,9 +230,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'photoDeProfile', length: 255, nullable: true)]
     private ?string $photoDeProfile = null;
 
+=======
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function getPhotoDeProfile(): ?string
     {
         return $this->photoDeProfile;
@@ -180,6 +247,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'user')]
     private Collection $commentaires;
 
@@ -213,6 +281,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+=======
+    public function getRoles(): array
+    {
+        return [$this->role];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     #[ORM\ManyToMany(targetEntity: Statut::class, inversedBy: 'users')]
     #[ORM\JoinTable(
         name: 'favorites',
@@ -257,6 +343,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+<<<<<<< HEAD
     public function getRoles(): array
     {
         // Ensure we always return an array
@@ -283,3 +370,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 }
+=======
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'user')]
+    private Collection $commentaires;
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): static
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getUser() === $this) {
+                $commentaire->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[ORM\ManyToMany(targetEntity: Voyage::class, mappedBy: 'users')]
+    private Collection $voyages;
+
+    public function getVoyages(): Collection
+    {
+        return $this->voyages;
+    }
+
+    public function addVoyage(Voyage $voyage): static
+    {
+        if (!$this->voyages->contains($voyage)) {
+            $this->voyages->add($voyage);
+        }
+
+        return $this;
+    }
+
+    public function removeVoyage(Voyage $voyage): static
+    {
+        $this->voyages->removeElement($voyage);
+
+        return $this;
+    }
+
+
+
+
+} 
+    
+
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed

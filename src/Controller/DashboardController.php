@@ -9,7 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends BaseController
 {
+<<<<<<< HEAD
     #[Route('/dashboard', name: 'dashboard')]
+=======
+    #[Route('/', name: 'dashboard')]
+>>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     public function index(): Response
     {
         return $this->render('back/dashboard/index.html.twig', [
