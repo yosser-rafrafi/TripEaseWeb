@@ -15,18 +15,11 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
-<<<<<<< HEAD
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  
-=======
    <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
   <!-- Vendor CSS Files -->
   <link href="{{ asset('libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -44,13 +37,9 @@
   <!-- Header -->
   <header id="header" class="header d-flex align-items-center light-background sticky-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
-<<<<<<< HEAD
-      <a href="{{ path('app_employee_home') }}" class="logo d-flex align-items-center me-auto me-xl-0">
-=======
 
       <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
         <h1 class="sitename">{% block sitename %}TripEase{% endblock %}</h1>
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
         <h1 class="sitename">TripEase</h1>
       </a>
 
@@ -58,19 +47,6 @@
         {% block nav %}
         <ul>
           
-<<<<<<< HEAD
-          <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
-          <li><a href="{{ path('app_travel_request') }}">Travel Requests</a></li>
-          <li><a href="{{ path('app_my_travels') }}">My Travels</a></li>
-          <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
-          <li class="dropdown">
-            <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="{{ path('app_user_settings') }}">Settings</a></li>
-              <li><a href="{{ path('app_logout') }}">Logout</a></li>
-            </ul>
-          </li>
-=======
           <li><a href="index.html" class="active">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="resume.html">Resume</a></li>
@@ -90,34 +66,24 @@
             </ul>
           </li>
           <li><a href="{{ path('dashboard') }}">dashboard</a></li>
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
         </ul>
         {% endblock %}
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
       <div class="header-social-links">
-<<<<<<< HEAD
-        <span class="text-muted">Welcome, {{ app.user.prenom }} {{ app.user.nom }}</span>
-      </div>
-=======
         <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
         <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
         <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
         <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
       </div>
 
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     </div>
   </header>
 
   <!-- Main Content -->
   <main class="main">
     {% block body %}
-<<<<<<< HEAD
-=======
-
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
     <!-- Hero Section -->
     <section id="hero" class="hero section">
       <img src="{{ asset('img/background.jpg') }}" alt="" data-aos="fade-in">
@@ -128,85 +94,6 @@
             <h2>{% block hero_title %}TripEase{% endblock %}</h2>
             <p>{% block hero_text %}I'm a professional illustrator from San Francisco{% endblock %}</p>
             <a href="about.html" class="btn-get-started">{% block hero_button %}sign up{% endblock %}</a>
-<<<<<<< HEAD
-            <h2>Welcome to TripEase</h2>
-            <p>Your complete travel management solution</p>
-            <a href="{{ path('app_travel_request') }}" class="btn-get-started">New Travel Request</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Actions Section -->
-    <section id="quick-actions" class="quick-actions section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-4 col-md-6" data-aos="fade-up">
-            <div class="card">
-              <div class="card-body text-center">
-                <i class="bi bi-airplane-fill display-4 text-primary mb-3"></i>
-                <h3>Travel Requests</h3>
-                <p>Submit and manage your travel requests</p>
-                <a href="{{ path('app_travel_request') }}" class="btn btn-primary">Manage Requests</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="card">
-              <div class="card-body text-center">
-                <i class="bi bi-wallet2 display-4 text-primary mb-3"></i>
-                <h3>Expenses</h3>
-                <p>Track and submit your travel expenses</p>
-                <a href="{{ path('app_expenses') }}" class="btn btn-primary">Manage Expenses</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="card">
-              <div class="card-body text-center">
-                <i class="bi bi-gear-fill display-4 text-primary mb-3"></i>
-                <h3>Settings</h3>
-                <p>Update your profile and preferences</p>
-                <a href="{{ path('app_user_settings') }}" class="btn btn-primary">Update Settings</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recent Activities Section -->
-    <section id="recent-activities" class="recent-activities section">
-      <div class="container">
-        <div class="section-title">
-          <h2>Recent Activities</h2>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Activity</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Recent activities will be populated here -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-=======
             <h2>TripEase</h2>
             <p>I'm a professional illustrator from San Francisco</p>
             <a href="about.html" class="btn-get-started">sign up</a>
@@ -217,7 +104,6 @@
     </section><!-- /Hero Section -->
     {% endblock %}
 
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
   </main>
 
   <!-- Footer -->
@@ -260,8 +146,4 @@
   <script src="{{ asset('js/main.js') }}"></script>
   {% endblock %}
 </body>
-<<<<<<< HEAD
-=======
-
->>>>>>> 09b8388c89382e4ec195998d936bfb04cb5d37ed
 </html>
