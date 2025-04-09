@@ -1,0 +1,21 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Nouvelle demande d'avance frais{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">Créer une nouvelle demande d'avance frais</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <!-- Inclure le formulaire dans une carte stylisée -->
+                {{ include('front/avance_frai/_form.html.twig') }}
+            </div>
+        </div>
+
+        <!-- Lien de retour à la liste des avances frais -->
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ path('app_avance_frai_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

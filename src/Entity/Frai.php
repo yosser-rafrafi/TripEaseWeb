@@ -29,19 +29,21 @@ class Frai
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $id_avance_frais = null;
+    #[ORM\ManyToOne(targetEntity: AvanceFrai::class)]
+    #[ORM\JoinColumn(name: "id_avance_frais", referencedColumnName: "id", nullable: false)]
+    private ?AvanceFrai $avanceFrai = null;
 
-    public function getId_avance_frais(): ?int
-    {
-        return $this->id_avance_frais;
-    }
+// Getter/Setter :
+public function getAvanceFrai(): ?AvanceFrai
+{
+    return $this->avanceFrai;
+}
 
-    public function setId_avance_frais(int $id_avance_frais): self
-    {
-        $this->id_avance_frais = $id_avance_frais;
-        return $this;
-    }
+public function setAvanceFrai(AvanceFrai $avanceFrai): self
+{
+    $this->avanceFrai = $avanceFrai;
+    return $this;
+}
 
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $employe_id = null;
@@ -100,18 +102,20 @@ class Frai
     }
 
     #[ORM\Column(type: 'blob', nullable: false)]
-    private ?string $pdf = null;
-
-    public function getPdf(): ?string
+    private $pdf; 
+    
+    
+    public function getPdf()
     {
         return $this->pdf;
     }
-
-    public function setPdf(string $pdf): self
+    
+    public function setPdf($pdf): self
     {
         $this->pdf = $pdf;
         return $this;
     }
+    
 
     public function getIdAvanceFrais(): ?int
     {
