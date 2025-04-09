@@ -14,22 +14,20 @@ class Reservationtransport
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    // Foreign Key to Employee (User)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_employe', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
     #[Assert\NotNull(message: "Employee is required.")]
     private ?User $employe = null;
 
-    // Foreign Key to Transport
     #[ORM\ManyToOne(targetEntity: Transport::class)]
     #[ORM\JoinColumn(name: 'id_transport', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
     #[Assert\NotNull(message: "Transport is required.")]
     private ?Transport $transport = null;
 
-    #[ORM\Column(type: 'datetime', nullable: false)]
-    #[Assert\NotNull(message: "Reservation date is required.")]
-    #[Assert\Type(\DateTimeInterface::class, message: "Invalid date format.")]
-    private ?\DateTimeInterface $date_reservation = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]  // Change nullable to true
+   #[Assert\Type(type: \DateTimeInterface::class, message: "Invalid date format.")]
+   private ?\DateTimeInterface $date_reservation = null;
+
 
     #[ORM\Column(type: 'string', length: 20, nullable: false)]
     #[Assert\NotBlank(message: "Reservation type is required.")]
@@ -42,7 +40,7 @@ class Reservationtransport
     private ?string $priorite_reservation = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(max: 255, message: "Notes cannot exceed 255 characters.")]
+    #[Assert\Length(max: 255, maxMessage: "Notes cannot exceed 255 characters.")]
     private ?string $notes_reservation = null;
 
     public function getId(): ?int

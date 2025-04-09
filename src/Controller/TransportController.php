@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/transport')]
+#[Route('/manager/transport')]
 final class TransportController extends AbstractController
 {
     // Index Route to show all transports
@@ -31,6 +31,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     $transport = new Transport();
     $form = $this->createForm(TransportType::class, $transport);
     $form->handleRequest($request);
+    $googleMapsApiKey = $this->getParameter('google_maps_api_key');
 
     if ($form->isSubmitted() && $form->isValid()) {
         // The form already binds latitude and longitude through form fields
@@ -42,6 +43,9 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 
     return $this->render('back/manager/transport/new.html.twig', [
         'form' => $form->createView(),
+        'google_maps_api_key' => $googleMapsApiKey,  // Pass API key to the template
+        'map_center' => '48.8566,2.3522',  // Default map center
+        'map_zoom' => 12,  // Default zoom level
     ]);
 }
 

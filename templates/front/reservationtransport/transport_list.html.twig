@@ -4,21 +4,6 @@
 
 {% block body %}
 <main class="main">
-    <section id="hero" class="hero section">
-        <img src="{{ asset('img/background.jpg') }}" alt="" data-aos="fade-in">
-
-        <div class="container text-center" data-aos="zoom-out" data-aos-delay="100">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <h2>{% block hero_title %}Available Transports{% endblock %}</h2>
-                    <p>{% block hero_text %}Choose a transport to book{% endblock %}</p>
-                    <a href="about.html" class="btn-get-started">{% block hero_button %}Sign up{% endblock %}</a>
-                </div>
-            </div>
-        </div>
-
-    </section><!-- /Hero Section -->
-
     <div class="container">
         <div class="page-title">
             <div class="title_left">
@@ -26,16 +11,15 @@
             </div>
         </div>
 
-        <div class="clearfix"></div>
+        <div class="clearfix my-3"></div>
 
         <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Available Transports</h2>
-                        <div class="clearfix"></div>
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0">Available Transports</h2>
                     </div>
-                    <div class="x_content">
+                    <div class="card-body">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -56,12 +40,12 @@
                                         <td>{{ transport.transportType }}</td>
                                         <td>{{ transport.transportPrix }} €</td>
                                         <td>
-                                            <a href="{{ path('app_reservationtransport_new', {'transport_id': transport.id}) }}" class="btn btn-primary">Book</a>
+                                            <a href="{{ path('app_reservationtransport_new', {'transport_id': transport.id}) }}" class="btn btn-primary btn-sm">Book</a>
                                         </td>
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center">No transports available.</td>
+                                        <td colspan="6" class="text-center text-muted">No transports available.</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -71,25 +55,7 @@
             </div>
         </div>
     </div>
-
 </main>
 {% endblock %}
 
-{% block footer %}
-  <footer id="footer" class="footer light-background">
-    <div class="container">
-      <div class="copyright text-center">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">Kelly</strong> <span>All Rights Reserved<br></span></p>
-      </div>
-      <div class="social-links d-flex justify-content-center">
-        <a href=""><i class="bi bi-twitter-x"></i></a>
-        <a href=""><i class="bi bi-facebook"></i></a>
-        <a href=""><i class="bi bi-instagram"></i></a>
-        <a href=""><i class="bi bi-linkedin"></i></a>
-      </div>
-      <div class="credits">
-        Designed by <a href="https://themewagon.com">ThemeWagon</a>
-      </div>
-    </div>
-  </footer>
-{% endblock %}
+{% block footer %}{% endblock %}

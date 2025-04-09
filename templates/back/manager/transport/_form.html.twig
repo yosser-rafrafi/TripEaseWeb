@@ -1,11 +1,60 @@
 {{ form_start(form) }}
-    {{ form_row(form.transport_name) }}
-    {{ form_row(form.transport_description) }}
-    {{ form_row(form.transport_location) }}
-    {{ form_row(form.transport_type) }}
-    {{ form_row(form.transport_disponibilite) }}
-    {{ form_row(form.transport_pays) }}
-    {{ form_row(form.transport_prix) }}
-    {{ form_row(form.latitude) }}
-    {{ form_row(form.longitude) }}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Transport Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                {{ form_label(form.transport_name, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_name, {'attr': {'class': 'form-control', 'placeholder': 'Enter Transport Name'}}) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.transport_description, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_description, {'attr': {'class': 'form-control', 'placeholder': 'Describe the transport'}}) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.transport_location, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_location, {'attr': {'class': 'form-control', 'placeholder': 'Enter Transport Location'}}) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.transport_type, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_type, {'attr': {'class': 'form-select'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.transport_disponibilite, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="form-check">
+                    {{ form_widget(form.transport_disponibilite, {'attr': {'class': 'form-check-input'}}) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.transport_pays, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control', 'placeholder': 'Enter Country'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.transport_prix, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control', 'placeholder': 'Enter Transport Price'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.latitude, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Enter Latitude'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.longitude, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Enter Longitude'}}) }}
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
+                <a href="{{ path('app_transport_index') }}" class="btn btn-danger">Cancel</a>
+            </div>
+        </div>
+    </div>
 {{ form_end(form) }}
