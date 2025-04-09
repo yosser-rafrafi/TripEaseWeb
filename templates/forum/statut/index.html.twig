@@ -1,4 +1,4 @@
-{% extends 'back/base.html.twig' %}
+{% extends base_template %}
 
 {% block body %}
 <section style="background-color: #eee;">
@@ -13,12 +13,14 @@
       {% endfor %}
     {% endfor %}
 
-    {# New Statut Button #}
-    <div class="mb-4 text-end">
+{% if is_employee %}
+      <div class="mb-4 text-end">
       <a href="{{ path('app_statut_new') }}" class="btn btn-success">
         <i class="fas fa-plus me-2"></i> New Statut
       </a>
     </div>
+
+{% endif %}
 
     <div class="row d-flex justify-content-center">
       <div class="col-md-12 col-lg-10 col-xl-8">
@@ -31,7 +33,7 @@
                   src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp"
                   alt="avatar" width="60" height="60" />
                 <div>
-                  <h6 class="fw-bold text-primary mb-1">tass</h6>
+                  <h6 class="fw-bold text-primary mb-1">{{ statut.user.prenom }}</h6>
                   <p class="text-muted small mb-0">
                     Shared publicly - {{ statut.dateCreation|date('Y-m-d') }}
                   </p>
