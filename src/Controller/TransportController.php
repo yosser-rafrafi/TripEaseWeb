@@ -23,32 +23,25 @@ final class TransportController extends AbstractController
         ]);
     }
 
-    // New Transport Route to create a new transport
- // New Transport Route to create a new transport
-#[Route('/new', name: 'app_transport_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $transport = new Transport();
-    $form = $this->createForm(TransportType::class, $transport);
-    $form->handleRequest($request);
-    $googleMapsApiKey = $this->getParameter('google_maps_api_key');
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // The form already binds latitude and longitude through form fields
-        $entityManager->persist($transport);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_transport_index', [], Response::HTTP_SEE_OTHER);
+    #[Route('/new', name: 'app_transport_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $transport = new Transport();
+        $form = $this->createForm(TransportType::class, $transport);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // The form already binds latitude and longitude through form fields
+            $entityManager->persist($transport);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_transport_index', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->render('back/manager/transport/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
-
-    return $this->render('back/manager/transport/new.html.twig', [
-        'form' => $form->createView(),
-        'google_maps_api_key' => $googleMapsApiKey,  // Pass API key to the template
-        'map_center' => '48.8566,2.3522',  // Default map center
-        'map_zoom' => 12,  // Default zoom level
-    ]);
-}
-
 
 
     // Show a single transport

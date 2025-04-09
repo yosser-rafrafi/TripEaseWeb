@@ -39,8 +39,6 @@
         "symfony/string": "6.4.*",
         "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
-        "symfony/ux-google-map": "^2.24",
-        "symfony/ux-map": "^2.24",
         "symfony/ux-turbo": "^2.24",
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
