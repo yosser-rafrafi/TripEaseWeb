@@ -29,5 +29,7 @@
     {{ form_widget(form.notes_reservation, {'attr': {'class': 'form-control'}}) }}
     {{ form_errors(form.notes_reservation) }}
 </div>
+ {# Add the cancel button here #}
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('app_reservationtransport_index') }}'">Cancel</button>
 
 {{ form_end(form) }}

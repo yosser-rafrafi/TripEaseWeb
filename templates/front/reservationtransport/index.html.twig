@@ -2,7 +2,7 @@
 
 {% block title %}Reservation List{% endblock %}
 
-{% block body %}
+{% block content %} {# Use 'content' block for main content #}
     <div class="container mt-4">
         <div class="page-title">
             <div class="title_left">
@@ -39,7 +39,7 @@
                                     <td>{{ reservationtransport.id }}</td>
                                     <td>
                                         {% if reservationtransport.employe %}
-                                            {{ reservationtransport.employe.name ?? 'N/A' }}  {# Replace 'name' with the appropriate property of Employe #}
+                                            {{ reservationtransport.employe.name ?? 'N/A' }}
                                         {% else %}
                                             Not assigned
                                         {% endif %}
@@ -79,3 +79,5 @@
         </div>
     </div>
 {% endblock %}
+
+{% block footer %}{% endblock %} 

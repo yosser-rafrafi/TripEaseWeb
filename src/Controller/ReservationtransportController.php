@@ -13,14 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route('employee/reservation')]
+#[Route('/employee/rservationtransport')]
 final class ReservationtransportController extends AbstractController
 {
-    #[Route('/',name: 'app_reservationtransport_index', methods: ['GET'])]
+    #[Route('/reservation',name: 'app_reservationtransport_index', methods: ['GET'])]
     public function index(ReservationtransportRepository $reservationtransportRepository): Response
     {
         return $this->render('front/reservationtransport/index.html.twig', [
             'reservationtransports' => $reservationtransportRepository->findAll(),
+        ]);
+    }
+    #[Route('/', name: 'app_transport_list', methods: ['GET'])]
+    public function transportList(EntityManagerInterface $entityManager): Response
+    {
+        // Get the list of all available transports
+        $transports = $entityManager->getRepository(Transport::class)->findAll();
+    
+        return $this->render('front/reservationtransport/transport_list.html.twig', [
+            'transports' => $transports, // Pass the list of transports to the template
         ]);
     }
 
@@ -106,14 +116,5 @@ final class ReservationtransportController extends AbstractController
         return $this->redirectToRoute('app_reservationtransport_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/transport', name: 'app_transport_list', methods: ['GET'])]
-    public function transportList(EntityManagerInterface $entityManager): Response
-    {
-        // Get the list of all available transports
-        $transports = $entityManager->getRepository(Transport::class)->findAll();
     
-        return $this->render('front/reservationtransport/transport_list.html.twig', [
-            'transports' => $transports, // Pass the list of transports to the template
-        ]);
-    }
 }

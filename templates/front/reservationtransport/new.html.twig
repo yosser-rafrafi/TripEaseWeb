@@ -1,8 +1,8 @@
-{% extends 'admin/bars.html.twig' %}
+{% extends 'front/employee_home/index.html.twig' %}
 
 {% block title %}New Reservation{% endblock %}
 
-{% block contenpage %}
+{% block content %} {# Use 'content' block for main content #}
     <div class="container mt-4">
         <div class="page-title">
             <div class="title_left">
@@ -20,14 +20,9 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        {{ include('reservationtransport/_form.html.twig') }}
+                        {{ include('front/reservationtransport/_form.html.twig') }}
                         <div class="ln_solid"></div>
-                        <div class="item form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <a class="btn btn-warning" href="{{ path('app_transport_list') }}">Cancel</a>
-                                <button type="submit" form="reservationtransport_form" class="btn btn-success">Save</button>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

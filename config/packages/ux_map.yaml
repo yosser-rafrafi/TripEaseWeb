@@ -1,0 +1,7 @@
+# config/packages/ux_map.yaml
+ux_map:
+    renderer: '%env(resolve:default::UX_MAP_DSN)%'
+    google_maps:
+        # define the default map id for all maps (https://developers.google.com/maps/documentation/get-map-id)
+        default_map_id: null
+    
