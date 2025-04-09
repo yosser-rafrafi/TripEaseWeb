@@ -42,7 +42,7 @@
         <ul>
           <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
           <li><a href="{{ path('app_travel_request') }}">Travel Requests</a></li>
-          <li><a href="{{ path('app_my_travels') }}">My Travels</a></li>
+          <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
           <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
           <li><a href="{{ path('app_transport_list') }}">Book Transport</a></li>
           <li class="dropdown">
@@ -74,7 +74,6 @@
           <div class="col-lg-8">
             <h2>Welcome to TripEase</h2>
             <p>Your complete travel management solution</p>
-            <a href="{{ path('app_travel_request') }}" class="btn-get-started">New Travel Request</a>
           </div>
         </div>
       </div>
@@ -119,37 +118,7 @@
       
     </section>
 
-    <!-- Recent Activities Section -->
-    <section id="recent-activities" class="recent-activities section">
-      <div class="container">
-        <div class="section-title">
-          <h2>Recent Activities</h2>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Activity</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Recent activities will be populated here -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    
     {% endblock %}
   </main>
 
