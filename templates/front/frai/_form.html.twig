@@ -1,0 +1,48 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row g-3">
+
+        {# Montant #}
+        <div class="col-md-6">
+            {{ form_label(form.montant, 'Montant du frais', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.montant) }}
+        </div>
+
+        {# Type de frais (ex: transport, repas, etc.) #}
+        <div class="col-md-6">
+            {{ form_label(form.type, 'Type de frais', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.type) }}
+        </div>
+
+        {# Date de la dépense #}
+        <div class="col-md-6">
+            {{ form_label(form.date_depense, 'Date de la dépense', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.date_depense, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.date_depense) }}
+        </div>
+
+        {# PDF justificatif (si présent dans le form) #}
+        {% if form.pdf is defined %}
+            <div class="col-md-6">
+                {{ form_label(form.pdf, 'Justificatif PDF', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.pdf, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.pdf) }}
+            </div>
+        {% endif %}
+
+        {# Avance associée #}
+        <div class="col-md-12">
+            {{ form_label(form.avanceFrai, 'Avance associée', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.avanceFrai, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.avanceFrai) }}
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+{{ form_end(form) }}

@@ -1,0 +1,42 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    <!-- Conteneur principal du formulaire -->
+    <div class="container py-4">
+        <h2 class="text-center mb-4">Créer une nouvelle demande</h2>
+
+        <!-- Formulaire de demande -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                
+                <!-- Parcourir chaque champ du formulaire -->
+                {% for field in form %}
+                    <div class="mb-3">
+                        <!-- Affichage du label -->
+                        <label for="{{ field.vars.id }}" class="form-label">{{ field.vars.label }}</label>
+                        
+                        <!-- Affichage du champ -->
+                        <div class="input-group">
+                            {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <!-- Affichage des erreurs -->
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="text-danger mt-2">
+                                {% for error in field.vars.errors %}
+                                    <p>{{ error.message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <!-- Bouton de soumission -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+                    <a href="{{ path('app_avance_frai_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{ form_end(form) }}
