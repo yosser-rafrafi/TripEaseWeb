@@ -13,10 +13,9 @@
   <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
+   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
   <!-- Vendor CSS Files -->
   <link href="{{ asset('libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -32,13 +31,11 @@
 </head>
 
 <body class="index-page">
-  {# Header #}
-  {% block header %}
-    <header id="header" class="header d-flex align-items-center light-background sticky-top">
-      <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
-        <a href="{{ path('app_employee_home') }}" class="logo d-flex align-items-center me-auto me-xl-0">
-          <h1 class="sitename">TripEase</h1>
-        </a>
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
+      <a href="{{ path('app_employee_home') }}" class="logo d-flex align-items-center me-auto me-xl-0">
+        <h1 class="sitename">TripEase</h1>
+      </a>
 
       <nav id="navmenu" class="navmenu">
         {% block nav %}
@@ -59,12 +56,11 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-        <div class="header-social-links">
-          <span class="text-muted">Welcome, {{ app.user.prenom }} {{ app.user.nom }}</span>
-        </div>
+      <div class="header-social-links">
+        <span class="text-muted">Welcome, {{ app.user.prenom }} {{ app.user.nom }}</span>
       </div>
-    </header>
-  {% endblock %}
+    </div>
+  </header>
 
   <main class="main">
     {% block body %}
@@ -72,16 +68,16 @@
     <section id="hero" class="hero section">
       <img src="{{ asset('img/background.jpg') }}" alt="" data-aos="fade-in">
 
-        <div class="container text-center" data-aos="zoom-out" data-aos-delay="100">
-          <div class="row justify-content-center">
-            <div class="col-lg-8">
-              <h2>Welcome to TripEase</h2>
-              <p>Your complete travel management solution</p>
-              <a href="{{ path('app_travel_request') }}" class="btn-get-started">New Travel Request</a>
-            </div>
+      <div class="container text-center" data-aos="zoom-out" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2>Welcome to TripEase</h2>
+            <p>Your complete travel management solution</p>
+            <a href="{{ path('app_travel_request') }}" class="btn-get-started">New Travel Request</a>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
     <!-- Quick Actions Section -->
     <section id="quick-actions" class="quick-actions section">
