@@ -1,4 +1,4 @@
-{% extends 'back/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}New Transport{% endblock %}
 
@@ -8,123 +8,69 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5>{% block LienPrecedent %}
-                <a href="{{ path('app_transport_index') }}" class="btn btn-outline-secondary">← Back to list</a>
-            {% endblock %}</h5>
-        </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <a href="{{ path('app_transport_index') }}" class="btn btn-outline-secondary">← Back to list</a>
+        </h5>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow-lg border-0 rounded-3">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h2 class="mb-0">Create New Transport</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="mb-0">Create New Transport</h2>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'class': 'form'}}) }}
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_name, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_name, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Name'}}) }}
                     </div>
-                    <div class="card-body p-4">
-                        {{ form_start(form, {'attr': {'class': 'form'}}) }}
 
-                        <div class="mb-4">
-                            {{ form_label(form.transport_name, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_name, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Name'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_description, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_description, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Describe the transport'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_location, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_location, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Location'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_type, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_type, {'attr': {'class': 'form-select custom-select'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_disponibilite, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            <div class="form-check">
-                                {{ form_widget(form.transport_disponibilite, {'attr': {'class': 'form-check-input custom-checkbox'}}) }}
-                                <label class="form-check-label">{{ form_label(form.transport_disponibilite) }}</label>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_pays, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Country'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.transport_prix, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Price'}}) }}
-                        </div>
-
-                        {# Add the map container here #}
-                        <div class="mb-4">
-                            <label class="form-label custom-label">Select Transport Location on the Map</label>
-                            <div id="map" style="width: 100%; height: 400px;"></div>
-                        </div>
-
-                        {# Hidden fields for latitude and longitude #}
-                        <div class="mb-4">
-                            {{ form_label(form.latitude, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Latitude'}}) }}
-                        </div>
-
-                        <div class="mb-4">
-                            {{ form_label(form.longitude, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
-                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Longitude'}}) }}
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
-                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success btn-lg custom-button'}}) }}
-                            <a href="{{ path('app_transport_index') }}" class="btn btn-danger btn-lg custom-button">Cancel</a>
-                        </div>
-
-                        {{ form_end(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.transport_description, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_description, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Describe the transport'}}) }}
                     </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_location, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_location, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Location'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_type, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_type, {'attr': {'class': 'form-select custom-select'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_disponibilite, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        <div class="form-check">
+                            {{ form_widget(form.transport_disponibilite, {'attr': {'class': 'form-check-input custom-checkbox'}}) }}
+                            <label class="form-check-label">{{ form_label(form.transport_disponibilite) }}</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_pays, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Country'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.transport_prix, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+                        {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Transport Price'}}) }}
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success btn-lg custom-button'}}) }}
+                        <a href="{{ path('app_transport_index') }}" class="btn btn-danger btn-lg custom-button">Cancel</a>
+                    </div>
+
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function initMap() {
-            const mapCenter = "{{ map_center }}".split(',');
-            const mapZoom = {{ map_zoom }};
-            
-            // Initialize the map with center and zoom level
-            const map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: parseFloat(mapCenter[0]), lng: parseFloat(mapCenter[1]) },
-                zoom: mapZoom,
-            });
-
-            const marker = new google.maps.Marker({
-                position: { lat: parseFloat(mapCenter[0]), lng: parseFloat(mapCenter[1]) },
-                map: map,
-                title: "Transport Location",
-            });
-
-            // Update latitude and longitude on map click
-            map.addListener('click', function(event) {
-                const lat = event.latLng.lat();
-                const lng = event.latLng.lng();
-
-                document.getElementById('transport_latitude').value = lat;
-                document.getElementById('transport_longitude').value = lng;
-
-                marker.setPosition(event.latLng);
-            });
-        }
-    </script>
-
-    <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&v=quarterly&libraries=places&language=en&region=US">
-</script>
-
-
-
+</div>
 {% endblock %}
