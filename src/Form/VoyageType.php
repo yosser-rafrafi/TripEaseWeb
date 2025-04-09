@@ -35,11 +35,7 @@ class VoyageType extends AbstractType
             ->add('title', null, [
                 'attr' => ['novalidate' => 'novalidate']
             ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-                'attr' => ['novalidate' => 'novalidate']
-            ])
+           
             ->add('numeroVol', null, [
                 'attr' => ['novalidate' => 'novalidate']
             ])

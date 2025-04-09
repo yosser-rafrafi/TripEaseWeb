@@ -10,19 +10,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
+
+
+
 
 #[Route('/voyage')]
 final class VoyageController extends AbstractController{
     #[Route(name: 'app_voyage_index', methods: ['GET'])]
     public function index(VoyageRepository $voyageRepository): Response
     {
-        return $this->render('/back/manager/voyage/index.html.twig', [
-            'voyages' => $voyageRepository->findAll(),
-        ]);
+            // Récupère l'utilisateur connecté
+            $user = $this->getUser();
+    
+            // Récupère uniquement les voyages de cet utilisateur
+            $voyages = $voyageRepository->findBy(['user' => $user]);
+    
+            return $this->render('back/manager/voyage/index.html.twig', [
+                'voyages' => $voyages,
+            ]);
+        
     }
 
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager , Security $security): Response
     {
         $voyage = new Voyage();
         $form = $this->createForm(VoyageType::class, $voyage);
@@ -31,6 +42,8 @@ final class VoyageController extends AbstractController{
         if ($form->isSubmitted() && $form->isValid()) {
             
 
+            $user = $security->getUser(); // Ou $this->getUser() si tu es dans un AbstractController
+            $voyage->setUser($user);
             $entityManager->persist($voyage);
             $entityManager->flush();
 
