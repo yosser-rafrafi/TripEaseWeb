@@ -18,13 +18,11 @@ class AvanceFrai
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[Assert\NotBlank(message: "L'employé est requis.")]
-    #[Assert\Positive(message: "L'identifiant de l'employé doit être positif.")]
+  
+
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $employe_id = null;
 
-    #[Assert\NotBlank(message: "Le voyage est requis.")]
-    #[Assert\Positive(message: "L'identifiant du voyage doit être positif.")]
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $voyage_id = 1;
 
@@ -47,20 +45,19 @@ class AvanceFrai
     #[ORM\Column(type: 'text', nullable: false)]
     private ?string $motif = null;
 
-    #[Assert\NotBlank(message: "Le type d'avance est requis.")]
-    #[Assert\Choice(choices: ['avance sur frais', 'avance exceptionnelle'], message: "Type d'avance invalide.")]
+ 
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $type_avance = null;
 
-    #[Assert\Choice(choices: ['en attente', 'validée', 'refusée'], message: "Statut invalide.")]
+   
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $statut = 'en attente';
 
-    #[Assert\NotNull(message: "La date de demande est requise.")]
+ 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $date_demande = null;
 
-    #[Assert\LessThanOrEqual('today', message: "La date de validation ne peut pas être dans le futur.")]
+  
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $date_validation = null;
 
