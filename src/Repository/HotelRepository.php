@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repository;
+use App\Entity\User;
 
 use App\Entity\Hotel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,4 +41,15 @@ class HotelRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+public function findByUser(User $user)
+{
+    return $this->createQueryBuilder('r')
+        ->andWhere('r.user = :user')
+        ->setParameter('user', $user)
+        ->orderBy('r.date_reservation', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
 }

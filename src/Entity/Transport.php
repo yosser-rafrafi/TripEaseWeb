@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TransportRepository;
 
@@ -16,33 +16,52 @@ class Transport
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le nom du transport est requis.')]
+    #[Assert\Length(min: 3, max: 100, minMessage: 'Le nom est trop court.', maxMessage: 'Le nom est trop long.')]
+    #[Assert\Regex(pattern: '/^[^0-9]*$/', message: 'Le nom ne doit pas contenir de chiffres.')]
     private ?string $transport_name = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La description est requise.')]
+    #[Assert\Length(min: 5, max: 255, minMessage: 'La description est trop courte.', maxMessage: 'La description est trop longue.')]
     private ?string $transport_description = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'L\'emplacement est requis.')]
     private ?string $transport_location = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le type de transport est requis.')]
+    #[Assert\Choice(choices: ['bus', 'car', 'bicycle', 'truck', 'train', 'boat', 'plane', 'taxi'], message: 'Type de transport invalide.')]
     private ?string $transport_type = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La disponibilité est requise.')]
+    #[Assert\Choice(choices: ['Disponible', 'Indisponible'], message: 'Disponibilité invalide.')]
     private ?string $transport_disponibilite = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le pays est requis.')]
+    #[Assert\Regex(pattern: '/^[^0-9]*$/', message: 'Le pays ne doit pas contenir de chiffres.')]
     private ?string $transport_pays = null;
 
     #[ORM\Column(type: 'float', nullable: false)]
+    #[Assert\NotBlank(message: 'Le prix est requis.')]
+    #[Assert\Type(type: 'float', message: 'Le prix doit être un nombre.')]
+    #[Assert\Positive(message: 'Le prix doit être un nombre positif.')]
     private ?float $transport_prix = null;
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
+    #[ORM\Column(type: 'decimal', nullable: true, precision: 8, scale: 6)]
+    #[Assert\Range(min: -90, max: 90, notInRangeMessage: 'La latitude doit être entre -90 et 90.')]
     private ?float $latitude = null;
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
+    #[ORM\Column(type: 'decimal', nullable: true, precision: 9, scale: 6)]
+    #[Assert\Range(min: -180, max: 180, notInRangeMessage: 'La longitude doit être entre -180 et 180.')]
     private ?float $longitude = null;
+   
 
-    // Getter and setter methods
+    // Getters and Setters
+
     public function getId(): ?int
     {
         return $this->id;

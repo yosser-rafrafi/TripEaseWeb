@@ -1,0 +1,28 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Modifier l'Hôtel{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <!-- Card principale pour la modification d'un hôtel -->
+            <div class="col-md-7">
+                <div class="card shadow-lg">
+                    <div class="card-header text-center">
+                        <h3><i class="fas fa-edit"></i> Modifier l'Hôtel</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Inclure le formulaire -->
+                        {{ include('back/manager/hotel/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                    </div>
+                    <div class="card-footer text-center">
+                        <!-- Boutons -->
+                        <a href="{{ path('app_hotel_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

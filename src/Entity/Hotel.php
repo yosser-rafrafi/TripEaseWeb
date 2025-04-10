@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\HotelRepository;
 
@@ -29,6 +30,8 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le nom de l'hôtel est requis.")]
+    #[Assert\Length(min: 3, max: 100, minMessage: "Le nom est trop court.", maxMessage: "Le nom est trop long.")]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -43,6 +46,7 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'adresse est requise.")]
     private ?string $adresse = null;
 
     public function getAdresse(): ?string
@@ -57,6 +61,8 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "La ville est requise.")]
+
     private ?string $ville = null;
 
     public function getVille(): ?string
@@ -71,6 +77,8 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le pays est requis.")]
+
     private ?string $pays = null;
 
     public function getPays(): ?string
@@ -85,6 +93,12 @@ class Hotel
     }
 
     #[ORM\Column(type: 'integer', nullable: false)]
+    #[Assert\NotNull(message: "Le nombre d'étoiles est requis.")]
+    #[Assert\Range(
+    min: 1,
+    max: 5,
+    notInRangeMessage: "Le nombre d'étoiles doit être entre {{ min }} et {{ max }}."
+)]
     private ?int $nombre_etoiles = null;
 
     public function getNombre_etoiles(): ?int
@@ -99,6 +113,11 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est requis.")]
+#[Assert\Regex(
+    pattern: "/^\+?[0-9\s\-]{8,20}$/",
+    message: "Le numéro de téléphone n'est pas valide."
+    )]
     private ?string $telephone = null;
 
     public function getTelephone(): ?string
@@ -113,6 +132,8 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'adresse email est requise.")]
+#[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
     public function getEmail(): ?string
@@ -137,6 +158,39 @@ class Hotel
     public function setSite_web(?string $site_web): self
     {
         $this->site_web = $site_web;
+        return $this;
+    }
+
+    #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'hotel')]
+    private Collection $chambres;
+
+    public function __construct()
+    {
+        $this->chambres = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection<int, Chambre>
+     */
+    public function getChambres(): Collection
+    {
+        if (!$this->chambres instanceof Collection) {
+            $this->chambres = new ArrayCollection();
+        }
+        return $this->chambres;
+    }
+
+    public function addChambre(Chambre $chambre): self
+    {
+        if (!$this->getChambres()->contains($chambre)) {
+            $this->getChambres()->add($chambre);
+        }
+        return $this;
+    }
+
+    public function removeChambre(Chambre $chambre): self
+    {
+        $this->getChambres()->removeElement($chambre);
         return $this;
     }
 

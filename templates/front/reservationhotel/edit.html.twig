@@ -1,0 +1,180 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Modifier la Réservation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: none;
+        }
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        .form-control, .form-select {
+            border-radius: 6px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .btn-outline-secondary {
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-edit me-2"></i>Modifier la Réservation
+                    </h1>
+                    <a href="{{ path('app_reservationhotel_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                </div>
+
+                <div class="card">
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                        
+                        <div class="row g-3">
+                            <!-- Section Dates -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.date_reservation, 'Date de réservation', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.date_reservation, {
+                                        'attr': {
+                                            'class': 'form-control datepicker',
+                                            'placeholder': 'JJ/MM/AAAA'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.statut, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.date_debut, 'Date d\'arrivée', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.date_debut, {
+                                        'attr': {
+                                            'class': 'form-control datepicker',
+                                            'placeholder': 'JJ/MM/AAAA'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.date_fin, 'Date de départ', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.date_fin, {
+                                        'attr': {
+                                            'class': 'form-control datepicker',
+                                            'placeholder': 'JJ/MM/AAAA'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <!-- Section Hébergement -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.hotel, 'Hôtel', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.hotel, {
+                                        'attr': {
+                                            'class': 'form-select',
+                                            'data-action': 'change->reservation#updateRooms'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.chambre, 'Chambre', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.chambre, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                    <small class="text-muted">Sélectionnez d'abord un hôtel</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="reset" class="btn btn-outline-danger">
+                                <i class="fas fa-eraser me-2"></i>Réinitialiser
+                            </button>
+                            <div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>{{ button_label|default('Enregistrer') }}
+                                </button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration des datepickers
+            flatpickr('.datepicker', {
+                locale: 'fr',
+                dateFormat: 'd/m/Y',
+                minDate: 'today'
+            });
+        });
+    </script>
+{% endblock %}
