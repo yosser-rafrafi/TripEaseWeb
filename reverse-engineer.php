@@ -4,10 +4,11 @@ require_once 'vendor/autoload.php';
 
 // Database configuration - MODIFY THESE VALUES
 $dbHost = 'localhost';
-$dbName = 'tripEase';
+$dbName = 'tripeasev2';
 $dbUser = 'root';
-$dbPass = '';
-$dbPort = 3307;
+$dbPass = 'hana';
+$dbPort = 3306;
+
 
 // Entity namespace and output directory
 $namespace = 'App\\Entity';

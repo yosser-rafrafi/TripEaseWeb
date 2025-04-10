@@ -1,0 +1,60 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+{{ form_errors(form) }} {# Ajout des erreurs globales #}
+
+<div class="mb-3">
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.adresse) }}
+    {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.adresse) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.ville) }}
+    {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.ville) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.pays) }}
+    {{ form_widget(form.pays, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.pays) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.nombre_etoiles) }}
+    {{ form_widget(form.nombre_etoiles, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.nombre_etoiles) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.telephone) }}
+    {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.telephone) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.email) }}
+    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.email) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.site_web) }}
+    {{ form_widget(form.site_web, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.site_web) }}
+</div>
+
+<!-- Bouton de soumission -->
+<div class="text-center mt-4">
+    <button type="submit" class="btn btn-success btn-sm px-2 py-1">
+        <i class="fas fa-save me-1"></i> {{ button_label|default('Enregistrer') }}
+    </button>
+</div>
+
+{{ form_end(form) }}

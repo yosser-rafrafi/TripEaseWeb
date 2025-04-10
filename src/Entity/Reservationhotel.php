@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\ReservationhotelRepository;
 
@@ -15,92 +16,153 @@ class Reservationhotel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: "id_reservation",type: 'integer')]
     private ?int $id_reservation = null;
+
+    #[ORM\ManyToOne(targetEntity: Hotel::class)]
+    #[ORM\JoinColumn(name: 'hotel_id', referencedColumnName: 'id', nullable: false)]
+
+    private ?Hotel $hotel = null;
+
+
+    #[ORM\ManyToOne(targetEntity: Chambre::class)]
+    #[ORM\JoinColumn(name: 'chambre_id', referencedColumnName: 'id_chambre', nullable: false)]
+    #[Assert\NotNull(message: "La chambre doit être sélectionnée")]
+    private ?Chambre $chambre = null;
+    
+ 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
+    private ?User $user = null;
+    
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $date_reservation = null;
+    
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La date de début est obligatoire")]
+    #[Assert\Date(message: "La date de début doit être une date valide")]
+    
+    private ?string $date_debut = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La date de fin est obligatoire")]
+    #[Assert\Date(message: "La date de fin doit être une date valide")]
+    #[Assert\Expression(
+        "this.getDateFin() >= this.getDateDebut()",
+        message: "La date de fin doit être postérieure à la date de début"
+        )]
+        private ?string $date_fin = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $statut = 'Réservé';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $qrcode = null;
 
     public function getId_reservation(): ?int
     {
         return $this->id_reservation;
     }
 
-    public function setId_reservation(int $id_reservation): self
+    public function getHotel(): ?Hotel
     {
-        $this->id_reservation = $id_reservation;
+        return $this->hotel;
+    }
+
+    public function setHotel(?Hotel $hotel): self
+    {
+        $this->hotel = $hotel;
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $hotel_id = null;
-
-    public function getHotel_id(): ?int
+    public function getChambre(): ?Chambre
     {
-        return $this->hotel_id;
+        return $this->chambre;
     }
 
-    public function setHotel_id(int $hotel_id): self
+    public function setChambre(?Chambre $chambre): self
     {
-        $this->hotel_id = $hotel_id;
+        $this->chambre = $chambre;
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $chambre_id = null;
-
-    public function getChambre_id(): ?int
+    public function getUser(): ?User
     {
-        return $this->chambre_id;
+        return $this->user;
     }
 
-    public function setChambre_id(int $chambre_id): self
+    public function setUser(?User $user): self
     {
-        $this->chambre_id = $chambre_id;
+        $this->user = $user;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $date_reservation = null;
+    public function getDateReservation(): ?\DateTime
+{
+    if ($this->date_reservation) {
+        // Tente de convertir la chaîne en DateTime
+        $date = \DateTime::createFromFormat('Y-m-d', $this->date_reservation);
 
-    public function getDate_reservation(): ?string
-    {
-        return $this->date_reservation;
+        // Vérifie si la conversion a réussi
+        if ($date !== false) {
+            return $date;
+        }
     }
+    // Retourne null si la chaîne est vide ou invalide
+    return null;
+}
 
-    public function setDate_reservation(?string $date_reservation): self
+    
+
+    public function setDateReservation(?\DateTime $date_reservation): self
     {
-        $this->date_reservation = $date_reservation;
+        $this->date_reservation = $date_reservation ? $date_reservation->format('Y-m-d') : null;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $date_debut = null;
-
-    public function getDate_debut(): ?string
+    public function getDateDebut(): ?\DateTime
     {
-        return $this->date_debut;
+        if ($this->date_debut) {
+            // Tente de convertir la chaîne en DateTime
+            $date = \DateTime::createFromFormat('Y-m-d', $this->date_debut);
+    
+            // Vérifie si la conversion a réussi
+            if ($date !== false) {
+                return $date;
+            }
+        }
+        // Retourne null si la chaîne est vide ou invalide
+        return null;
     }
+    
 
-    public function setDate_debut(?string $date_debut): self
+    public function setDateDebut(?\DateTime  $date_debut): self
     {
-        $this->date_debut = $date_debut;
+        $this->date_debut = $date_debut ? $date_debut->format('Y-m-d') : null ;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $date_fin = null;
-
-    public function getDate_fin(): ?string
+    public function getDateFin(): ?\DateTime
     {
-        return $this->date_fin;
+        if ($this->date_fin) {
+            // Tente de convertir la chaîne en DateTime
+            $date = \DateTime::createFromFormat('Y-m-d', $this->date_fin);
+    
+            // Vérifie si la conversion a réussi
+            if ($date !== false) {
+                return $date;
+            }
+        }
+        // Retourne null si la chaîne est vide ou invalide
+        return null;
+    
     }
 
-    public function setDate_fin(?string $date_fin): self
+    public function setDateFin(?\DateTime $date_fin): self
     {
-        $this->date_fin = $date_fin;
+        $this->date_fin = $date_fin? $date_fin->format('Y-m-d') : null ;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $statut = null;
 
     public function getStatut(): ?string
     {
@@ -113,23 +175,6 @@ class Reservationhotel
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $user_id = null;
-
-    public function getUser_id(): ?int
-    {
-        return $this->user_id;
-    }
-
-    public function setUser_id(?int $user_id): self
-    {
-        $this->user_id = $user_id;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $qrcode = null;
-
     public function getQrcode(): ?string
     {
         return $this->qrcode;
@@ -140,82 +185,4 @@ class Reservationhotel
         $this->qrcode = $qrcode;
         return $this;
     }
-
-    public function getIdReservation(): ?int
-    {
-        return $this->id_reservation;
-    }
-
-    public function getHotelId(): ?int
-    {
-        return $this->hotel_id;
-    }
-
-    public function setHotelId(int $hotel_id): static
-    {
-        $this->hotel_id = $hotel_id;
-
-        return $this;
-    }
-
-    public function getChambreId(): ?int
-    {
-        return $this->chambre_id;
-    }
-
-    public function setChambreId(int $chambre_id): static
-    {
-        $this->chambre_id = $chambre_id;
-
-        return $this;
-    }
-
-    public function getDateReservation(): ?string
-    {
-        return $this->date_reservation;
-    }
-
-    public function setDateReservation(?string $date_reservation): static
-    {
-        $this->date_reservation = $date_reservation;
-
-        return $this;
-    }
-
-    public function getDateDebut(): ?string
-    {
-        return $this->date_debut;
-    }
-
-    public function setDateDebut(?string $date_debut): static
-    {
-        $this->date_debut = $date_debut;
-
-        return $this;
-    }
-
-    public function getDateFin(): ?string
-    {
-        return $this->date_fin;
-    }
-
-    public function setDateFin(?string $date_fin): static
-    {
-        $this->date_fin = $date_fin;
-
-        return $this;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(?int $user_id): static
-    {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
 }
