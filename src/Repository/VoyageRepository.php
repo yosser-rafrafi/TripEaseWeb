@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Voyage;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,19 @@ class VoyageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Voyage::class);
     }
+
+    // src/Repository/VoyageRepository.php
+
+    public function findVoyagesByUser(User $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->innerJoin('v.users', 'u')
+            ->where('u = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
 
 //    /**
 //     * @return Voyage[] Returns an array of Voyage objects

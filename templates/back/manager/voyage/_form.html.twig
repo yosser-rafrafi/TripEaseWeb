@@ -1,4 +1,91 @@
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% block body %}
+<div class="pcoded-container">
+    <div class="pcoded-content">
+        {# Breadcrumb #}
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Form Voyage</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ path('dashboard') }}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form Components</a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form Voyage</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {# Form Content #}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Basic Elements</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.destination) }}
+                                    {{ form_widget(form.destination, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la destination'}}) }}
+                                    {{ form_errors(form.destination) }}
+
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.date_depart) }}
+                                    {{ form_widget(form.date_depart, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de départ'}}) }}
+                                    {{ form_errors(form.date_depart) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.date_retour) }}
+                                    {{ form_widget(form.date_retour, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de retour'}}) }}
+                                    {{ form_errors(form.date_retour) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.budget) }}
+                                    {{ form_widget(form.budget, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le budget'}}) }}
+                                    {{ form_errors(form.budget) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.etat) }}
+                                    {{ form_widget(form.etat, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.etat) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.title) }}
+                                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre'}}) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.numeroVol) }}
+                                    {{ form_widget(form.numeroVol, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le numéro de vol'}}) }}
+                                    {{ form_errors(form.numeroVol) }}
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.users) }}
+                                    {{ form_widget(form.users, {'attr': {'class': 'form-check-input'}}) }}
+                                    {{ form_errors(form.users) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        {{ form_end(form) }}
+
+                        <a href="{{ path('app_voyage_index') }}">back to list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

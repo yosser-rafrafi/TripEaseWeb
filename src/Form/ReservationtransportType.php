@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\Reservationtransport;
@@ -7,59 +8,61 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ReservationtransportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Transport selection
             ->add('transport', EntityType::class, [
                 'class' => Transport::class,
                 'choice_label' => 'transportName', // Customize this based on your Transport entity
                 'placeholder' => 'Choose a transport',
-                'constraints' => [new NotNull(['message' => 'Please select a transport.'])],
+                'required' => true,
+                'disabled' => true, // To disable the selection and keep the transport hidden
             ])
-            // Reservation Date (using DateType to show a calendar)
-            ->add('date_reservation', DateType::class, [
+            ->add('date_reservation', DateTimeType::class, [
                 'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Select a reservation date',
+                'required' => false,  // Make it optional
+                'empty_data' => null, // Allow null if no date is provided
+                'constraints' => [
+                    new Assert\Type([
+                        'type' => \DateTimeInterface::class,
+                        'message' => 'Le format de la date est invalide.',
+                    ]),
+                    new Assert\GreaterThan([
+                        'value' => 'today',
+                        'message' => 'La date de réservation doit être dans le futur.',
+                    ]),
                 ],
-                'constraints' => [new NotNull(['message' => 'Reservation date is required.'])],
             ])
-            // Type of reservation
+            
             ->add('type_reservation', TextType::class, [
-                'constraints' => [new NotNull(['message' => 'Reservation type is required.'])],
+                'required' => true,
             ])
-            // Priority selection
             ->add('priorite_reservation', ChoiceType::class, [
                 'choices' => [
                     'High' => 'High',
                     'Medium' => 'Medium',
                     'Low' => 'Low',
                 ],
-                'constraints' => [new NotNull(['message' => 'Reservation priority is required.'])],
+                'required' => true,
             ])
-            // Notes (optional)
             ->add('notes_reservation', TextareaType::class, [
-                'required' => false,
+                'required' => true,
                 'attr' => ['placeholder' => 'Add any notes for the reservation'],
-            ])
-            // Submit button
-            ->add('submit', SubmitType::class, [
-                'label' => 'Submit Reservation',
-                'attr' => ['class' => 'btn btn-primary'] // Add custom classes for styling
             ]);
     }
 
-    
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Reservationtransport::class,
+        ]);
+    }
 }

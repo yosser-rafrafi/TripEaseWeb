@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\Transport;
@@ -36,19 +37,25 @@ class TransportType extends AbstractType
                     'Car' => 'car',
                     'Bicycle' => 'bicycle',
                     'Truck' => 'truck',
+                    'Train' => 'train',
+                    'Boat' => 'boat',
+                    'Plane' => 'plane',
+                    'Taxi' => 'taxi',
+                    
                 ],
                 'required' => true,
             ])
             ->add('transport_disponibilite', ChoiceType::class, [
                 'label' => 'Availability',
                 'choices' => [
-                    'Available' => 'available',
-                    'Not Available' => 'not_available',
+                    'Disponible' => 'Disponible',
+                    'Indisponible' => 'Indisponible',
                 ],
-                'expanded' => true,  
-                'multiple' => false, 
+                'expanded' => true,
+                'multiple' => false,
                 'required' => true,
             ])
+            
             ->add('transport_pays', TextType::class, [
                 'label' => 'Country',
                 'required' => true,
@@ -65,10 +72,13 @@ class TransportType extends AbstractType
             ->add('longitude', NumberType::class, [
                 'label' => 'Longitude',
                 'required' => false,  
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Submit',
             ]);
+    }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Transport::class,
+        ]);
     }
 
     

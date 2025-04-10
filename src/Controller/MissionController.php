@@ -18,9 +18,8 @@ final class MissionController extends AbstractController{
     #[Route(name: 'app_mission_index', methods: ['GET'])]
     public function index(MissionRepository $missionRepository): Response
     {
-        return $this->render('back/manager/mission/index.html.twig', [
-            'missions' => $missionRepository->findAll(),
-        ]);
+        return $this->redirectToRoute('app_voyage_index');
+       
     }
 
 

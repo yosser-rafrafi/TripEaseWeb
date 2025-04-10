@@ -20,8 +20,7 @@
                     <table class="table table-striped table-bordered table-hover table-sm">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Employee</th>
+                                
                                 <th>Transport</th>
                                 <th>Date</th>
                                 <th>Type</th>
@@ -33,14 +32,7 @@
                         <tbody>
                         {% for reservationtransport in reservationtransports %}
                             <tr>
-                                <td>{{ reservationtransport.id }}</td>
-                                <td>
-                                    {% if reservationtransport.employe %}
-                                        {{ reservationtransport.employe.name ?? 'N/A' }}
-                                    {% else %}
-                                        <em>Not assigned</em>
-                                    {% endif %}
-                                </td>
+                            
                                 <td>
                                     {% if reservationtransport.transport %}
                                         {{ reservationtransport.transport.transportName }}

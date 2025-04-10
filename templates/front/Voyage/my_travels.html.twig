@@ -1,0 +1,64 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}My Travels - TripEase{% endblock %}
+{% block nav %}
+<ul>
+    <li><a href="{{ path('app_employee_home') }}" >Home</a></li>
+    <li><a href="{{ path('app_travel_request') }}">Travel Requests</a></li>
+    <li><a href="{{ path('app_my_travels') }}" class="active" >My Travels</a></li>
+    <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+    <li><a href="{{ path('app_transport_list') }}">Book Transport</a></li>
+    <li class="dropdown">
+      <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+      <ul>
+        <li><a href="{{ path('app_user_settings') }}">Settings</a></li>
+        <li><a href="{{ path('app_logout') }}">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+        {% endblock %}
+{% block body %}
+    <h1>Voyage index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Destination</th>
+                <th>Date_depart</th>
+                <th>Date_retour</th>
+                <th>Budget</th>
+                <th>Etat</th>
+                <th>Title</th>
+                <th>UserId</th>
+                <th>NumeroVol</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for voyage in voyages %}
+            <tr>
+                <td>{{ voyage.id }}</td>
+                <td>{{ voyage.destination }}</td>
+                <td>{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</td>
+                <td>{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</td>
+                <td>{{ voyage.budget }}</td>
+                <td>{{ voyage.etat }}</td>
+                <td>{{ voyage.title }}</td>
+                <td>{{ voyage.user ? voyage.user.id : '' }}</td>
+                <td>{{ voyage.numeroVol }}</td>
+                <td>
+                    <a href="{{ path('app_voyage_show_employee', {'id': voyage.id}) }}">show</a>
+                   
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

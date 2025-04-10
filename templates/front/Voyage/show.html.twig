@@ -1,0 +1,112 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Voyage{% endblock %}
+
+{% block body %}
+    <h1>Voyage</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ voyage.id }}</td>
+            </tr>
+            <tr>
+                <th>Destination</th>
+                <td>{{ voyage.destination }}</td>
+            </tr>
+            <tr>
+                <th>Date_depart</th>
+                <td>{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date_retour</th>
+                <td>{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Budget</th>
+                <td>{{ voyage.budget }}</td>
+            </tr>
+            <tr>
+                <th>Etat</th>
+                <td>{{ voyage.etat }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ voyage.title }}</td>
+            </tr>
+            <tr>
+                <th>UserId</th>
+                <td>{{ voyage.user ? voyage.user.id : '' }}</td>
+
+            </tr>
+            <tr>
+                <th>NumeroVol</th>
+                <td>{{ voyage.numeroVol }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Missions liées à ce voyage</h2>
+{% if voyage.missions|length > 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Lieu</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mission in voyage.missions %}
+            <tr>
+                <td>{{ mission.id }}</td>
+                <td>{{ mission.title }}</td>
+                <td>{{ mission.lieu }}</td>
+                <td>{{ mission.dateDebut ? mission.dateDebut|date('Y-m-d H:i') : '' }}</td>
+                <td>{{ mission.dateFin ? mission.dateFin|date('Y-m-d H:i') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_mission_show', {'id': mission.id}) }}">voir</a> |
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucune mission associée à ce voyage.</p>
+{% endif %}
+
+
+{% if voyage.users|length > 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in voyage.users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun employe affecté à ce voyage.</p>
+{% endif %}
+
+    <a href="{{ path('app_my_travels') }}">back to list</a>
+
+    
+
+{% endblock %}
