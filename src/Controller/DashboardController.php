@@ -13,6 +13,6 @@ class DashboardController extends BaseController
     public function index(): Response
     {
         // Redirige vers la page d'index des voyages (app_voyage_index)
-        return $this->redirectToRoute('app_voyage_index');
+        return $this->redirectToRoute('app_login');
     }
 }
