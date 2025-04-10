@@ -18,7 +18,7 @@ class AvanceFrai
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $employe_id = 4;  // Valeur par défaut 4
+    private ?int $employe_id = null;
 
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $voyage_id = 1;  // Valeur par défaut 1
@@ -70,6 +70,7 @@ class AvanceFrai
         return $this;
     }
 
+    // Getter et Setter pour $employe_id
     public function getEmployeId(): ?int
     {
         return $this->employe_id;

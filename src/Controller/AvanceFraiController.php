@@ -10,31 +10,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security; 
 
 #[Route('/avance/frais', name: 'app_avance_frai_')]
 class AvanceFraiController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(AvanceFraiRepository $avanceFraiRepository): Response
+    public function index(AvanceFraiRepository $avanceFraiRepository, Security $security): Response
     {
+        // Récupérer l'utilisateur connecté
+        $user = $security->getUser();
+    
+        // Récupérer l'ID de l'utilisateur connecté
+        $employe_id = $user->getId();
+    
+        // Filtrer les avances de frais pour cet utilisateur (par employe_id)
+        $avanceFrais = $avanceFraiRepository->findBy(['employe_id' => $employe_id]);
+    
         return $this->render('front/avance_frai/index.html.twig', [
-            'avance_frais' => $avanceFraiRepository->findAll(),
+            'avance_frais' => $avanceFrais,
         ]);
     }
+    
 
 
 
     
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, AvanceFraiRepository $avanceFraiRepository): Response
+    public function new(Request $request, AvanceFraiRepository $avanceFraiRepository, Security $security): Response
     {
-        $avanceFrai = new AvanceFrai(); // Les valeurs par défaut sont définies dans __construct
+        $avanceFrai = new AvanceFrai();
     
         $form = $this->createForm(AvanceFraiType::class, $avanceFrai);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            // ✅ Définir l'employé connecté AVANT de sauvegarder
+            $user = $security->getUser();
+           $avanceFrai->setEmployeId($user->getId());
+    
             $avanceFraiRepository->save($avanceFrai, true);
     
             return $this->redirectToRoute('app_avance_frai_index', [], Response::HTTP_SEE_OTHER);
