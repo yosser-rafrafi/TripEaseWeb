@@ -26,9 +26,9 @@
                         <td>{{ avance_frai.dateDemande ? avance_frai.dateDemande|date('Y-m-d') : '' }}</td>
                         <td>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle" id="actions-btn-{{ avance_frai.id }}">
-                                    Actions
-                                </button>
+                              <button type="button" class="btn btn-success dropdown-toggle" id="actions-btn-{{ avance_frai.id }}">
+    Actions
+</button>
                                 <div class="dropdown-menu" id="dropdown-menu-{{ avance_frai.id }}">
                                     <a class="dropdown-item" href="{{ path('app_avance_frai_show', {'id': avance_frai.id}) }}">Voir</a>
                                     <a class="dropdown-item" href="{{ path('app_avance_frai_edit', {'id': avance_frai.id}) }}">Modifier</a>

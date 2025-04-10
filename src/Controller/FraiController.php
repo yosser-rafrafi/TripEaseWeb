@@ -59,12 +59,12 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ava
 
     $frai = new Frai();
     
-    // Assigner l'ID de l'employé de l'AvanceFrai au Frai
-    $frai->setEmployeId($avanceFrai->getEmployeId());  // Utilisation de l'employe_id de l'AvanceFrai
+ 
+    $frai->setEmployeId($avanceFrai->getEmployeId());  
     
-    $frai->setAvanceFrai($avanceFrai);  // Lier le frais à l'avance de frais
+    $frai->setAvanceFrai($avanceFrai);  
 
-    // Créer le formulaire lié à l'entité Frai
+ 
     $form = $this->createForm(FraiType::class, $frai);
     $form->handleRequest($request);
 
@@ -78,12 +78,12 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ava
             $frai->setPdf($pdfContent); // Sauvegarder le contenu du PDF dans l'entité
         }
 
-        // Persister l'entité Frai dans la base de données
+       
         $entityManager->persist($frai);
         $entityManager->flush();
 
-        // Rediriger vers la page de détails de l'avance de frais après succès
-        return $this->redirectToRoute('app_avance_frai_show', ['id' => $avanceFrai->getId()]);
+    
+        return $this->redirectToRoute('app_avance_frai_index', ['id' => $avanceFrai->getId()]);
     }
 
     // Si le formulaire n'est pas soumis ou pas valide, afficher à nouveau le formulaire

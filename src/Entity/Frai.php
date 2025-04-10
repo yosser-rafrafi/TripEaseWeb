@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use App\Repository\FraiRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FraiRepository::class)]
 #[ORM\Table(name: 'frais')]
@@ -60,6 +61,8 @@ public function setAvanceFrai(AvanceFrai $avanceFrai): self
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le type de dépense est requis.")]
+    #[Assert\Length(max: 20, maxMessage: "Le type ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $type = null;
 
     public function getType(): ?string
@@ -74,6 +77,8 @@ public function setAvanceFrai(AvanceFrai $avanceFrai): self
     }
 
     #[ORM\Column(type: 'decimal', nullable: false)]
+    #[Assert\NotBlank(message: "Le montant est requis.")]
+    #[Assert\PositiveOrZero(message: "Le montant doit être supérieur ou égal à 0.")]
     private ?float $montant = null;
 
     public function getMontant(): ?float
@@ -88,6 +93,9 @@ public function setAvanceFrai(AvanceFrai $avanceFrai): self
     }
 
     #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date de dépense est requise.")]
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\LessThanOrEqual('today', message: "La date ne peut pas être dans le futur.")]
     private ?\DateTimeInterface $date_depense = null;
 
     public function getDate_depense(): ?\DateTimeInterface
