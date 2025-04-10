@@ -13,48 +13,47 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route('/employee/rservationtransport')]
+#[Route('/employee/reservationtransport')]
 final class ReservationtransportController extends AbstractController
 {
-    #[Route('/reservation',name: 'app_reservationtransport_index', methods: ['GET'])]
-    public function index(ReservationtransportRepository $reservationtransportRepository): Response
-    {
-        return $this->render('front/reservationtransport/index.html.twig', [
-            'reservationtransports' => $reservationtransportRepository->findAll(),
-        ]);
-    }
+    #[Route('/reservation', name: 'app_reservationtransport_index', methods: ['GET'])]
+public function index(ReservationtransportRepository $reservationtransportRepository): Response
+{
+    $user = $this->getUser(); 
+
+    
+    $reservations = $reservationtransportRepository->findBy(['employe' => $user]);
+
+    return $this->render('front/reservationtransport/index.html.twig', [
+        'reservationtransports' => $reservations,
+    ]);
+} 
     #[Route('/', name: 'app_transport_list', methods: ['GET'])]
     public function transportList(EntityManagerInterface $entityManager): Response
     {
-        // Get the list of all available transports
         $transports = $entityManager->getRepository(Transport::class)->findAll();
     
         return $this->render('front/reservationtransport/transport_list.html.twig', [
-            'transports' => $transports, // Pass the list of transports to the template
+            'transports' => $transports, 
         ]);
     }
 
     #[Route('/new/{transport_id}', name: 'app_reservationtransport_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, $transport_id): Response
     {
-        // Find the transport based on the ID passed in the route
         $transport = $entityManager->getRepository(Transport::class)->find($transport_id);
     
         if (!$transport) {
             throw $this->createNotFoundException('No transport found for id ' . $transport_id);
         }
     
-        // Create a new Reservationtransport entity
         $reservationtransport = new Reservationtransport();
-        $reservationtransport->setTransport($transport); // Pre-fill the transport field
+        $reservationtransport->setTransport($transport); 
     
-        // Get the current logged-in user
-        $user = $this->getUser(); // This retrieves the logged-in user
+        $user = $this->getUser();
     
-        // Check if $user is an instance of User
         if ($user instanceof User) {
-            $reservationtransport->setEmploye($user);  // Set the logged-in user
-        } else {
+            $reservationtransport->setEmploye($user); 
             throw $this->createAccessDeniedException('You must be logged in to make a reservation.'); // Set to null if no user is logged in
         }
     
