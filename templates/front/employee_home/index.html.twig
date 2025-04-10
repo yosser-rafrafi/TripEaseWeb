@@ -25,6 +25,8 @@
   <link href="{{ asset('libs/aos/aos.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
   <!-- Main CSS File -->
   {% block styles %}
@@ -47,6 +49,7 @@
           <li><a href="{{ path('app_travel_request') }}">Travel Requests</a></li>
 
           <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+          <li><a href="{{ path('app_travel_request') }}">Reserver Hotel</a></li>
           <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
 
           <li class="dropdown">
@@ -73,9 +76,12 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <div class="header-social-links">
       
-      </div>
+        <div class="header-social-links">
+          <span class="text-muted">Welcome, {{ app.user.prenom }} {{ app.user.nom }}</span>
+        </div>
+      
+      
     </div>
   </header>
 

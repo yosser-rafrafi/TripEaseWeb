@@ -47,6 +47,7 @@ class EmployeeHomeController extends AbstractController
     #[Route('/employee/expenses', name: 'app_expenses')]
     public function expenses(): Response
     {
-        return $this->render('front/employee_home/expenses.html.twig');
+        return $this->redirectToRoute('app_avance_frai_index');
+       // return $this->render('front/employee_home/expenses.html.twig');
     }
 }
