@@ -16,6 +16,24 @@ class AvanceFraiRepository extends ServiceEntityRepository
         parent::__construct($registry, AvanceFrai::class);
     }
 
+    public function save(AvanceFrai $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+    
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    
+    public function remove(AvanceFrai $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+    
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return AvanceFrai[] Returns an array of AvanceFrai objects
 //     */

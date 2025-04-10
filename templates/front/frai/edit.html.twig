@@ -1,0 +1,13 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Edit Frais{% endblock %}
+
+{% block body %}
+    <h1>Edit Frai</h1>
+
+    {{ include('front/frai/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_frai_index') }}">back to list</a>
+
+    {{ include('front/frai/_delete_form.html.twig') }}
+{% endblock %}

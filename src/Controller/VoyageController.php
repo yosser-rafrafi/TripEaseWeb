@@ -42,8 +42,10 @@ final class VoyageController extends AbstractController{
         if ($form->isSubmitted() && $form->isValid()) {
             
 
-            $user = $security->getUser(); // Ou $this->getUser() si tu es dans un AbstractController
+            $user = $security->getUser(); 
             $voyage->setUser($user);
+
+
             $entityManager->persist($voyage);
             $entityManager->flush();
 
