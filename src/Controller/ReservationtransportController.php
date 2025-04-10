@@ -16,11 +16,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[Route('/employee/rservationtransport')]
 final class ReservationtransportController extends AbstractController
 {
-    #[Route('/reservation',name: 'app_reservationtransport_index', methods: ['GET'])]
+    #[Route('/reservation', name: 'app_reservationtransport_index', methods: ['GET'])]
     public function index(ReservationtransportRepository $reservationtransportRepository): Response
     {
+        $user = $this->getUser(); 
+    
+        
+        $reservations = $reservationtransportRepository->findBy(['employe' => $user]);
+    
         return $this->render('front/reservationtransport/index.html.twig', [
-            'reservationtransports' => $reservationtransportRepository->findAll(),
+            'reservationtransports' => $reservations,
         ]);
     }
     #[Route('/', name: 'app_transport_list', methods: ['GET'])]

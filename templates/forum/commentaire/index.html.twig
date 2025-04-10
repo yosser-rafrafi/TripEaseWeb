@@ -1,24 +1,141 @@
+{# Import the macro file itself to make it available #}
+{% import _self as macros %}
+
+{# Macro to recursively display comments and their replies #}
+{% macro display_comment(comment, all_comments, level = 0) %}
+    {% from _self import display_comment %} {# Make macro available inside itself #}
+
+    {# Calculate indentation based on level (e.g., using margin) #}
+    {% set indentation = level * 30 %} {# Adjust 30px as needed #}
+
+    <div class="card mb-2" style="margin-left: {{ indentation }}px;">
+        <div class="card-body">
+            {# --- Display Section --- #}
+            <div id="comment-display-{{ comment.id }}">
+                <div class="d-flex justify-content-between">
+                    <p class="mb-1">
+                        <strong>{{ comment.user.prenom }} </strong>
+                        — <small class="text-muted">{{ comment.datePublication|date('Y-m-d H:i') }}</small>
+                        {# Indicate if it's a reply #}
+                        {# {% if comment.commentaireParentId %} (to {{ comment.parent.user.nom }}) {% endif %} #}
+                    </p>
+                    <div class="btn-group">
+                        {# Edit button calls JavaScript #}
+                        <button type="button" onclick="showEditForm({{ comment.id }})" class="btn btn-sm btn-warning">Edit</button>
+                        {# Delete form #}
+                        <form action="{{ path('app_commentaire_delete', {'id': comment.id}) }}" method="post" onsubmit="return confirm('Delete comment?');" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                        {# Add Reply button #}
+                        <button type="button" onclick="showReplyForm({{ comment.id }})" class="btn btn-sm btn-info">Reply</button>
+                    </div>
+                </div>
+                <p>{{ comment.contenu }}</p>
+            </div>
+
+            {# --- Edit Form Section (Initially Hidden) --- #}
+            <div id="comment-edit-form-{{ comment.id }}" style="display: none;">
+                <form action="{{ path('app_commentaire_edit', {'id': comment.id}) }}" method="post">
+                    {# Symfony forms handle CSRF automatically via CommentaireType #}
+                    <div class="mb-3">
+                        <label for="edit-contenu-{{ comment.id }}" class="form-label">Edit comment:</label>
+                        <textarea class="form-control" id="edit-contenu-{{ comment.id }}" name="commentaire[contenu]" rows="3">{{ comment.contenu }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    <button type="button" onclick="hideEditForm({{ comment.id }})" class="btn btn-sm btn-secondary">Cancel</button>
+                </form>
+            </div>
+
+             {# --- Reply Form Section (Optional, Initially Hidden) --- #}
+             {#
+             <div id="comment-reply-form-{{ comment.id }}" style="display: none; margin-top: 10px;">
+                 <form action="{{ path('app_commentaire_new', {'statutId': comment.statut.id, 'parentCommentId': comment.id }) }}" method="post">
+                     <input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ comment.statut.id) }}">
+                     <div class="form-outline w-100">
+                         <textarea name="contenu" class="form-control" rows="2" placeholder="Write a reply..."></textarea>
+                     </div>
+                     <div class="float-end mt-2 pt-1">
+                         <button type="submit" class="btn btn-primary btn-sm">Post Reply</button>
+                         <button type="button" onclick="hideReplyForm({{ comment.id }})" class="btn btn-outline-primary btn-sm">Cancel</button>
+                     </div>
+                 </form>
+             </div>
+             {# --- Reply Form Section (Initially Hidden) --- #}
+             <div id="comment-reply-form-{{ comment.id }}" style="display: none; margin-top: 10px;">
+                 {# Submit to the 'new' action, passing statutId in route and parentCommentId in hidden field #}
+                 <form action="{{ path('app_commentaire_new', {'statutId': comment.statut.id }) }}" method="post">
+                     {# CSRF token for adding comments #}
+                     <input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ comment.statut.id) }}">
+                     {# Hidden field for the parent comment ID #}
+                     <input type="hidden" name="parentCommentId" value="{{ comment.id }}">
+                     <div class="form-outline w-100 mb-2">
+                         <textarea name="contenu" class="form-control" rows="2" placeholder="Write a reply..." required></textarea>
+                     </div>
+                     <div class="text-end">
+                         <button type="submit" class="btn btn-primary btn-sm">Post Reply</button>
+                         <button type="button" onclick="hideReplyForm({{ comment.id }})" class="btn btn-outline-secondary btn-sm">Cancel</button>
+                     </div>
+                 </form>
+             </div>
+
+        </div> {# End card-body #}
+    </div> {# End card #}
+
+    {# Recursively display replies #}
+    {% for reply in all_comments %}
+        {% if reply.commentaireParentId == comment.id %}
+            {{ _self.display_comment(reply, all_comments, level + 1) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
 
 
+{# Block for JavaScript needed for inline editing/replying #}
+{% block javascripts %}
+    {# No parent() needed here as this template is included, not extended #}
+    <script>
+        function showEditForm(commentId) {
+            // Hide all other potentially open edit forms first (optional)
+            // document.querySelectorAll('[id^="comment-edit-form-"]').forEach(form => form.style.display = 'none');
+            // document.querySelectorAll('[id^="comment-display-"]').forEach(disp => disp.style.display = 'block');
+
+            document.getElementById('comment-display-' + commentId).style.display = 'none';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'block';
+        }
+
+        function hideEditForm(commentId) {
+            document.getElementById('comment-display-' + commentId).style.display = 'block';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'none';
+        }
+
+        // Functions for inline reply form
+        function showReplyForm(commentId) {
+             // Optionally hide other forms first
+            // document.querySelectorAll('[id^="comment-edit-form-"]').forEach(form => form.style.display = 'none');
+            // document.querySelectorAll('[id^="comment-display-"]').forEach(disp => disp.style.display = 'block');
+            // document.querySelectorAll('[id^="comment-reply-form-"]').forEach(form => form.style.display = 'none');
+
+            document.getElementById('comment-reply-form-' + commentId).style.display = 'block';
+        }
+
+        function hideReplyForm(commentId) {
+            document.getElementById('comment-reply-form-' + commentId).style.display = 'none';
+        }
+    </script>
+{% endblock %}
+
+
+{# Main body iterates only through top-level comments #}
 {% block body %}
-    {# templates/commentaire/index.html.twig #}
-{% for commentaire in commentaires %}
-  <div class="card mb-2 ms-5">
-    <div class="card-body">
-      <div class="d-flex justify-content-between">
-        <p class="mb-1"><strong><!--{{ commentaire.user.nom }}--> tass </strong> — {{ commentaire.datePublication|date('Y-m-d H:i') }}</p>
-        <div class="btn-group">
-          <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-          <form action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" method="post" onsubmit="return confirm('Delete comment?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
-            <button class="btn btn-sm btn-danger">Delete</button>
-          </form>
-        </div>
-      </div>
-      <p>{{ commentaire.contenu }}</p>
-    </div>
-  </div>
-{% else %}
-  <p class="text-muted ms-5">No comments yet.</p>
-{% endfor %}
+    {% if commentaires is defined and commentaires|length > 0 %}
+        {# Loop through top-level comments (those without a parent) #}
+        {% for commentaire in commentaires %}
+            {% if commentaire.commentaireParentId is null %}
+                {{ macros.display_comment(commentaire, commentaires) }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="text-muted ms-5">No comments yet.</p>
+    {% endif %}
 {% endblock %}

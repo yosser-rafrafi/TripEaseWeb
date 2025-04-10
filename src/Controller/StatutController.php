@@ -16,8 +16,15 @@ final class StatutController extends AbstractController{
     #[Route(name: 'app_statut_index', methods: ['GET'])]
     public function index(StatutRepository $statutRepository): Response
     {
-        return $this->render('/forum/statut/index.html.twig', [
+        $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_MANAGER');
+        $template = !$isAdmin 
+            ? 'front/employee_home/index.html.twig' 
+            : 'back/base.html.twig';
+        $isEmployee = !$isAdmin;
+        return $this->render("/forum/statut/index.html.twig", [
             'statuts' => $statutRepository->findAll(),
+            'base_template' => $template,
+            'is_employee' => $isEmployee
         ]);
     }
 
