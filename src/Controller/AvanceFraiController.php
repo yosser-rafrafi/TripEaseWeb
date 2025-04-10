@@ -46,7 +46,7 @@ class AvanceFraiController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // ✅ Définir l'employé connecté AVANT de sauvegarder
+            
             $user = $security->getUser();
            $avanceFrai->setEmployeId($user->getId());
     
