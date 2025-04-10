@@ -18,13 +18,6 @@
                 <div class="card-body">
                     {{ include('front/reservationtransport/_form.html.twig', {'button_label': 'Update'}) }}
                 </div>
-
-                <div class="card-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-warning" onclick="window.history.back();">Cancel</button>
-                    <button type="submit" form="reservationtransport_form" class="btn btn-primary">
-                        {{ button_label|default('Save') }}
-                    </button>
-                </div>
             </div>
         </div>
     </div>

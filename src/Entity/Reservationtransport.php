@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,35 +14,50 @@ class Reservationtransport
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
-
+    
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_employe', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
-    #[Assert\NotNull(message: "Employee is required.")]
+    #[Assert\NotNull(message: "L'employé est requis.")]
     private ?User $employe = null;
-
+    
     #[ORM\ManyToOne(targetEntity: Transport::class)]
     #[ORM\JoinColumn(name: 'id_transport', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
-    #[Assert\NotNull(message: "Transport is required.")]
+    #[Assert\NotNull(message: "Le transport est requis.")]
     private ?Transport $transport = null;
-
-    #[ORM\Column(type: 'datetime', nullable: true)]  // Change nullable to true
-   #[Assert\Type(type: \DateTimeInterface::class, message: "Invalid date format.")]
-   private ?\DateTimeInterface $date_reservation = null;
-
+    
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "Le format de la date est invalide.")]
+    #[Assert\GreaterThan("today", message: "La date de réservation doit être dans le futur.")]
+    private ?\DateTimeInterface $date_reservation = null;
+    
 
     #[ORM\Column(type: 'string', length: 20, nullable: false)]
-    #[Assert\NotBlank(message: "Reservation type is required.")]
-    #[Assert\Length(min: 3, max: 20)]
+    #[Assert\NotBlank(message: "Le type de réservation est requis.")]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: "Le type de réservation est trop court (min 3 caractères).",
+        maxMessage: "Le type de réservation est trop long (max 20 caractères)."
+    )]
     private ?string $type_reservation = null;
-
+    
     #[ORM\Column(type: 'string', length: 20, nullable: false)]
-    #[Assert\NotBlank(message: "Reservation priority is required.")]
-    #[Assert\Choice(choices: ['High', 'Medium', 'Low'], message: "Priority must be High, Medium, or Low.")]
+    #[Assert\NotBlank(message: "La priorité est requise.")]
+    #[Assert\Choice(
+        choices: ['High', 'Medium', 'Low'],
+        message: "La priorité doit être 'High', 'Medium' ou 'Low'."
+    )]
     private ?string $priorite_reservation = null;
-
+    
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(max: 255, maxMessage: "Notes cannot exceed 255 characters.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Les notes ne peuvent pas dépasser 255 caractères."
+    )]
     private ?string $notes_reservation = null;
+    
+
+    // Getters and Setters
 
     public function getId(): ?int
     {

@@ -1,35 +1,49 @@
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-<div class="mb-3">
-    {{ form_label(form.transport) }}
-    {{ form_widget(form.transport, {'attr': {'class': 'form-select'}}) }}
-    {{ form_errors(form.transport) }}
+<div class="mb-4">
+    <label class="form-label custom-label">Transport Selected</label>
+    <div class="form-control custom-input">
+        {{ transport_name }}
+    </div>
 </div>
 
-<div class="mb-3">
-    {{ form_label(form.date_reservation) }}
-    {{ form_widget(form.date_reservation, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.date_reservation) }}
+<div class="mb-4">
+    {{ form_label(form.date_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.date_reservation, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Select Reservation Date'}}) }}
+    <div class="invalid-feedback mt-2 d-block">
+        {{ form_errors(form.date_reservation) }}
+    </div>
 </div>
 
-<div class="mb-3">
-    {{ form_label(form.type_reservation) }}
-    {{ form_widget(form.type_reservation, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.type_reservation) }}
+<div class="mb-4">
+    {{ form_label(form.type_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.type_reservation, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Enter Reservation Type'}}) }}
+    <div class="invalid-feedback mt-2 d-block">
+        {{ form_errors(form.type_reservation) }}
+    </div>
 </div>
 
-<div class="mb-3">
-    {{ form_label(form.priorite_reservation) }}
-    {{ form_widget(form.priorite_reservation, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.priorite_reservation) }}
+<div class="mb-4">
+    {{ form_label(form.priorite_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.priorite_reservation, {'attr': {'class': 'form-select custom-select'}}) }}
+    <div class="invalid-feedback mt-2 d-block">
+        {{ form_errors(form.priorite_reservation) }}
+    </div>
 </div>
 
-<div class="mb-3">
-    {{ form_label(form.notes_reservation) }}
-    {{ form_widget(form.notes_reservation, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.notes_reservation) }}
+<div class="mb-4">
+    {{ form_label(form.notes_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.notes_reservation, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Additional Notes'}}) }}
+    <div class="invalid-feedback mt-2 d-block">
+        {{ form_errors(form.notes_reservation) }}
+    </div>
 </div>
- {# Add the cancel button here #}
-    <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('app_reservationtransport_index') }}'">Cancel</button>
+
+{{ form_rest(form) }}
+
+<div class="d-flex justify-content-between mt-4">
+    <button type="submit" class="btn btn-success btn-lg custom-button">Submit Reservation</button>
+    <a href="{{ path('app_reservationtransport_index') }}" class="btn btn-danger btn-lg custom-button">Cancel</a>
+</div>
 
 {{ form_end(form) }}

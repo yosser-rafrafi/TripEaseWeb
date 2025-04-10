@@ -31,17 +31,18 @@ final class TransportController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // The form already binds latitude and longitude through form fields
             $entityManager->persist($transport);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_transport_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Transport created successfully!');
+            return $this->redirectToRoute('app_transport_index');
         }
     
         return $this->render('back/manager/transport/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+    
 
 
     // Show a single transport
