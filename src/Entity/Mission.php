@@ -142,26 +142,45 @@ class Mission
         return $this;
     }
 
+    public function calculerDureeEtType(): void
+    {
+        if (!$this->dateDebut || !$this->dateFin) {
+            return;
+        }
+    
+        $interval = $this->dateDebut->diff($this->dateFin);
+        $heures = ($interval->days * 24) + $interval->h;
+    
+        if ($heures < 24) {
+            $this->type = 'Courte';
+            $this->duree = $heures . ' heures';
+        } else {
+            $this->type = 'Longue';
+            $this->duree = $interval->days . ' jours';
+        }
+    }
+
+
     public function getType(): ?string
     {
+        $this->calculerDureeEtType();
         return $this->type;
     }
 
-    public function setType(?string $type): self
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function onSave(): void
     {
-        $this->type = $type;
-        return $this;
+        $this->calculerDureeEtType();
     }
+
     public function getDuree(): ?string
     {
+        $this->calculerDureeEtType();
         return $this->duree;
     }
 
-    public function setDuree(?string $duree): self
-    {
-        $this->duree = $duree;
-        return $this;
-    }
+   
 
     public function getVoyageId(): ?int
     {
