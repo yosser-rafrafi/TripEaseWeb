@@ -84,7 +84,7 @@
         <div class="mission-title">Missions associées</div>
         {% if voyage.missions|length > 0 %}
             {% for mission in voyage.missions %}
-                <a class="mission-link" href="{{ path('app_mission_employee_show', {'id': mission.id}) }}">
+            <a class="mission-link" href="{{ path('app_mission_employee_show', {'id': mission.id}) }}">
                     📌 {{ mission.title }}
                 </a>
             {% endfor %}

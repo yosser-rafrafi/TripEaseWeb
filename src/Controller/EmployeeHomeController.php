@@ -53,11 +53,20 @@ class EmployeeHomeController extends AbstractController
        // return $this->render('front/employee_home/expenses.html.twig');
     }
 
-    #[Route('/{id}', name: 'app_mission_employee_show', methods: ['GET'])]
+    #[Route('/mission/show/{id}', name: 'app_mission_employee_show', methods: ['GET'])]
     public function showMission(Mission $mission): Response
     {
-        return $this->render('front/Voyage/missionDetails.html.twig', [
-            'mission' => $mission,
-        ]);
+        if (!$mission) {
+            throw $this->createNotFoundException('Mission non trouvée');
+        }
+        else
+        {
+            return $this->render('front/Voyage/missionDetails.html.twig', [
+                'mission' => $mission,
+            ]);
+        }
+       
     }
+
+   
 }

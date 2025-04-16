@@ -1,0 +1,38 @@
+{% extends 'back/base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📝 Traitement de l'avance : {{ avance.montantDemande }} {{ avance.devise }}</h4>
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'id': 'traitement-form'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.montant_accorde) }}  {{ avance.devise }}
+                    {{ form_widget(form.montant_accorde, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.montant_accorde) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.commentaire_manager) }}
+                    {{ form_widget(form.commentaire_manager, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                    {{ form_errors(form.commentaire_manager) }}
+                </div>
+
+                <button type="submit" class="btn btn-success" onclick="return confirmTraitement();">
+                    ✅ Confirmer le traitement
+                </button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmTraitement() {
+        return confirm("Êtes-vous sûr de vouloir confirmer le traitement de cette avance ?");
+    }
+</script>
+{% endblock %}
