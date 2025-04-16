@@ -19,7 +19,7 @@ class UserController extends AbstractController
     public function settings(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof User) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -40,5 +40,43 @@ class UserController extends AbstractController
         return $this->render('user/settings.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/admin/users', name: 'app_users_list')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function listUsers(EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer tous les utilisateurs pour le débogage
+        $allUsers = $entityManager->getRepository(User::class)->findAll();
+        
+        // Afficher les rôles de tous les utilisateurs pour le débogage
+        foreach ($allUsers as $user) {
+            dump($user->getEmail() . ' - Role: ' . $user->getRole());
+        }
+
+        // Récupérer les utilisateurs avec le rôle EMPLOYE
+        $users = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->where('u.role = :role')
+            ->setParameter('role', 'EMPLOYE')  // Changé de ROLE_EMPLOYE à EMPLOYE
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('back/users/list.html.twig', [
+            'users' => $users
+        ]);
+    }
+
+    #[Route('/admin/users/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'User deleted successfully.');
+        }
+
+        return $this->redirectToRoute('app_users_list');
     }
 } 

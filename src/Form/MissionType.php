@@ -25,9 +25,8 @@ class MissionType extends AbstractType
             ->add('dateFin', null, [
                 'widget' => 'single_text'
             ])
-            ->add('type')
-            ->add('duree')
-            ->add('userId')
+            
+            
         ;
     }
 
