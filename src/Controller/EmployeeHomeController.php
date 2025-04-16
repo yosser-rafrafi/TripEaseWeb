@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\VoyageRepository;
 use App\Entity\Voyage;
+use App\Entity\Mission;
+use App\Controller\MissionController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EmployeeHomeController extends AbstractController
@@ -49,5 +51,13 @@ class EmployeeHomeController extends AbstractController
     {
         return $this->redirectToRoute('app_avance_frai_index');
        // return $this->render('front/employee_home/expenses.html.twig');
+    }
+
+    #[Route('/{id}', name: 'app_mission_employee_show', methods: ['GET'])]
+    public function showMission(Mission $mission): Response
+    {
+        return $this->render('front/Voyage/missionDetails.html.twig', [
+            'mission' => $mission,
+        ]);
     }
 }

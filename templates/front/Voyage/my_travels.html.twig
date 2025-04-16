@@ -17,48 +17,25 @@
           </li>
         </ul>
         {% endblock %}
+
 {% block body %}
-    <h1>Voyage index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Destination</th>
-                <th>Date_depart</th>
-                <th>Date_retour</th>
-                <th>Budget</th>
-                <th>Etat</th>
-                <th>Title</th>
-                <th>UserId</th>
-                <th>NumeroVol</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<section class="container py-5">
+    <h1 class="mb-4 text-center">Mes Voyages</h1>
+    <div class="voyage-cards">
         {% for voyage in voyages %}
-            <tr>
-                <td>{{ voyage.id }}</td>
-                <td>{{ voyage.destination }}</td>
-                <td>{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</td>
-                <td>{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</td>
-                <td>{{ voyage.budget }}</td>
-                <td>{{ voyage.etat }}</td>
-                <td>{{ voyage.title }}</td>
-                <td>{{ voyage.user ? voyage.user.id : '' }}</td>
-                <td>{{ voyage.numeroVol }}</td>
-                <td>
-                    <a href="{{ path('app_voyage_show_employee', {'id': voyage.id}) }}">show</a>
-                   
-                </td>
-            </tr>
+            
+            <div class="voyage-card" onclick="location.href='{{ path('app_voyage_show_employee', {'id': voyage.id}) }}'">
+                <h3 class="voyage-title">✈ {{ voyage.title }}</h3>
+                <p class="voyage-date">📅 Début : {{ voyage.dateDepart ? voyage.dateDepart|date('d M Y') : 'Non défini' }}</p>
+                <p class="voyage-date">📅 Fin : {{ voyage.dateRetour ? voyage.dateRetour|date('d M Y') : 'Non défini' }}</p>
+                <p class="voyage-etat">📌 État : {{ voyage.etat }}</p>
+                <a href="{{ path('app_voyage_show_employee', {'id': voyage.id}) }}" class="btn-details">Voir Détails</a>
+            </div>
+            
         {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
+            <p>Aucun voyage trouvé.</p>
         {% endfor %}
-        </tbody>
-    </table>
-
+    </div>
+</section>
 
 {% endblock %}

@@ -29,35 +29,46 @@ class Mission
     private ?string $lieu = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'La description est requise.')]
     private ?string $description = null;
+
+    
+
+    // dat de debut mission
 
     #[ORM\Column(name:'dateDebut', type: 'datetime', nullable: true)]
     #[Assert\NotNull(message: 'La date de début est obligatoire.')]
+    #[Assert\Expression(
+        "this.getDateDebut() >= this.getVoyage().getDateDepart()",
+        message: "La date de début doit être après ou égale à la date de départ du voyage")]
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $dateDebut = null;
 
+
+
+    // date Fin mission
+
     #[ORM\Column(name:'dateFin', type: 'datetime', nullable: true)]
     #[Assert\NotNull(message: 'La date de fin est obligatoire.')]
-    #[Assert\Type(\DateTimeInterface::class)]
-    
+    #[Assert\Expression(
+        "this.getDateFin() <= this.getVoyage().getDateRetour()",
+        message: "La date de fin doit être avant ou égale à la date de retour du voyage")]
+    #[Assert\Expression(
+        "this.getDateDebut() <= this.getDateFin()",
+        message: "La date de début doit être avant la date de fin")]
+    #[Assert\Type(\DateTimeInterface::class)] 
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'Le type de mission est requis.')]
+
+
+    //type
+
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $type = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'La durée est requise.')]
+    // duree
+
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $duree = null;
-
-
-
-    #[ORM\Column(name:'voyageId', type: 'integer', nullable: false)]
-    private ?int $voyageId = null;
-
-    #[ORM\Column(name:'userId', type: 'integer', nullable: true)]
-    private ?int $userId = null;
 
 
     // Ajout de la relation avec Voyage
@@ -75,11 +86,13 @@ class Mission
     public function getId(): ?int
     {
         return $this->id;
+        
     }
 
     public function setId(int $id): self
     {
         $this->id = $id;
+        $this->calculerDureeEtType();
         return $this;
     }
 
@@ -167,6 +180,9 @@ class Mission
         return $this->type;
     }
 
+   
+     
+
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function onSave(): void
@@ -180,29 +196,8 @@ class Mission
         return $this->duree;
     }
 
-   
 
-    public function getVoyageId(): ?int
-    {
-        return $this->voyageId;
-    }
 
-    public function setVoyageId(int $voyageId): self
-    {
-        $this->voyageId = $voyageId;
-        return $this;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(?int $userId): self
-    {
-        $this->userId = $userId;
-        return $this;
-    }
     
     public function getVoyage(): ?Voyage
     {
