@@ -42,17 +42,22 @@
       <nav id="navmenu" class="navmenu">
         {% block nav %}
         <ul>
-          <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
-          <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+           <li><a href="{{ path('app_employee_home') }}" 
+           class="{{ app.request.attributes.get('_route') == 'app_employee_home' ? 'active' : '' }}">Accueil</a></li>
+          <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li> 
           <li><a href="{{ path('app_travel_request') }}">Reserver Hotel</a></li>
           <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
-          <li><a href="{{ path('app_transport_list') }}">Book Transport</a></li>
+          <li><a href="{{ path('app_transport_list') }}" 
+          class="{{ app.request.attributes.get('_route') starts with 'app_transport' or
+           app.request.attributes.get('_route') starts with 
+           'app_reservationtransport' ? 'active' : '' }}">Réserver Transport</a></li>
+
           <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
           <li class="dropdown">
-            <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              <li><a href="{{ path('app_user_settings') }}">Settings</a></li>
-              <li><a href="{{ path('app_logout') }}">Logout</a></li>
+              <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+              <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
             </ul>
           </li>
         </ul>

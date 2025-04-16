@@ -32,12 +32,10 @@ class Transport
 
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Le type de transport est requis.')]
-    #[Assert\Choice(choices: ['bus', 'car', 'bicycle', 'truck', 'train', 'boat', 'plane', 'taxi'], message: 'Type de transport invalide.')]
-    private ?string $transport_type = null;
+      private ?string $transport_type = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'La disponibilité est requise.')]
-    #[Assert\Choice(choices: ['Disponible', 'Indisponible'], message: 'Disponibilité invalide.')]
+
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $transport_disponibilite = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
@@ -58,6 +56,10 @@ class Transport
     #[ORM\Column(type: 'decimal', nullable: true, precision: 9, scale: 6)]
     #[Assert\Range(min: -180, max: 180, notInRangeMessage: 'La longitude doit être entre -180 et 180.')]
     private ?float $longitude = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: 'L\'agence est requise.')]
+     private ?string $transport_agence = null;
    
 
     // Getters and Setters
@@ -171,4 +173,17 @@ class Transport
         $this->longitude = $longitude;
         return $this;
     }
+    // Getters and Setters for transport_agence
+
+public function getTransportAgence(): ?string
+{
+    return $this->transport_agence;
+}
+
+public function setTransportAgence(?string $transport_agence): self
+{
+    $this->transport_agence = $transport_agence;
+    return $this;
+}
+
 }
