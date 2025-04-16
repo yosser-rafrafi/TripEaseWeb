@@ -1,14 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User Settings - TripEase{% endblock %}
+{% block title %}Paramètres utilisateur - TripEase{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1535916707207-35f97e715e2c?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .settings-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .card-header h3 {
+            color: #007B8A;
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007B8A;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #005f6a;
+        }
+
+        .card-footer {
+            background-color: transparent;
+            font-size: 14px;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">User Settings</h3>
+            <div class="settings-card">
+                <div class="card-header text-center">
+                    <h3>Paramètres</h3>
+                    <p>Mettez à jour vos informations personnelles</p>
                 </div>
                 <div class="card-body">
                     {% for message in app.flashes('success') %}
@@ -19,43 +78,50 @@
 
                     {% if form is defined %}
                         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
                             <div class="mb-3">
-                                {{ form_label(form.nom, 'Last Name', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.nom) }}
                             </div>
+
                             <div class="mb-3">
-                                {{ form_label(form.prenom, 'First Name', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.prenom) }}
                             </div>
+
                             <div class="mb-3">
                                 {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.email) }}
                             </div>
+
                             <div class="mb-3">
-                                {{ form_label(form.numTel, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_label(form.numTel, 'Numéro de téléphone', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.numTel, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.numTel) }}
                             </div>
+
                             <div class="mb-3">
-                                {{ form_label(form.adresse, 'Address', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_label(form.adresse, 'Adresse', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.adresse) }}
                             </div>
+
                             <div class="mb-3">
-                                {{ form_label(form.plainPassword, 'New Password', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Leave blank to keep current password'}}) }}
+                                {{ form_label(form.plainPassword, 'Nouveau mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Laissez vide pour garder le mot de passe actuel'}}) }}
                                 {{ form_errors(form.plainPassword) }}
                             </div>
+
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                             </div>
                         {{ form_end(form) }}
                     {% else %}
                         <div class="alert alert-danger">
-                            Form is not defined. Please check the controller configuration.
+                            Le formulaire n'est pas défini. Veuillez vérifier la configuration du contrôleur.
                         </div>
                     {% endif %}
                 </div>
@@ -63,4 +129,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

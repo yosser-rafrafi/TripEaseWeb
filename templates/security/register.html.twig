@@ -1,74 +1,159 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte - TripEase{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+        }
+        .register-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            animation: fadeSlide 1s ease;
+        }
+        .card-header h3 {
+            color: #007B8A;
+            font-weight: bold;
+            font-size: 28px;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background-color: #007B8A;
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #005f6a;
+        }
+        .card-footer {
+            background-color: transparent;
+            font-size: 14px;
+        }
+        .show-password {
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            color: #007B8A;
+        }
+        .position-relative {
+            position: relative;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Register</h3>
+            <div class="register-card">
+                <div class="card-header text-center">
+                    <h3>Bienvenue chez TripEase 🌍</h3>
+                    <p>Créez votre compte pour commencer votre aventure ✈️</p>
                 </div>
                 <div class="card-body">
                     {{ form_start(registrationForm) }}
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    {{ form_label(registrationForm.nom) }}
-                                    {{ form_widget(registrationForm.nom) }}
-                                    {{ form_errors(registrationForm.nom) }}
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(registrationForm.nom, 'Nom') }}
+                                {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.nom) }}
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    {{ form_label(registrationForm.prenom) }}
-                                    {{ form_widget(registrationForm.prenom) }}
-                                    {{ form_errors(registrationForm.prenom) }}
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(registrationForm.prenom, 'Prénom') }}
+                                {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.prenom) }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(registrationForm.email) }}
-                            {{ form_widget(registrationForm.email) }}
+                            {{ form_label(registrationForm.email, 'Adresse e-mail') }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
                             {{ form_errors(registrationForm.email) }}
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(registrationForm.numTel) }}
-                            {{ form_widget(registrationForm.numTel) }}
+                            {{ form_label(registrationForm.numTel, 'Téléphone') }}
+                            {{ form_widget(registrationForm.numTel, {'attr': {'class': 'form-control'}}) }}
                             {{ form_errors(registrationForm.numTel) }}
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(registrationForm.adresse) }}
-                            {{ form_widget(registrationForm.adresse) }}
+                            {{ form_label(registrationForm.adresse, 'Adresse') }}
+                            {{ form_widget(registrationForm.adresse, {'attr': {'class': 'form-control'}}) }}
                             {{ form_errors(registrationForm.adresse) }}
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(registrationForm.role) }}
-                            {{ form_widget(registrationForm.role) }}
+                            {{ form_label(registrationForm.role, 'Rôle souhaité') }}
+                            {{ form_widget(registrationForm.role, {'attr': {'class': 'form-control'}}) }}
                             {{ form_errors(registrationForm.role) }}
                         </div>
 
-                        <div class="mb-3">
-                            {{ form_label(registrationForm.plainPassword) }}
-                            {{ form_widget(registrationForm.plainPassword) }}
-                            {{ form_errors(registrationForm.plainPassword) }}
+                        <div class="mb-3 position-relative">
+                            {{ form_label(registrationForm.plainPassword.first, 'Mot de passe') }}
+                            {{ form_widget(registrationForm.plainPassword.first, {
+                                'attr': {'class': 'form-control', 'id': 'plainPassword'}
+                            }) }}
+                            <span class="show-password" onclick="togglePassword('plainPassword')">👁️</span>
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                        </div>
+
+                        <div class="mb-3 position-relative">
+                            {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe') }}
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                'attr': {'class': 'form-control', 'id': 'confirmPassword'}
+                            }) }}
+                            <span class="show-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                            {{ form_errors(registrationForm.plainPassword.second) }}
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Register</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Créer mon compte ✨</button>
                         </div>
                     {{ form_end(registrationForm) }}
                 </div>
                 <div class="card-footer text-center">
-                    <p class="mb-0">Already have an account? <a href="{{ path('app_login') }}">Login here</a></p>
+                    <p class="mb-0">Déjà membre ? <a href="{{ path('app_login') }}">Se connecter</a></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input) {
+                input.type = (input.type === 'password') ? 'text' : 'password';
+            }
+        }
+
+        // Ajout d'un écouteur d'événements au clic sur les icônes 👁️ pour les deux champs de mot de passe
+        document.querySelectorAll('.show-password').forEach(function(icon) {
+            icon.addEventListener('click', function() {
+                const fieldId = this.previousElementSibling.id;
+                togglePassword(fieldId);
+            });
+        });
+    </script>
+{% endblock %}
