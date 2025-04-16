@@ -54,9 +54,10 @@
                 <li class="nav-item pcoded-menu-caption">
                     <label>Finance</label>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
-                        <span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span>
+               
+               <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'manager_avances' %}active{% endif %}" href="{{ path('manager_avances') }}">
+                        <span class="pcoded-micon"><i class="feather icon-align-justify"></i></span>
                         <span class="pcoded-mtext">Avance</span>
                     </a>
                 </li>
