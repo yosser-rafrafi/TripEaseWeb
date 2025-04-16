@@ -22,7 +22,7 @@ class ManagerTraitementAvanceType extends AbstractType
             ])
             ->add('commentaire_manager', TextareaType::class, [
                 'label' => 'Commentaire du manager',
-                'required' => false,
+                
             ]);
     }
 
