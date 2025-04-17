@@ -88,6 +88,8 @@
                             <th>Lieu</th>
                             <th>Début</th>
                             <th>Fin</th>
+                            <th>Type</th>
+                            <th>Duree</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -98,6 +100,8 @@
                                 <td>{{ mission.lieu }}</td>
                                 <td>{{ mission.dateDebut ? mission.dateDebut|date('Y-m-d H:i') : '-' }}</td>
                                 <td>{{ mission.dateFin ? mission.dateFin|date('Y-m-d H:i') : '-' }}</td>
+                                <td>{{ mission.type }}</td>
+                                <td>{{ mission.duree }}</td>
                                 <td>
                                     <a href="{{ path('app_mission_show', {'id': mission.id}) }}" class="btn btn-sm btn-outline-info">
                                         <i class="feather icon-eye"></i>

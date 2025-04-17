@@ -1,0 +1,201 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Gestion Hôtelière{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">🏨 Gestion des Établissements Hôteliers</h1>
+
+        <div class="text-end mb-3">
+            <a href="{{ path('app_hotel_new') }}" class="btn btn-success btn-sm">
+                <i class="fas fa-plus-circle me-1"></i> Nouvel Hôtel
+            </a>
+        </div>
+
+        <div class="row">
+            {% for hotel in hotels %}
+                <div class="col-md-6 mb-4">
+                    <div class="hotel-container">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ hotel.nom }}</h5>
+                                <p class="text-muted small">{{ hotel.ville }}, {{ hotel.pays }}</p>
+                                
+                                <div class="hotel-details">
+                                    <p class="mb-2 small"><i class="fas fa-map-marker-alt text-muted me-2"></i> <strong>Adresse :</strong> {{ hotel.adresse }}</p>
+                                    <p class="mb-2 small">
+                                        <i class="fas fa-star text-warning me-2"></i> 
+                                        <strong>Classification :</strong> {{ hotel.nombreEtoiles }} étoiles
+                                    </p>
+                                    <p class="mb-2 small"><i class="fas fa-phone text-muted me-2"></i> <strong>Téléphone :</strong> {{ hotel.telephone }}</p>
+                                    <p class="mb-2 small"><i class="fas fa-envelope text-muted me-2"></i> <strong>Email :</strong> {{ hotel.email }}</p>
+                                    {% if hotel.siteWeb %}
+                                        <p class="mb-2 small"><i class="fas fa-globe text-muted me-2"></i> <strong>Site Web :</strong> {{ hotel.siteWeb }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                          <!-- Boutons d'action -->
+<div class="card-footer bg-white border-top-0 pt-0">
+    <div class="d-flex justify-content-center">
+        <!-- Bouton Supprimer -->
+<form method="post" action="{{ path('app_hotel_delete', {'id': hotel.id}) }}" onsubmit="return confirm('Supprimer {{ hotel.nom }} ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ hotel.id) }}">
+    <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+</form>
+
+        
+        
+        <!-- Bouton Modifier -->
+        <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}" 
+           class="btn btn-sm btn-primary mx-2" title="Modifier cet hôtel">
+            <i class="fas fa-edit"></i> 
+        </a>
+        
+        <!-- Bouton Chambres -->
+        <button type="button" class="btn btn-sm btn-info mx-2 chambre-button" 
+                data-hotel-id="{{ hotel.id }}" title="Gérer les chambres">
+            <i class="fas fa-bed"></i>
+        </button>
+    </div>
+</div>
+</div>
+
+                        <!-- Modal de confirmation -->
+                        <div class="modal fade" id="deleteModal{{ hotel.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Confirmation de suppression</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Êtes-vous certain de vouloir supprimer définitivement l'établissement :</p>
+                                        <h5 class="text-center">{{ hotel.nom }}</h5>
+                                        <p class="text-muted text-center small">Cette action est irréversible</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <form method="post" action="{{ path('app_hotel_delete', {'id': hotel.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ hotel.id) }}">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-trash-alt me-1"></i> Confirmer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Chambres -->
+                        <div id="chambres-{{ hotel.id }}" class="chambres-container mt-2">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-door-open me-2"></i>Inventaire des Chambres</span>
+                                    <button class="btn btn-sm btn-light close-chambres" data-hotel-id="{{ hotel.id }}">
+                                        <i class="fas fa-times"></i> Fermer
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    {% if hotel.chambres|length > 0 %}
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Référence</th>
+                                                        <th>Type</th>
+                                                        <th>Tarif/nuit</th>
+                                                        <th>Disponibilité</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for chambre in hotel.chambres %}
+                                                        <tr>
+                                                            <td>CH-{{ hotel.id }}-{{ loop.index }}</td>
+                                                            <td>{{ chambre.typeChambre }}</td>
+                                                            <td>{{ chambre.prixParNuit }} €</td>
+                                                            <td>
+                                                                <span class="badge bg-success">Disponible</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning mb-0">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Aucune chambre enregistrée
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center py-4">
+                        <i class="fas fa-hotel fa-2x mb-3"></i>
+                        <h5>Aucun établissement enregistré</h5>
+                        <p class="mb-0">Commencez par ajouter votre premier hôtel</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'affichage des chambres
+            document.querySelectorAll('.chambre-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const hotelId = this.getAttribute('data-hotel-id');
+                    const container = document.getElementById(`chambres-${hotelId}`);
+                    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+
+            // Bouton pour fermer les chambres
+            document.querySelectorAll('.close-chambres').forEach(button => {
+                button.addEventListener('click', function() {
+                    const hotelId = this.getAttribute('data-hotel-id');
+                    document.getElementById(`chambres-${hotelId}`).style.display = 'none';
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hotel-container {
+            position: relative;
+        }
+        .chambres-container {
+            display: none;
+        }
+        .card {
+            border-radius: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .hotel-details {
+            border-left: 3px solid #0d6efd;
+            padding-left: 1rem;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .table-sm td, .table-sm th {
+            padding: 0.3rem;
+        }
+    </style>
+{% endblock %}

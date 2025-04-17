@@ -1,0 +1,227 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Nos Hôtels{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    <style>
+        .hotel-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+        
+        .chambres-container {
+            display: none;
+            width: 100%;
+            margin-top: 1rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Style des cartes */
+        .card {
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+            height: 100%;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-body {
+            padding: 1.25rem;
+        }
+        
+        .card-footer {
+            background: #f9f9f9;
+            border-top: 1px solid #eee;
+            padding: 1rem;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        /* Boutons */
+        .btn-primary-custom {
+            background-color: #34b7a7;
+            border: none;
+            color: white;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #2e9e8f;
+            color: white;
+        }
+        
+        .btn-outline-secondary {
+            border: 1px solid #6c757d;
+            color: #6c757d;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        /* Style des chambres */
+        .chambre-card {
+            border: 1px solid #e9ecef;
+        }
+        
+        .chambre-card .card-header {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 500;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        /* Icônes */
+        .card-icon {
+            color: #34b7a7;
+            margin-right: 6px;
+            width: 18px;
+            text-align: center;
+        }
+        
+        .fa-star {
+            color: #ffc107;
+        }
+        
+        /* En-tête */
+        .page-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-group > .btn {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-hotel card-icon"></i> Nos Hôtels
+                </h1>
+               
+            </div>
+        </div>
+
+        <div class="row">
+            {% for hotel in hotels %}
+                <div class="col-md-6 mb-4">
+                    <div class="hotel-container">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ hotel.nom }}</h5>
+                                <p class="text-muted mb-3">{{ hotel.ville }}, {{ hotel.pays }}</p>
+                                
+                                <div class="hotel-details">
+                                    <p class="mb-2"><i class="fas fa-map-marker-alt card-icon"></i> <span class="text-muted">Adresse:</span> {{ hotel.adresse }}</p>
+                                    <p class="mb-2"><i class="fas fa-star card-icon"></i> <span class="text-muted">Étoiles:</span>
+                                        {% for i in 1..hotel.nombreEtoiles %}<i class="fas fa-star text-warning"></i>{% endfor %}
+                                    </p>
+                                    <p class="mb-2"><i class="fas fa-phone card-icon"></i> <span class="text-muted">Téléphone:</span> {{ hotel.telephone }}</p>
+                                    <p class="mb-2"><i class="fas fa-envelope card-icon"></i> <span class="text-muted">Email:</span> {{ hotel.email }}</p>
+                                    {% if hotel.siteWeb %}
+                                        <p class="mb-0"><i class="fas fa-globe card-icon"></i> <span class="text-muted">Site Web:</span> {{ hotel.siteWeb }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_reservationhotel_new', { 'hotelId': hotel.id }) }}" class="btn btn-primary-custom">
+                                        <i class="fas fa-calendar-check card-icon"></i> Réserver
+                                    </a>
+                                    <button type="button" class="btn btn-outline-secondary chambre-button" data-hotel-id="{{ hotel.id }}">
+                                        <i class="fas fa-bed card-icon"></i> Chambres
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="chambres-{{ hotel.id }}" class="chambres-container">
+                            <div class="card chambre-card mt-2">
+                                <div class="card-header">
+                                    <h5 class="card-title m-0">Chambres disponibles</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    {% if hotel.chambres|length > 0 %}
+                                        <ul class="list-group list-group-flush">
+                                            {% for chambre in hotel.chambres %}
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong>{{ chambre.typeChambre }}</strong>
+                                                            <div class="text-muted small">Chambre #{{ loop.index }}</div>
+                                                        </div>
+                                                        <span class="badge bg-light text-dark">{{ chambre.prixParNuit }} €/nuit</span>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <div class="alert alert-warning m-3 mb-0">Aucune chambre disponible</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center py-4">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <h5>Aucun hôtel trouvé</h5>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'affichage des chambres
+            document.querySelectorAll('.chambre-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const hotelId = this.getAttribute('data-hotel-id');
+                    const container = document.getElementById(`chambres-${hotelId}`);
+                    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+{% endblock %}

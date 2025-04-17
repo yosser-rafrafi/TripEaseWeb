@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,17 +28,18 @@ class Chambre
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $hotel_id = null;
+    #[ORM\ManyToOne(targetEntity: Hotel::class, inversedBy: 'chambres')]
+    #[ORM\JoinColumn(name: 'hotel_id', referencedColumnName: 'id')]
+    private ?Hotel $hotel = null;
 
-    public function getHotel_id(): ?int
+    public function getHotel(): ?Hotel
     {
-        return $this->hotel_id;
+        return $this->hotel;
     }
 
-    public function setHotel_id(int $hotel_id): self
+    public function setHotel(?Hotel $hotel): self
     {
-        $this->hotel_id = $hotel_id;
+        $this->hotel = $hotel;
         return $this;
     }
 
@@ -57,7 +57,7 @@ class Chambre
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', nullable: false)]
+    #[ORM\Column(type: 'float', nullable: false)]
     private ?float $prix_par_nuit = null;
 
     public function getPrix_par_nuit(): ?float
@@ -90,18 +90,6 @@ class Chambre
         return $this->id_chambre;
     }
 
-    public function getHotelId(): ?int
-    {
-        return $this->hotel_id;
-    }
-
-    public function setHotelId(int $hotel_id): static
-    {
-        $this->hotel_id = $hotel_id;
-
-        return $this;
-    }
-
     public function getTypeChambre(): ?string
     {
         return $this->type_chambre;
@@ -114,12 +102,12 @@ class Chambre
         return $this;
     }
 
-    public function getPrixParNuit(): ?string
+    public function getPrixParNuit(): ?float
     {
         return $this->prix_par_nuit;
     }
 
-    public function setPrixParNuit(string $prix_par_nuit): static
+    public function setPrixParNuit(float $prix_par_nuit): static
     {
         $this->prix_par_nuit = $prix_par_nuit;
 

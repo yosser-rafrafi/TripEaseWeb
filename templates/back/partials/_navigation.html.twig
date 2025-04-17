@@ -38,7 +38,7 @@
                     <label>Reservation</label>
                 </li>
                 <li class="nav-item">
-                    <a  class="nav-link">
+                    <a  class="nav-link" {% if app.request.get('_route') == 'app_hotel_index' %}active{% endif %}" href="{{ path('app_hotel_index') }}">
                         <span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
                         <span class="pcoded-mtext">Hotel</span>
                     </a>
@@ -54,9 +54,10 @@
                 <li class="nav-item pcoded-menu-caption">
                     <label>Finance</label>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
-                        <span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span>
+               
+               <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'manager_avances' %}active{% endif %}" href="{{ path('manager_avances') }}">
+                        <span class="pcoded-micon"><i class="feather icon-align-justify"></i></span>
                         <span class="pcoded-mtext">Avance</span>
                     </a>
                 </li>
@@ -75,6 +76,13 @@
                     <a class="nav-link {% if app.request.get('_route') == 'app_statut_index' %}active{% endif %}" href="{{ path('app_statut_index') }}">
                         <span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span>
                         <span class="pcoded-mtext">Forum</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_users_list') }}" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md" >
+                        <i class="feather icon-user m-r-5">
+
+                        </i>Users
                     </a>
                 </li>
                 

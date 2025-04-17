@@ -53,6 +53,7 @@ final class MissionController extends AbstractController{
         ]);
     }
 
+    
     #[Route('/{id}', name: 'app_mission_show', methods: ['GET'])]
     public function show(Mission $mission): Response
     {
@@ -89,4 +90,6 @@ final class MissionController extends AbstractController{
 
         return $this->redirectToRoute('app_mission_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 }

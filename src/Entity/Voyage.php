@@ -183,14 +183,29 @@ class Voyage
     }
 
 
-    public function getEtat(): ?string
+    // Toujours stocké mais recalculable
+    public function calculerEtat(): string
     {
-        return $this->etat;
+        $aujourdhui = new \DateTime();
+    
+        if ($this-> date_retour < $aujourdhui) {
+            return 'Terminé';
+        } elseif ($this-> date_depart > $aujourdhui) {
+            return 'Pas encore commencé';
+        } else {
+            return 'En cours';
+        }
     }
 
-    public function setEtat(?string $etat): static
+    // Utilisé pour affichage dynamique
+    public function getEtat(): string
     {
-        $this->etat = $etat;
+        return $this->calculerEtat();
+    }
+
+    public function setEtat(): static
+    {
+        $this->etat = $this->calculerEtat();
 
         return $this;
     }
