@@ -8,10 +8,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ mission.id }}</td>
-            </tr>
-            <tr>
                 <th>Title</th>
                 <td>{{ mission.title }}</td>
             </tr>
@@ -39,18 +35,11 @@
                 <th>Duree</th>
                 <td>{{ mission.duree }}</td>
             </tr>
-            <tr>
-                <th>VoyageId</th>
-                <td>{{ mission.voyageId }}</td>
-            </tr>
-            <tr>
-                <th>UserId</th>
-                <td>{{ mission.userId }}</td>
-            </tr>
+            
         </tbody>
     </table>
 
-    <a href="{{ path('app_mission_index') }}">back to list</a>
+    <a href="{{ path('app_voyage_show', {'id': mission.voyage.id}) }}">back to list</a>
 
     <a href="{{ path('app_mission_edit', {'id': mission.id}) }}">edit</a>
     

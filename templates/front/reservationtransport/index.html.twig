@@ -1,68 +1,95 @@
 {% extends 'front/employee_home/index.html.twig' %}
 
-{% block title %}Reservation List{% endblock %}
+{% block title %}Liste des Réservations{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <div class="page-title mb-3">
-        <div class="title_left">
-            <h5><a href="{{ path('app_transport_list') }}">← Back to Transport List</a></h5>
+    {# Hero Image Section #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <figure class="text-center">
+                <img src="{{ asset('assets/images/transport/employe.png') }}" 
+                     alt="Image de Transport" 
+                     class="img-fluid rounded-3 shadow-lg object-fit-cover" 
+                     style="max-height: 300px; width: 100%;">
+            </figure>
         </div>
     </div>
+    
+    {# Page Header with Back Button #}
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-primary">Liste des Réservations</h1>
+        <a href="{{ path('app_transport_list') }}" 
+           class="btn btn-gradient-primary rounded-pill px-4">
+            <i class="fas fa-calendar-check me-2"></i>Retour à la Liste des Transports
+        </a>
+    </header>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">Reservation List</h2>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped table-bordered table-hover table-sm">
-                        <thead>
-                            <tr>
-                                
-                                <th>Transport</th>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Priority</th>
-                                <th>Notes</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for reservationtransport in reservationtransports %}
-                            <tr>
-                            
-                                <td>
-                                    {% if reservationtransport.transport %}
-                                        {{ reservationtransport.transport.transportName }}
-                                    {% else %}
-                                        <em>Not linked</em>
-                                    {% endif %}
+    {# Main Content #}
+    <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light-blue text-white">
+                        <tr>
+                            <th scope="col" class="ps-4 py-3">Transport</th>
+                            <th scope="col" class="py-3">Date</th>
+                            <th scope="col" class="py-3">Type</th>
+                            <th scope="col" class="py-3">Priorité</th>
+                            <th scope="col" class="py-3">Notes</th>
+                            <th scope="col" class="pe-4 py-3 text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservationtransports %}
+                            <tr class="border-bottom border-light">
+                                <td class="ps-4 py-3">
+                                    <span class="fw-medium">{{ reservation.transport ? reservation.transport.transportName : '<em class="text-muted">Non lié</em>'|raw }}</span>
                                 </td>
-                                <td>{{ reservationtransport.dateReservation|date('Y-m-d H:i') }}</td>
-                                <td>{{ reservationtransport.typeReservation }}</td>
-                                <td>{{ reservationtransport.prioriteReservation }}</td>
-                                <td>{{ reservationtransport.notesReservation }}</td>
-                                <td>
-                                    <a class="btn btn-sm btn-outline-primary" href="{{ path('app_reservationtransport_show', {'id': reservationtransport.id}) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                    <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_reservationtransport_edit', {'id': reservationtransport.id}) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                <td class="py-3">
+                                    <span class="text-dark">{{ reservation.dateReservation|date('Y-m-d H:i') }}</span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge bg-info bg-opacity-10 text-info">{{ reservation.typeReservation }}</span>
+                                </td>
+                                <td class="py-3">
+                                    {% set priorityClass = {
+                                        'High': 'bg-danger bg-opacity-10 text-danger',
+                                        'Medium': 'bg-warning bg-opacity-10 text-warning',
+                                        'Low': 'bg-success bg-opacity-10 text-success'
+                                    }[reservation.prioriteReservation] ?? 'bg-secondary bg-opacity-10' %}
+                                    <span class="badge {{ priorityClass }}">{{ reservation.prioriteReservation }}</span>
+                                </td>
+                                <td class="py-3" style="max-width: 200px;">
+                                    <div class="text-truncate" title="{{ reservation.notesReservation }}">
+                                        {{ reservation.notesReservation }}
+                                    </div>
+                                </td>
+                                <td class="pe-4 py-3 text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ path('app_reservationtransport_show', {'id': reservation.id}) }}"
+                                           class="btn btn-outline-primary rounded-2 px-3"
+                                           title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_reservationtransport_edit', {'id': reservation.id}) }}"
+                                           class="btn btn-outline-secondary rounded-2 px-3"
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="8" class="text-center text-muted">No reservations found.</td>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="fas fa-calendar-times fa-2x mb-3"></i>
+                                    <p class="h5">Aucune réservation trouvée</p>
+                                </td>
                             </tr>
                         {% endfor %}
-                        </tbody>
-                    </table>
-
-                    <a href="{{ path('app_transport_list') }}" class="btn btn-primary mt-3">← Back to Transport List</a>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -70,3 +97,48 @@
 {% endblock %}
 
 {% block footer %}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .btn-gradient-primary {
+            background: linear-gradient(to right, #4e73df, #1cc88a);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .bg-light-blue {
+            background-color: #4e73df;
+        }
+        
+        .object-fit-cover {
+            object-fit: cover;
+        }
+        
+        .table th {
+            white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .badge {
+            padding: 0.35em 0.65em;
+            font-weight: 500;
+        }
+        
+        .border-light {
+            border-color: #f8f9fa !important;
+        }
+    </style>
+{% endblock %}

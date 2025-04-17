@@ -1,22 +1,23 @@
 <?php
 
 namespace App\Entity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 use App\Repository\UserRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'user')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-   
 
     #[ORM\ManyToMany(targetEntity: Voyage::class, mappedBy: 'users')]
     private Collection $voyages;
@@ -42,34 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $nom = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $prenom = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $identifiant = null;
-
-    #[ORM\Column(length: 10, nullable: true)]
-    private ?string $role = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $adresse = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $email = null;
-
-    #[ORM\Column(name: 'numTel', length: 255, nullable: true)]
-    private ?string $numTel = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $password = null;
-
-    #[ORM\Column(name: 'photoDeProfile', length: 255, nullable: true)]
-    private ?string $photoDeProfile = null;
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -81,7 +54,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $nom = null;
 
     public function getNom(): ?string
     {
@@ -94,7 +68,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $prenom = null;
 
     public function getPrenom(): ?string
     {
@@ -107,7 +82,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-   
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $identifiant = null;
 
     public function getIdentifiant(): ?string
     {
@@ -120,7 +96,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-  
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $role = null;
 
     public function getRole(): ?string
     {
@@ -133,7 +110,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-   
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
 
     public function getAdresse(): ?string
     {
@@ -146,6 +124,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -157,6 +138,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    #[ORM\Column(name: 'numTel', length: 255, nullable: true)]
+    private ?string $numTel = null;
 
     public function getNumTel(): ?string
     {
@@ -169,7 +152,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $password = null;
 
     public function getPassword(): ?string
     {
@@ -182,7 +166,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
+    #[ORM\Column(name: 'photoDeProfile', length: 255, nullable: true)]
+    private ?string $photoDeProfile = null;
 
     public function getPhotoDeProfile(): ?string
     {
@@ -226,18 +211,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    
-
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
     }
 
     #[ORM\ManyToMany(targetEntity: Statut::class, inversedBy: 'users')]
@@ -300,6 +273,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 }
-   

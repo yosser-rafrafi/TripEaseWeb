@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security;
-
+use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 
@@ -20,41 +21,49 @@ final class VoyageController extends AbstractController{
     #[Route(name: 'app_voyage_index', methods: ['GET'])]
     public function index(VoyageRepository $voyageRepository): Response
     {
-            // Récupère l'utilisateur connecté
-            $user = $this->getUser();
-    
-            // Récupère uniquement les voyages de cet utilisateur
-            $voyages = $voyageRepository->findBy(['user' => $user]);
-    
-            return $this->render('back/manager/voyage/index.html.twig', [
-                'voyages' => $voyages,
-            ]);
+        // Récupère l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Récupère uniquement les voyages de cet utilisateur
+        $voyages = $voyageRepository->findBy(['user' => $user]);
+
+        return $this->render('back/manager/voyage/index.html.twig', [
+            'voyages' => $voyages,
+        ]);
         
     }
 
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager , Security $security): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $voyage = new Voyage();
         $form = $this->createForm(VoyageType::class, $voyage);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            
-
-            $user = $security->getUser(); 
+            $user = $security->getUser();
             $voyage->setUser($user);
-
-
+            
+            // Gestion des utilisateurs sélectionnés
+            $selectedUserIds = explode(',', $request->request->get('selected_users', ''));
+            foreach ($selectedUserIds as $userId) {
+                if ($userId) {
+                    $userToAdd = $entityManager->getRepository(User::class)->find($userId);
+                    if ($userToAdd) {
+                        $voyage->addUser($userToAdd);
+                    }
+                }
+            }
+    
             $entityManager->persist($voyage);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('/back/manager/voyage/new.html.twig', [
             'voyage' => $voyage,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -69,18 +78,45 @@ final class VoyageController extends AbstractController{
     #[Route('/{id}/edit', name: 'app_voyage_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Voyage $voyage, EntityManagerInterface $entityManager): Response
     {
+        // Récupère les utilisateurs déjà associés au voyage
+        $originalUsers = new ArrayCollection();
+        foreach ($voyage->getUsers() as $user) {
+            $originalUsers->add($user);
+        }
+    
         $form = $this->createForm(VoyageType::class, $voyage);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gestion des utilisateurs sélectionnés
+            $selectedUserIds = explode(',', $request->request->get('selected_users', ''));
+            
+            // Supprime les utilisateurs qui ont été enlevés
+            foreach ($originalUsers as $user) {
+                if (!in_array($user->getId(), $selectedUserIds)) {
+                    $voyage->removeUser($user);
+                }
+            }
+            
+            // Ajoute les nouveaux utilisateurs
+            foreach ($selectedUserIds as $userId) {
+                if ($userId && !$voyage->getUsers()->contains($entityManager->getReference(User::class, $userId))) {
+                    $userToAdd = $entityManager->getRepository(User::class)->find($userId);
+                    if ($userToAdd) {
+                        $voyage->addUser($userToAdd);
+                    }
+                }
+            }
+    
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('/back/manager/voyage/edit.html.twig', [
             'voyage' => $voyage,
-            'form' => $form,
+            'form' => $form->createView(),
+            'selected_users' => $voyage->getUsers()->map(fn($user) => $user->getId())->toArray()
         ]);
     }
 

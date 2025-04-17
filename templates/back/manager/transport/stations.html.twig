@@ -1,0 +1,69 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Transport Stations{% endblock %}
+
+{% block body %}
+    <h1>Stations List</h1>
+
+    {% if stations is defined %}
+        <h2>Washington Stations</h2>
+        {% if stations.washington is not empty %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Street</th>
+                        <th>Zip</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for station in stations.washington %}
+                        <tr>
+                            <td>{{ station.Name }}</td>
+                            <td>{{ station.Address.City }}</td>
+                            <td>{{ station.Address.State }}</td>
+                            <td>{{ station.Address.Street }}</td>
+                            <td>{{ station.Address.Zip }}</td>
+                            <td>{{ station.Lat }}</td>
+                            <td>{{ station.Lon }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No Washington stations found.</p>
+        {% endif %}
+
+        <h2>Swiss Stations</h2>
+        {% if stations.swiss is not empty %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for station in stations.swiss %}
+    <tr>
+        <td>{{ station.name }}</td>  <!-- Correct field for station name -->
+        <td>{{ station.coordinate.x }}</td>  <!-- Correct field for Latitude -->
+        <td>{{ station.coordinate.y }}</td>  <!-- Correct field for Longitude -->
+    </tr>
+{% endfor %}
+
+                </tbody>
+            </table>
+        {% else %}
+            <p>No Swiss stations found.</p>
+        {% endif %}
+    {% else %}
+        <p>{{ error }}</p>
+    {% endif %}
+{% endblock %}

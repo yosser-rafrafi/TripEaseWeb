@@ -23,18 +23,18 @@ class FraiType extends AbstractType
         $builder
             ->add('montant', NumberType::class, [
                 'label' => 'Montant du frais',
-                'required' => true,
+              
                 'scale' => 2,
                 'attr' => ['step' => '0.01'],
             ])
             ->add('type', TextType::class, [
                 'label' => 'Type de frais',
-                'required' => true,
+                
             ])
             ->add('date_depense', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de la dépense',
-                'required' => true,
+               
             ]);
 
         if ($frai->getId() === null) {

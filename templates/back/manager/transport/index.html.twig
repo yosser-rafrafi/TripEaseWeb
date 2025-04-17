@@ -3,72 +3,74 @@
 {% block title %}Transport Index{% endblock %}
 
 {% block body %}
-     <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><a href="#" class="btn btn-outline-secondary">← Retour</a></h5>
-            <a href="{{ path('app_transport_new') }}" class="btn btn-primary">+ Create New Transport</a>
-        </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5><a href="#" class="btn btn-outline-secondary">← Retour</a></h5>
+        <a href="{{ path('app_transport_new') }}" class="btn btn-primary">+ Créer un nouveau transport</a>
+    </div>
 
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-header bg-primary text-white text-center">
-                <h2 class="mb-0">Transport List</h2>
-            </div>
+    <div class="row g-4">
+        {% for transport in transports %}
+            {% set agencyMap = {
+                'Elite Logistics Group': 1,
+                'Prime Fleet Solutions': 2,
+                'Pioneer Transit Services': 3,
+                'Velocity Transport Co.': 4,
+                'EcoDrive Electric Rentals': 5
+            } %}
+            {% set agencyId = agencyMap[transport.transportAgence] ?? 0 %}
+            {% set agencyFolder = 'agence_' ~ agencyId %}
+            {% set transportFolder = transport.transportType|lower %}
 
-            <div class="card-body p-4">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle">
-                        <thead class="table-dark text-center">
-                            <tr>
-                                
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Location</th>
-                                <th>Type</th>
-                                <th>Availability</th>
-                                <th>Country</th>
-                                <th>Price</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
-                        {% for transport in transports %}
-                            <tr>
-                               
-                                <td>{{ transport.transportName }}</td>
-                                <td class="text-truncate" style="max-width: 150px;">{{ transport.transportDescription }}</td>
-                                <td>{{ transport.transportLocation }}</td>
-                                <td>{{ transport.transportType|capitalize }}</td>
-                                <td>
-                                    <span class="badge {% if transport.transportDisponibilite == 'available' %}bg-success{% else %}bg-danger{% endif %}">
-                                        {{ transport.transportDisponibilite|capitalize }}
-                                    </span>
-                                </td>
-                                <td>{{ transport.transportPays }}</td>
-                                <td>${{ transport.transportPrix|number_format(2, '.', ',') }}</td>
-                                <td>{{ transport.latitude }}</td>
-                                <td>{{ transport.longitude }}</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-info btn-sm">👁 Show</a>
-                                        <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-warning btn-sm">✏ Edit</a>
-                                        <form method="post" action="{{ path('app_transport_delete', {'id': transport.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
-                                            <button type="submit" class="btn btn-danger btn-sm">🗑 Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 250px;">
+                        {% if agencyId == 5 %}
+                            <img src="{{ asset('assets/images/transport/' ~ agencyFolder ~ '/eco.png') }}" alt="EcoDrive Electric Rentals" class="img-fluid" style="max-height: 240px;">
                         {% else %}
-                            <tr>
-                                <td colspan="11" class="text-center text-muted">No transport records found.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            <img src="{{ asset('assets/images/transport/' ~ agencyFolder ~ '/' ~ transportFolder ~ '.png') }}" alt="{{ transport.transportType|capitalize }}" class="img-fluid" style="max-height: 240px;">
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="fw-bold text-muted">🚚 <span class="fw-bold">Agence :</span></span>
+                            <span class="ms-1">{{ transport.transportAgence }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="fw-bold text-muted">📛 <span class="fw-bold">Nom :</span></span>
+                            <span class="ms-1">{{ transport.transportName }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="fw-bold text-muted">📍 <span class="fw-bold">Localisation :</span></span>
+                            <span class="ms-1">{{ transport.transportLocation }} — {{ transport.transportPays }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="fw-bold text-muted">ℹ️ <span class="fw-bold">Description :</span></span>
+                            <span class="ms-1 text-truncate d-block" title="{{ transport.transportDescription }}">{{ transport.transportDescription }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="fw-bold text-muted">🚗 <span class="fw-bold">Type :</span></span>
+                            <span class="ms-1">{{ transport.transportType|capitalize }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="fw-bold text-muted">💰 <span class="fw-bold">Prix :</span></span>
+                            <span class="ms-1">${{ transport.transportPrix|number_format(2, '.', ',') }}</span>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-outline-primary btn-sm w-100">👁 Voir</a>
+                            <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-outline-warning btn-sm w-100">✏ Modifier</a>
+                            <form method="post" action="{{ path('app_transport_delete', {'id': transport.id}) }}" class="d-inline w-100" onsubmit="return confirm('Êtes-vous sûr ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
+                                <button class="btn btn-outline-danger btn-sm w-100">🗑 Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div class="col-12 text-center text-muted">Aucun transport trouvé.</div>
+        {% endfor %}
     </div>
+</div>
 {% endblock %}
