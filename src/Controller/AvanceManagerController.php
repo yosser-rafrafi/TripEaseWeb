@@ -18,15 +18,15 @@ class AvanceManagerController extends AbstractController
     #[Route('/manager/avances', name: 'manager_avances')]
     public function index(Request $request, EntityManagerInterface $em): Response
     {
-        // Paramètres de tri (valeurs par défaut)
+        
         $sortBy = $request->query->get('sortBy', 'date_demande');
         $order = $request->query->get('order', 'ASC');
 
-        // Construction de la requête DQL avec tri dynamique
+      // tri dynamique
         $queryBuilder = $em->getRepository(AvanceFrai::class)->createQueryBuilder('a')
             ->orderBy('a.' . $sortBy, $order);
 
-        // Appliquer des filtres supplémentaires si nécessaire
+       
         $recherche = $request->query->get('recherche');
         if ($recherche) {
             $queryBuilder->andWhere('a.motif LIKE :recherche')
@@ -45,7 +45,7 @@ class AvanceManagerController extends AbstractController
                          ->setParameter('devise', $devise);
         }
 
-        // Exécution de la requête
+       
         $demandes = $queryBuilder->getQuery()->getResult();
 
         return $this->render('back/manager/avance_manager/index.html.twig', [

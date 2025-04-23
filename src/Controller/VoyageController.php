@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Voyage;
+use App\Entity\Flight;
+use App\Service\AviationStackService;
+use Symfony\Component\Form\FormError;
 use App\Form\VoyageType;
 use App\Repository\VoyageRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,39 +37,69 @@ final class VoyageController extends AbstractController{
     }
 
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, Security $security): Response
-    {
-        $voyage = new Voyage();
-        $form = $this->createForm(VoyageType::class, $voyage);
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $security->getUser();
-            $voyage->setUser($user);
-            
-            // Gestion des utilisateurs sélectionnés
-            $selectedUserIds = explode(',', $request->request->get('selected_users', ''));
-            foreach ($selectedUserIds as $userId) {
-                if ($userId) {
-                    $userToAdd = $entityManager->getRepository(User::class)->find($userId);
-                    if ($userToAdd) {
-                        $voyage->addUser($userToAdd);
-                    }
+public function new(Request $request, EntityManagerInterface $entityManager, Security $security, AviationStackService $aviationStackService): Response
+{
+    $voyage = new Voyage();
+    $form = $this->createForm(VoyageType::class, $voyage);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user = $security->getUser();
+        $voyage->setUser($user);
+
+        $flightNumber = $voyage->getNumeroVol(); // change si ton getter a un nom différent
+
+        // Vérification si vol rempli
+        if ($flightNumber) {
+            $flightData = $aviationStackService->getFlightData($flightNumber);
+
+            if ($flightData === null) {
+                $this->addFlash('warning', 'Numéro de vol invalide ou introuvable.');
+                return $this->render('/back/manager/voyage/new.html.twig', [
+                    'voyage' => $voyage,
+                    'form' => $form->createView(),
+                    'selected_users' => [],
+                ]);
+            }
+
+            // Création d'une entité Flight
+            $flight = new Flight();
+            $flight
+                ->setFlight_number($flightData['flight']['iata'] ?? $flightNumber)
+                ->setAirline($flightData['airline']['name'] ?? 'Inconnue')
+                ->setDepartureAirport($flightData['departure']['airport'] ?? 'Inconnu')
+                ->setArrivalAirport($flightData['arrival']['airport'] ?? 'Inconnu')
+                ->setDepartureDatetime(new \DateTime($flightData['departure']['scheduled'] ?? 'now'))
+                ->setArrivalDatetime(new \DateTime($flightData['arrival']['scheduled'] ?? 'now'))
+                ->setVoyage($voyage);
+            $voyage->setNumeroVol($flightData['flight']['iata'] ?? $flightNumber);
+
+            $entityManager->persist($flight);
+        }
+
+        // Gestion des utilisateurs sélectionnés
+        $selectedUserIds = explode(',', $request->request->get('selected_users', ''));
+        foreach ($selectedUserIds as $userId) {
+            if ($userId) {
+                $userToAdd = $entityManager->getRepository(User::class)->find($userId);
+                if ($userToAdd) {
+                    $voyage->addUser($userToAdd);
                 }
             }
-    
-            $entityManager->persist($voyage);
-            $entityManager->flush();
-    
-            return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }
-    
-        return $this->render('/back/manager/voyage/new.html.twig', [
-            'voyage' => $voyage,
-            'form' => $form->createView(),
-        ]);
+
+        $entityManager->persist($voyage);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    return $this->render('/back/manager/voyage/new.html.twig', [
+        'voyage' => $voyage,
+        'form' => $form->createView(),
+        'selected_users' => [],
+    ]);
+}
     #[Route('/{id}', name: 'app_voyage_show', methods: ['GET'])]
     public function show(Voyage $voyage): Response
     {

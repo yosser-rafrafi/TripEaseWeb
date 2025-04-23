@@ -77,7 +77,16 @@
         <div class="info-item"><span class="info-label">Date Retour :</span> {{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</div>
         <div class="info-item"><span class="info-label">Budget :</span> {{ voyage.budget }} €</div>
         <div class="info-item"><span class="info-label">État :</span> {{ voyage.etat }}</div>
-        <div class="info-item"><span class="info-label">Numéro de vol :</span> {{ voyage.numeroVol }}</div>
+        <div class="info-item"><span class="info-label">Numéro de vol :</span>
+            {% if voyage.numeroVol %}
+                <a href="{{ path('app_flight_show', {'id': voyage.flight.id}) }}">
+                    {{ voyage.numeroVol }}
+                </a>
+            {% else %}
+               <span class="text-muted">Aucun vol lié</span>
+            {% endif %}
+
+        </div>
     </div>
 
     <div class="missions-box">
