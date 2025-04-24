@@ -148,8 +148,6 @@ public function new(Request $request, EntityManagerInterface $entityManager, Csr
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Optionally update the edit date if you have such a field
-            // $commentaire->setDateModification(new \DateTimeImmutable());
             $entityManager->flush();
 
             $this->addFlash('success', 'Comment updated successfully!'); // Add success message
@@ -160,8 +158,6 @@ public function new(Request $request, EntityManagerInterface $entityManager, Csr
 
         // If GET request or form is invalid, we redirect back instead of rendering a separate page
         // In case of invalid POST, the errors should ideally be displayed.
-        // Handling invalid POST for inline forms requires more complex JS/AJAX or
-        // redirecting back with errors in flash messages.
         // For simplicity, we'll just redirect on GET or invalid POST for now.
         if ($request->isMethod('GET')) {
              $this->addFlash('warning', 'Direct access to edit page is not supported for inline editing.');
@@ -170,23 +166,11 @@ public function new(Request $request, EntityManagerInterface $entityManager, Csr
              foreach ($form->getErrors(true) as $error) {
                  $this->addFlash('error', $error->getMessage());
              }
-             // Optionally add field-specific errors too
-             // foreach ($form as $child) {
-             //     foreach ($child->getErrors() as $error) {
-             //         $this->addFlash('error', $child->getName() . ': ' . $error->getMessage());
-             //     }
-             // }
         }
 
         // Always redirect back for this inline approach
         return $this->redirectToRoute('app_statut_index');
 
-        /* // Original code rendering the separate template (now removed)
-        return $this->render('forum/commentaire/edit.html.twig', [
-            'commentaire' => $commentaire,
-            'form' => $form,
-        ]);
-        */
     }
 
     #[Route('/{id}', name: 'app_commentaire_delete', methods: ['POST'])]
