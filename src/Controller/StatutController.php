@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('forum/statut')]
 final class StatutController extends AbstractController{
@@ -100,21 +102,91 @@ public function new(Request $request, EntityManagerInterface $entityManager, Val
     #[Route('/{id}/edit', name: 'app_statut_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Statut $statut, EntityManagerInterface $entityManager): Response
     {
+        // Check if user has permission to edit - only the owner can edit
+        if ($this->getUser()->getUserIdentifier() !== $statut->getUser()->getUserIdentifier()) {
+            throw new AccessDeniedException('You do not have permission to edit this post.');
+        }
+    
+        // Handle AJAX request
+        if ($request->isMethod('POST')) {
+            try {
+                $content = $request->request->get('contenu');
+                $mediaFile = $request->files->get('media');
+                
+                if ($content) {
+                    $statut->setContenu($content);
+                }
+    
+                if ($mediaFile) {
+                    $mediaUrl = $this->cloudinaryService->upload($mediaFile);
+                    $statut->setMediaUrl($mediaUrl);
+                    $statut->setTypeContenu($mediaFile->getMimeType() === 'video/mp4' ? 'video' : 'image');
+                }
+    
+                $entityManager->flush();
+    
+                return new JsonResponse([
+                    'success' => true,
+                    'contenu' => $statut->getContenu(),
+                    'mediaUrl' => $statut->getMediaUrl(),
+                    'typeContenu' => $statut->getTypeContenu()
+                ]);
+            } catch (\Exception $e) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+    
+        // Handle regular form submission
         $form = $this->createForm(StatutType::class, $statut);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Post updated successfully!');
             return $this->redirectToRoute('app_statut_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('forum/statut/edit.html.twig', [
             'statut' => $statut,
             'form' => $form,
         ]);
     }
+    #[Route('/{id}/remove-media', name: 'app_statut_remove_media', methods: ['POST'])]
+public function removeMedia(Request $request, Statut $statut, EntityManagerInterface $entityManager): JsonResponse
+{
+    // Check if user has permission to edit
+    if (!$this->isGranted('ROLE_ADMIN') && 
+        !$this->isGranted('ROLE_MANAGER') && 
+        $this->getUser()->getUserIdentifier() !== $statut->getUser()->getUserIdentifier()) {
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'You do not have permission to edit this post.'
+        ], Response::HTTP_FORBIDDEN);
+    }
 
+    try {
+        $statut->setMediaUrl(null);
+        $statut->setTypeContenu('texte');
+        $entityManager->flush();
+
+        return new JsonResponse([
+            'success' => true
+        ]);
+    } catch (\Exception $e) {
+        return new JsonResponse([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], Response::HTTP_BAD_REQUEST);
+    }
+}
+#[Route('/voice-to-text', name: 'app_voice_to_text', methods: ['GET'])]
+public function voiceToText(): Response
+{
+    return $this->render('forum/statut/_voice_modal.html.twig');
+}
     #[Route('/{id}', name: 'app_statut_delete', methods: ['POST'])]
         public function delete(Request $request, Statut $statut, EntityManagerInterface $entityManager): Response
         {
@@ -131,33 +203,87 @@ public function new(Request $request, EntityManagerInterface $entityManager, Val
         return $this->redirectToRoute('app_statut_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/statut/{id}/like', name: 'statut_like')]
-    public function like(Statut $statut, EntityManagerInterface $em): Response
+    #[Route('/statut/{id}/like', name: 'statut_like', methods: ['POST'])]
+    public function like(Request $request, Statut $statut, EntityManagerInterface $em): Response
     {
-        $reaction = new Reactions();
-        $reaction->setUser($this->getUser())
-                 ->setStatut($statut)
-                 ->setType('LIKE')
-                 ->setCreationDate(new \DateTime());
-
-        $em->persist($reaction);
+        $user = $this->getUser();
+        $existingReaction = $em->getRepository(Reactions::class)->findOneBy([
+            'user' => $user,
+            'statut' => $statut,
+        ]);
+    
+        if ($existingReaction) {
+            if ($existingReaction->getType() === 'LIKE') {
+                $em->remove($existingReaction);
+                $userReaction = null;
+            } else {
+                $existingReaction->setType('LIKE');
+                $em->persist($existingReaction);
+                $userReaction = 'LIKE';
+            }
+        } else {
+            $reaction = new Reactions();
+            $reaction->setUser($user)
+                    ->setStatut($statut)
+                    ->setType('LIKE')
+                    ->setCreationDate(new \DateTime());
+            $em->persist($reaction);
+            $userReaction = 'LIKE';
+        }
+        
         $em->flush();
-
+    
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'likeCount' => count($statut->getReactions()->filter(fn($r) => $r->getType() === 'LIKE')),
+                'dislikeCount' => count($statut->getReactions()->filter(fn($r) => $r->getType() === 'DISLIKE')),
+                'userReaction' => $userReaction
+            ]);
+        }
+    
         return $this->redirectToRoute('app_statut_index');
     }
 
-    #[Route('/statut/{id}/dislike', name: 'statut_dislike')]
-    public function dislike(Statut $statut, EntityManagerInterface $em): Response
+    #[Route('/statut/{id}/dislike', name: 'statut_dislike', methods: ['POST'])]
+    public function dislike(Request $request, Statut $statut, EntityManagerInterface $em): Response
     {
-        $reaction = new Reactions();
-        $reaction->setUser($this->getUser())
-                 ->setStatut($statut)
-                 ->setType('DISLIKE')
-                 ->setCreationDate(new \DateTime());
-
-        $em->persist($reaction);
+        $user = $this->getUser();
+        $existingReaction = $em->getRepository(Reactions::class)->findOneBy([
+            'user' => $user,
+            'statut' => $statut,
+        ]);
+    
+        if ($existingReaction) {
+            if ($existingReaction->getType() === 'DISLIKE') {
+                $em->remove($existingReaction);
+                $userReaction = null;
+            } else {
+                $existingReaction->setType('DISLIKE');
+                $em->persist($existingReaction);
+                $userReaction = 'DISLIKE';
+            }
+        } else {
+            $reaction = new Reactions();
+            $reaction->setUser($user)
+                    ->setStatut($statut)
+                        ->setType('DISLIKE')
+                    ->setCreationDate(new \DateTime());
+            $em->persist($reaction);
+            $userReaction = 'DISLIKE';
+        }
+        
         $em->flush();
-
+    
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'likeCount' => count($statut->getReactions()->filter(fn($r) => $r->getType() === 'LIKE')),
+                'dislikeCount' => count($statut->getReactions()->filter(fn($r) => $r->getType() === 'DISLIKE')),
+                'userReaction' => $userReaction
+            ]);
+        }
+    
         return $this->redirectToRoute('app_statut_index');
     }
 
