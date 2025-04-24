@@ -3,10 +3,6 @@
 {% block body %}
 <section style="background-color: #eee;">
   <div class="container my-5 py-5">
-    {# Immediate test log #}
-    <script>
-        console.log('Immediate test log - script is running');
-    </script>
 
     {# Flash messages #}
     {% for label, messages in app.flashes %}
@@ -48,8 +44,16 @@
                   <span id="selectedFileName" class="ms-2"></span>
                 </div>
                 <div>
+                <select id="languageSelect" class="form-select form-select-sm mb-2" style="width: auto; display: inline-block;">
+    <option value="en-US" selected>English</option>
+    <option value="fr-FR">Français</option>
+</select>
+                 <button type="button" class="btn btn-light" id="voiceBtn">
+<i class="fa-solid fa-microphone"></i>                  </button>
                   <button type="reset" class="btn btn-outline-secondary btn-sm" id="cancelPost">Cancel</button>
                   <button type="submit" class="btn btn-primary">Share</button>
+                    
+
                 </div>
               </div>
             </form>
@@ -58,7 +62,7 @@
 {% endif %}
 
     {% for statut in statuts %}
-      <div class="card mb-4"> <!-- Use mb-4 for margin-bottom -->
+      <div class="  card mb-4 "  id="post-{{ statut.id }}"> <!-- Use mb-4 for margin-bottom -->
         <div class="card-body">
           <div class="d-flex flex-start align-items-center">
             <img class="rounded-circle shadow-1-strong me-3"
@@ -72,58 +76,68 @@
             </div>
           </div>
 
-          <p class="mt-3 mb-4 pb-2">{{ statut.contenu }}</p>
-
-          {% if statut.mediaUrl %}
-            <div class="text-center">
-              {% if statut.typeContenu == 'image' %}
-                <img src="{{ statut.mediaUrl }}" class="img-fluid rounded mb-3" style="max-height: 500px;" alt="Post image">
-              {% elseif statut.typeContenu == 'video' %}
-                <video controls class="w-100 rounded mb-3" style="max-height: 500px;">
-                  <source src="{{ statut.mediaUrl }}" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              {% endif %}
-            </div>
-          {% endif %}
+         
+								<div class="post-content mt-3 mb-4 pb-2">
+									<p class="post-text">{{ statut.contenu }}</p>
+									{% if statut.mediaUrl %}
+										<div class="text-center post-media">
+											{% if statut.typeContenu == 'image' %}
+												<img src="{{ statut.mediaUrl }}" class="img-fluid rounded mb-3" style="max-height: 500px;" alt="Post image">
+											{% elseif statut.typeContenu == 'video' %}
+												<video controls class="w-100 rounded mb-3" style="max-height: 500px;">
+													<source src="{{ statut.mediaUrl }}" type="video/mp4">
+													Your browser does not support the video tag.
+												</video>
+											{% endif %}
+										</div>
+									{% endif %}
+								</div>
 
           <div class="d-flex justify-content-center gap-2">
             <div class="d-flex align-items-center gap-2">
               {# Check if the user has reacted to the statut #}
-              {% set userReaction = statut.getReactions()|filter(r => r.user.id == app.user.id)|first %}
-              
-              <form action="{{ path('statut_like', {'id': statut.id}) }}" method="post" novalidate>
-                <button type="submit" class="btn btn-light btn-sm {% if userReaction and userReaction.type == 'LIKE' %}btn-success{% endif %}">
-                  <i class="fas fa-thumbs-up"></i>
-                </button>
-              </form>
-              <form action="{{ path('statut_dislike', {'id': statut.id}) }}" method="post" novalidate>
-                <button type="submit" class="btn btn-light btn-sm {% if userReaction and userReaction.type == 'DISLIKE' %}btn-danger{% endif %}">
-                  <i class="fas fa-thumbs-down"></i>
-                </button>
-              </form>
-              <form action="{{ path('statut_favorite', {'id': statut.id}) }}" method="post" novalidate>
-                <button type="submit" class="btn btn-light btn-sm">
-                  <i class="fas fa-star"></i> Favorite
-                </button>
+             {% set userReaction = statut.getReactions()|filter(r => r.user.id == app.user.id)|first %}
+    
+   <button type="button" 
+            class="btn btn-sm {% if userReaction and userReaction.type == 'LIKE' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill"
+            data-action="like" 
+            data-statut-id="{{ statut.id }}">
+        <i class="fas fa-thumbs-up me-1"></i>
+        <span class="like-count">{{ statut.getReactions()|filter(r => r.type == 'LIKE')|length }}</span>
+    </button>
+   <button type="button" 
+            class="btn btn-sm {% if userReaction and userReaction.type == 'DISLIKE' %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill"
+            data-action="dislike" 
+            data-statut-id="{{ statut.id }}">
+        <i class="fas fa-thumbs-down me-1"></i>
+        <span class="dislike-count">{{ statut.getReactions()|filter(r => r.type == 'DISLIKE')|length }}</span>
+    </button>
+    <form action="{{ path('statut_favorite', {'id': statut.id}) }}" method="post" novalidate>
+                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill">
+        <i class="fas fa-star me-1"></i>
+    </button>
               </form>
 
               {# Admin View Button #}
               {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_statut_show', {'id': statut.id}) }}" class="btn btn-info btn-sm">
+                <a href="{{ path('app_statut_show', {'id': statut.id}) }}" class="btn btn-sm btn-outline-info rounded-pill">
                   <i class="fas fa-eye me-1"></i> View
                 </a>
+                
               {% endif %}
 
               {# Edit and Delete buttons for the owner #}
               {% if statut.user.id == app.user.id %}
-                <a href="{{ path('app_statut_edit', {'id': statut.id}) }}" class="btn btn-warning btn-sm">
-                  <i class="fas fa-edit me-1"></i> Edit
-                </a>
+           
+                <button type="button" class="btn btn-sm btn-outline-success rounded-pill edit-post" data-post-id="{{ statut.id }}">
+												<i class="fas fa-edit me-1"></i>
+												Edit
+											</button>
+                      
 
                 <form action="{{ path('app_statut_delete', {'id': statut.id}) }}" method="post" onsubmit="return confirm('Are you sure?');" style="display:inline;" novalidate>
                   <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statut.id) }}">
-                  <button type="submit" class="btn btn-danger btn-sm">
+                  <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
                     <i class="fas fa-trash me-1"></i> Delete
                   </button>
                 </form>
@@ -169,97 +183,15 @@
   </div>
 </section>
 
-<script>
-// Test if script is loaded
-console.log('Main script loaded');
-
-// Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    
-    // Get all required elements
-    const mediaInput = document.getElementById('mediaInput');
-    const selectedFileName = document.getElementById('selectedFileName');
-    const mediaPreview = document.getElementById('mediaPreview');
-    const imagePreview = document.getElementById('imagePreview');
-    const videoPreview = document.getElementById('videoPreview');
-    const cancelButton = document.getElementById('cancelPost');
-    
-    // Debug elements
-    console.log('Elements:', {
-        mediaInput,
-        selectedFileName,
-        mediaPreview,
-        imagePreview,
-        videoPreview,
-        cancelButton
-    });
-    
-    // Add file input change event
-    if (mediaInput) {
-        console.log('Adding change event to mediaInput');
-        mediaInput.addEventListener('change', function(e) {
-            console.log('File input changed');
-            const file = this.files[0];
-            console.log('Selected file:', file);
-            
-            if (file) {
-                selectedFileName.textContent = file.name;
-                mediaPreview.style.display = 'block';
-
-                if (file.type.startsWith('image/')) {
-                    console.log('Image file detected');
-                    imagePreview.style.display = 'block';
-                    videoPreview.style.display = 'none';
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        console.log('Image loaded');
-                        imagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                } else if (file.type.startsWith('video/')) {
-                    console.log('Video file detected');
-                    imagePreview.style.display = 'none';
-                    videoPreview.style.display = 'block';
-                    videoPreview.src = URL.createObjectURL(file);
-                }
-            } else {
-                console.log('No file selected');
-                selectedFileName.textContent = '';
-                mediaPreview.style.display = 'none';
-            }
+    <script src="{{ asset('assets/js/forum.js') }}"></script>
+    <script>
+        ForumHandler.init({
+            editToken: '{{ csrf_token('edit-post') }}',
+            removeMediaToken: '{{ csrf_token('remove-media') }}'
         });
-    }
+    </script>
+    <script src="{{ asset('assets/js/voice-input.js') }}"></script>
 
-    // Add cancel button click event
-    if (cancelButton) {
-        console.log('Adding click event to cancelButton');
-        cancelButton.addEventListener('click', function() {
-            console.log('Cancel button clicked');
-            removeMedia();
-            document.getElementById('postContent').value = '';
-        });
-    }
-});
-
-function removeMedia() {
-    console.log('Removing media');
-    const mediaInput = document.getElementById('mediaInput');
-    const selectedFileName = document.getElementById('selectedFileName');
-    const mediaPreview = document.getElementById('mediaPreview');
-    const imagePreview = document.getElementById('imagePreview');
-    const videoPreview = document.getElementById('videoPreview');
-
-    mediaInput.value = '';
-    selectedFileName.textContent = '';
-    mediaPreview.style.display = 'none';
-    imagePreview.style.display = 'none';
-    videoPreview.style.display = 'none';
-    if (videoPreview.src) {
-        URL.revokeObjectURL(videoPreview.src);
-    }
-}
-</script>
 {% endblock %}
 
 {% block javascripts %}
