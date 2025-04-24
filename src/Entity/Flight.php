@@ -19,7 +19,7 @@ class Flight
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'flight', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'voyage_id', referencedColumnName: 'id', nullable: false)]
     private ?Voyage $voyage = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
