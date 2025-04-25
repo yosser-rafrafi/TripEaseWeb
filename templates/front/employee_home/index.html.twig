@@ -8,6 +8,15 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
 
+  {% block head%}
+
+  {% endblock %}
+
+
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@3.10.0/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@3.10.0/main.min.js"></script>
+
+ 
   <!-- Favicons -->
   <link href="{{ asset('assets/img/favicon.png') }}" rel="icon">
   <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -25,12 +34,18 @@
   <link href="{{ asset('libs/aos/aos.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ asset('assets/css/travels.css') }}">
+
   
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
   <!-- Main CSS File -->
   {% block styles %}
   <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('assets/css/travels.css') }}">
+
+
   {% endblock %}
 
 </head>
@@ -46,8 +61,6 @@
         {% block nav %}
         <ul>
           <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
-          <li><a href="{{ path('app_travel_request') }}">Travel Requests</a></li>
-
           <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
           <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
 
@@ -61,10 +74,10 @@
           <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
 
           <li class="dropdown">
-            <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              <li><a href="{{ path('app_user_settings') }}">Settings</a></li>
-              <li><a href="{{ path('app_logout') }}">Logout</a></li>
+              <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+              <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
             </ul>
           </li>
 
@@ -108,9 +121,9 @@
             <div class="card">
               <div class="card-body text-center">
                 <i class="bi bi-airplane-fill display-4 text-primary mb-3"></i>
-                <h3>Travel Requests</h3>
-                <p>Submit and manage your travel requests</p>
-                <a href="{{ path('app_travel_request') }}" class="btn btn-primary">Manage Requests</a>
+                <h3>Mes Voyages</h3>
+                <p>tapez et voir les voyages aux quels vous etes affecté</p>
+                <a href="{{ path('app_my_travels') }}" class="btn btn-primary">Mes voyages</a>
               </div>
             </div>
           </div>
@@ -118,9 +131,9 @@
             <div class="card">
               <div class="card-body text-center">
                 <i class="bi bi-wallet2 display-4 text-primary mb-3"></i>
-                <h3>Expenses</h3>
-                <p>Track and submit your travel expenses</p>
-                <a href="{{ path('app_expenses') }}" class="btn btn-primary">Manage Expenses</a>
+                <h3>Depences</h3>
+                <p>tapez pour voir vos depences</p>
+                <a href="{{ path('app_expenses') }}" class="btn btn-primary">Depences</a>
               </div>
             </div>
           </div>
@@ -129,8 +142,8 @@
               <div class="card-body text-center">
                 <i class="bi bi-gear-fill display-4 text-primary mb-3"></i>
                 <h3>Settings</h3>
-                <p>Update your profile and preferences</p>
-                <a href="{{ path('app_user_settings') }}" class="btn btn-primary">Update Settings</a>
+                <p>Modifier les informations du votre profile</p>
+                <a href="{{ path('app_user_settings') }}" class="btn btn-primary">Modifier Profile</a>
               </div>
             </div>
           </div>

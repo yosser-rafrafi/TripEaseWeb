@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Repository\UserRepository;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class VoyageType extends AbstractType
 {
@@ -21,13 +22,20 @@ class VoyageType extends AbstractType
             ->add('destination', null, [
                
             ])
-            ->add('date_depart', null, [
-                'widget' => 'single_text'
+            
+            ->add('date_depart', DateTimeType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d\TH:i'), // Pour type="datetime-local"
+                ],
             ])
-            ->add('date_retour', null, [
-                'widget' => 'single_text'
-               
+            ->add('date_retour', DateTimeType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d\TH:i'), // Pour type="datetime-local"
+                ],
             ])
+            
             ->add('budget', null, [
                
             ])

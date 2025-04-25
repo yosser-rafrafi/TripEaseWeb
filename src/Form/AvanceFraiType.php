@@ -18,9 +18,9 @@ class AvanceFraiType extends AbstractType
             
             ->add('montant_demande', NumberType::class, [
                 'label' => 'Montant demandé',
-                'required' => true,
-                'scale' => 2,  // Précise le nombre de décimales
-                'attr' => ['step' => '0.01'],  // Permet d'accepter des décimales
+                
+                'scale' => 2,  
+                'attr' => ['step' => '0.01'], 
             ])
             ->add('devise', ChoiceType::class, [
                 'label' => 'Devise',
@@ -29,20 +29,24 @@ class AvanceFraiType extends AbstractType
                     'USD' => 'USD',
                     'TND' => 'TND',
                 ],
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
+                'required' => true, 
             ])
             ->add('motif', TextareaType::class, [
                 'label' => 'Motif',
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
-                'attr' => ['rows' => 5], // Optionnel, pour définir la hauteur du textarea
+               
+                'attr' => ['rows' => 5], 
             ])
             ->add('type_avance', ChoiceType::class, [
                 'label' => 'Type d\'avance',
                 'choices' => [
                     'Avance sur frais' => 'avance',
-                    'Remboursement' => 'remboursement',
+                    'Transport' => 'Transport',
+                    'Hébergement' => 'Hébergement',
+                    'Repas' => 'Repas',
+                    'Autre' => 'Autre',
+                    
                 ],
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
+                
             ]);
     }
 

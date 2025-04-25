@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AvanceFrai;
+use App\Entity\User;
 use App\Form\AvanceFraiType;
 use App\Repository\AvanceFraiRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,13 +19,13 @@ class AvanceFraiController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(AvanceFraiRepository $avanceFraiRepository, Security $security): Response
     {
-        // Récupérer l'utilisateur connecté
+        
         $user = $security->getUser();
-    
+    /** @var \App\Entity\User $user */
         // Récupérer l'ID de l'utilisateur connecté
         $employe_id = $user->getId();
     
-        // Filtrer les avances de frais pour cet utilisateur (par employe_id)
+        
         $avanceFrais = $avanceFraiRepository->findBy(['employe_id' => $employe_id]);
     
         return $this->render('front/avance_frai/index.html.twig', [
@@ -46,8 +47,10 @@ class AvanceFraiController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            
+           
+         /** @var \App\Entity\User $user */
             $user = $security->getUser();
+        
            $avanceFrai->setEmployeId($user->getId());
     
             $avanceFraiRepository->save($avanceFrai, true);
@@ -98,4 +101,6 @@ class AvanceFraiController extends AbstractController
 
         return $this->redirectToRoute('app_avance_frai_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

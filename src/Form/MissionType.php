@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class MissionType extends AbstractType
 {
@@ -19,13 +20,18 @@ class MissionType extends AbstractType
             ])
             
             ->add('description')
-            ->add('dateDebut', null, [
-                'widget' => 'single_text'
+            ->add('dateDebut', DateTimeType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d\TH:i'), // Pour type="datetime-local"
+                ],
             ])
-            ->add('dateFin', null, [
-                'widget' => 'single_text'
+            ->add('dateFin', DateTimeType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d\TH:i'),
+                ],
             ])
-            
             
         ;
     }

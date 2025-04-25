@@ -1,0 +1,68 @@
+{% extends 'back/base.html.twig' %}
+
+{% block body %}
+<style>
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .clickable-row:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">📋 Détails de la demande d'avance</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Montant demandé :</strong> {{ avance.montantDemande }} {{ avance.devise }}</li>
+                        
+                {# Ajout du montant accordé #}
+                <li class="list-group-item"><strong>Montant accordé :</strong> 
+                    {% if avance.statut == 'Traité' %}
+                        {{ avance.montantAccorde }} {{ avance.devise }}
+                    {% else %}
+                        <span class="text-muted">Non encore traité</span>
+                    {% endif %}
+                </li>
+                
+                <li class="list-group-item"><strong>Motif :</strong> {{ avance.motif }}</li>
+                <li class="list-group-item"><strong>Type d'avance :</strong> {{ avance.typeAvance }}</li>
+                <li class="list-group-item"><strong>Statut :</strong> 
+                    {% if avance.statut == 'Traité' %}
+                        <span class="badge bg-success">✅ Traité</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">⏳ En attente</span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item"><strong>Date de la demande :</strong> {{ avance.dateDemande ? avance.dateDemande|date('Y-m-d') : '' }}</li>
+                <li class="list-group-item"><strong>Date de validation :</strong> {{ avance.dateValidation ? avance.dateValidation|date('Y-m-d') : 'Non validée' }}</li>
+                <li class="list-group-item"><strong>Commentaire manager :</strong> {{ avance.commentaireManager ?: 'Aucun commentaire' }}</li>
+        
+            </ul>
+        </div>
+
+        <div class="card-footer text-end">
+            {% if avance.statut != 'Traité' %}
+                <a href="{{ path('manager_traiter_avance', {'id': avance.id}) }}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Traiter
+                </a>
+            {% endif %}
+            <a href="{{ path('manager_avances') }}" class="btn btn-secondary">
+                ← Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

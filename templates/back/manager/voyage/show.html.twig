@@ -64,7 +64,17 @@
                     </tr>
                     <tr>
                         <th class="text-muted">Vol n°</th>
-                        <td>{{ voyage.numeroVol }}</td>
+                        <td>
+                            {% if voyage.flight %}
+                                <a href="{{ path('app_flight_show', {'id': voyage.flight.id}) }}">
+                                    {{ voyage.flight.flight_number}}
+                                </a>
+                            {% else %}
+                               <span class="text-muted">Aucun vol lié</span>
+                            {% endif %}
+    
+                        </td>
+                        
                     </tr>
                     <tr>
                         <th class="text-muted">Responsable</th>

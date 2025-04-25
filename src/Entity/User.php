@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\UserRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -55,6 +55,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(length: 30, nullable: true)]
+    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\NotBlank(message: "Le nom ne doit pas être vide.")]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -69,6 +71,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(length: 30, nullable: true)]
+    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\NotBlank(message: "Le prénom ne doit pas être vide.")]
     private ?string $prenom = null;
 
     public function getPrenom(): ?string
@@ -125,6 +129,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "L’email ne doit pas être vide.")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
     public function getEmail(): ?string
@@ -153,6 +159,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(min: 6, max: 4096, minMessage: "Le mot de passe doit contenir au moins 6 caractères.")]
     private ?string $password = null;
 
     public function getPassword(): ?string
@@ -204,7 +211,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCommentaire(Commentaire $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
             if ($commentaire->getUser() === $this) {
                 $commentaire->setUser(null);
             }
@@ -224,13 +230,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ]
     )]
     private Collection $statuts;
-    
+
     public function __construct()
     {
         $this->statuts = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->voyages = new ArrayCollection();
-
     }
 
     /**
@@ -259,17 +264,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // Ensure we always return an array
         $roles = [];
-        
-        // Add the user's role with ROLE_ prefix
+
         if ($this->role) {
             $roles[] = 'ROLE_' . strtoupper($this->role);
         }
-        
-        // guarantee every user at least has ROLE_USER
+
         $roles[] = 'ROLE_USER';
-        
+
         return array_unique($roles);
     }
 
