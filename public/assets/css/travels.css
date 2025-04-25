@@ -57,3 +57,25 @@
 .btn-details:hover {
     background-color: #1abc9c;
 }
+
+
+.calendar-layout {
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .voyages-section {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .calendar-section {
+    flex: 1;
+    min-width: 400px;
+  }
+  
+  #calendar {
+    max-width: 100%;
+  }

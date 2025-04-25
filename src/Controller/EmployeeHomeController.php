@@ -5,10 +5,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\VoyageRepository;
-use App\Entity\Voyage;
-use App\Entity\Mission;
-use App\Controller\MissionController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Calendar\VoyageCalendar;
+use App\Entity\Mission;
+use App\Entity\Voyage;
+use Symfony\Component\HttpFoundation\Request;
+use CalendarBundle\Event\CalendarEvent;
+use CalendarBundle\Entity\Event;
+
 
 class EmployeeHomeController extends AbstractController
 {
@@ -23,21 +27,23 @@ class EmployeeHomeController extends AbstractController
     {
         return $this->render('front/employee_home/travel_request.html.twig');
     }
+    
 
-    #[Route('/employee/my-travels', name: 'app_my_travels')]
-    public function myTravels(VoyageRepository $voyageRepository): Response
-    {
 
-        $user = $this->getUser();
+#[Route('/employee/my-travels', name: 'app_my_travels')]
+public function myTravels(Request $request, VoyageRepository $voyageRepository, VoyageCalendar $voyageCalendar): Response
+{
+    $user = $this->getUser();
+    $voyages = $voyageRepository->findVoyagesByUser($user);
 
-        $voyages = $voyageRepository->findVoyagesByUser($user);
-     
-         return $this->render('front/Voyage/my_travels.html.twig', [
-             'voyages' => $voyages,
-         ]);
-       
-    }
+    // Récupérez les événements du calendrier
+    $calendarEvents = $voyageCalendar->getEvents($user);
 
+    return $this->render('front/Voyage/my_travels.html.twig', [
+        'voyages' => $voyages,
+        'calendarEvents' => $calendarEvents, // Passer les événements directement
+    ]);
+}
     #[Route('/show/{id}', name: 'app_voyage_show_employee', methods: ['GET'])]
     public function show(Voyage $voyage): Response
     {
