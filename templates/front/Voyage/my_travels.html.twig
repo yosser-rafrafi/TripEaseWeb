@@ -27,44 +27,71 @@
 
     <!-- Section Calendrier (Droite) -->
     <section class="calendar-section">
-        <h2 class="mb-4">📅 Calendrier de mes voyages</h2>
-        <div id="calendar"></div>
+        <h1>📅 Calendrier de mes voyages</h1>
+        <div id="calendar-holder"></div>
     </section>
-</div>
 {% endblock %}
+
+
 
 {% block scripts %}
 {{ parent() }}
+<!-- Load FullCalendar from CDN -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'fr',
-        firstDay: 1,
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: {{ calendarEvents|json_encode|raw }},
-        eventClick: function(info) {
-            if (info.event.url) {
-                window.location.href = info.event.url;
-            }
-        },
-        height: 'auto' // Ajuste la hauteur automatiquement
-    });
-    calendar.render();
-});
-</script>
+
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar-holder');
+            if (!calendarEl) return; // Vérification de l'existence de l'élément
+            
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                firstDay: 1,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {
+                    url: '{{ path("fc_load_events") }}',
+                    method: 'GET',
+                    failure: function() {
+                        console.error('Erreur de chargement des événements');
+                    }
+                },
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+            
+            calendar.render();
+            console.log('Calendrier initialisé'); // Vérification dans la console
+        });
+    </script>
+
 {% endblock %}
+
 
 
 {% block styles %}
 {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+
+
+
 <style>
+    #calendar-holder {
+        height: 600px; /* ou toute autre valeur appropriée */
+    }
+
+    #calendar-holder {
+        width: 100%;
+        height: 600px; /* Hauteur fixe obligatoire */
+    }
     /* Supprime le preloader si nécessaire */
     #preloader {
         display: none !important;

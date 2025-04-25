@@ -37,11 +37,11 @@ public function myTravels(Request $request, VoyageRepository $voyageRepository, 
     $voyages = $voyageRepository->findVoyagesByUser($user);
 
     // Récupérez les événements du calendrier
-    $calendarEvents = $voyageCalendar->getEvents($user);
+   // $calendarEvents = $voyageCalendar->getEvents($user);
 
     return $this->render('front/Voyage/my_travels.html.twig', [
         'voyages' => $voyages,
-        'calendarEvents' => $calendarEvents, // Passer les événements directement
+       // 'calendarEvents' => $calendarEvents, // Passer les événements directement
     ]);
 }
     #[Route('/show/{id}', name: 'app_voyage_show_employee', methods: ['GET'])]

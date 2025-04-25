@@ -47,5 +47,11 @@ services:
             $cloudName: '%env(CLOUDINARY_CLOUD_NAME)%'
             $apiKey: '%env(CLOUDINARY_API_KEY)%'
             $apiSecret: '%env(CLOUDINARY_API_SECRET)%'
-
-        
+     
+            
+    App\Calendar\VoyageCalendar:
+        tags:
+            - { name: kernel.event_subscriber }
+        arguments:
+            - '@App\Repository\VoyageRepository'
+            - '@security.helper'        
