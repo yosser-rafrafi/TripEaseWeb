@@ -30,7 +30,7 @@ class VoyageCalendar
                 'title' => $voyage->getTitle(),
                 'start' => $voyage->getDateDepart()->format('Y-m-d'),
                 'end' => $voyage->getDateRetour()->format('Y-m-d'),
-                'url' => '/voyage/'.$voyage->getId(),
+                'url' => '/show/'.$voyage->getId(),
                 'color' => '#3788d8',
                 'textColor' => '#ffffff'
             ];
