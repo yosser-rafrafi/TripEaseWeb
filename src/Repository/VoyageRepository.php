@@ -28,6 +28,21 @@ class VoyageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findVoyagesByUserAndEtat(User $user, ?string $etat): array
+{
+    $qb = $this->createQueryBuilder('v')
+        ->innerJoin('v.users', 'u')
+        ->where('u = :user')
+        ->setParameter('user', $user)
+        ->andWhere('v.etat = :etat');
+
+    if ($etat) {
+        $qb->andWhere('v.etat = :etat')
+           ->setParameter('etat', $etat);
+    }
+
+    return $qb->getQuery()->getResult();
+}
 
 
 //    /**

@@ -5,6 +5,15 @@
     <!-- Section Voyages (Gauche) -->
     <section class="voyages-section">
         <h1 class="mb-4">Mes Voyages</h1>
+        <form method="get" action="{{ path('app_my_travels') }}" class="mb-4">
+            <label for="etat">Filtrer par état :</label>
+            <select name="etat" id="etat" class="form-select" style="max-width: 300px;" onchange="this.form.submit()">
+                <option value="">Tous</option>
+                <option value="En cours" {% if app.request.get('etat') == 'En cours' %}selected{% endif %}>En cours</option>
+                <option value="Pas encore commencé" {% if app.request.get('etat') == 'Pas encore commencé' %}selected{% endif %}>Pas encore commencé</option>
+                <option value="Terminé" {% if app.request.get('etat') == 'Terminé' %}selected{% endif %}>Terminé</option>
+            </select>
+        </form>
         
         {% if voyages|length > 0 %}
             {% for voyage in voyages %}
@@ -30,6 +39,9 @@
         <h1>📅 Calendrier de mes voyages</h1>
         <div id="calendar-holder"></div>
     </section>
+
+
+  
 {% endblock %}
 
 

@@ -47,7 +47,7 @@ class Voyage
     private ?int $budget = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $etat = null;
+    private ?string $etat = 'En cours'; // Valeur par défaut
 
 
     #[ORM\Column(type: 'string', nullable: false)]
@@ -114,6 +114,8 @@ class Voyage
     {
         $this->missions = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->calculerEtat();
+
 
         
     }
@@ -122,46 +124,58 @@ class Voyage
 
     public function getId(): ?int
     {
+        $this->calculerEtat();
+
         return $this->id;
+        
     }
 
     public function setId(int $id): self
     {
         $this->id = $id;
+        $this->calculerEtat();
+
         return $this;
     }
 
 
     public function getDestination(): ?string
     {
+        $this->calculerEtat();
         return $this->destination;
+        
     }
 
     public function setDestination(string $destination): static
     {
         $this->destination = $destination;
+        $this->calculerEtat();
 
         return $this;
     }
 
     public function getDateDepart(): ?\DateTimeInterface
     {
+        $this->calculerEtat();
         return $this->date_depart;
     }
     
     public function setDateDepart(?\DateTimeInterface $date_depart): static
     {
+        $this->calculerEtat();
         $this->date_depart = $date_depart;
         return $this;
     }
     
     public function getDateRetour(): ?\DateTimeInterface
     {
+        $this->calculerEtat();
         return $this->date_retour;
     }
     
     public function setDateRetour(?\DateTimeInterface $date_retour): static
     {
+        $this->calculerEtat();
         $this->date_retour = $date_retour;
         return $this;
     }
@@ -183,28 +197,28 @@ class Voyage
 
 
     // Toujours stocké mais recalculable
-    public function calculerEtat(): string
+    public function calculerEtat(): void
     {
         $aujourdhui = new \DateTime();
     
         if ($this-> date_retour < $aujourdhui) {
-            return 'Terminé';
+            $this->setEtat('Terminé');
         } elseif ($this-> date_depart > $aujourdhui) {
-            return 'Pas encore commencé';
+            $this->setEtat('Pas encore commencé');
         } else {
-            return 'En cours';
+            $this->setEtat('En cours') ;
         }
     }
 
     // Utilisé pour affichage dynamique
-    public function getEtat(): string
+    public function getEtat(): ?string
     {
-        return $this->calculerEtat();
+        return $this->etat;
     }
 
-    public function setEtat(): static
+    public function setEtat(string $etat): static
     {
-        $this->etat = $this->calculerEtat();
+        $this->etat = $etat;
 
         return $this;
     }

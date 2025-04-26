@@ -19,6 +19,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 
+
+
 #[Route('/voyage')]
 final class VoyageController extends AbstractController{
     #[Route(name: 'app_voyage_index', methods: ['GET'])]
@@ -153,6 +155,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
         ]);
     }
 
+   
     #[Route('/{id}', name: 'app_voyage_delete', methods: ['POST'])]
     public function delete(Request $request, Voyage $voyage, EntityManagerInterface $entityManager): Response
     {

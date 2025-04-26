@@ -42,6 +42,7 @@
         "symfony/twig-bundle": "6.4.*",
         "symfony/ux-autocomplete": "^2.24",
         "symfony/ux-google-map": "^2.24",
+        "symfony/ux-leaflet-map": "^2.24",
         "symfony/ux-map": "^2.24",
         "symfony/ux-turbo": "^2.24",
         "symfony/validator": "6.4.*",
