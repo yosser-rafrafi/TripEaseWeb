@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Vos notifications</h1>
+
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                <strong>{{ notification.message }}</strong>
+                <br>
+                <small>Envoyé le {{ notification.createdAt|date('d/m/Y H:i') }}</small>
+            </li>
+        {% else %}
+            <li>Aucune notification pour le moment.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

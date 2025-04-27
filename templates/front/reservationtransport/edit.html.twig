@@ -1,6 +1,50 @@
 {% extends 'front/employee_home/index.html.twig' %}
 
 {% block title %}Modifier la Réservation{% endblock %}
+{% block nav %}
+    <ul>
+        <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
+        <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+        <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+                <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
+        </li>
+
+        <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+                <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+        </li>
+
+        <!-- Notification Dropdown -->
+        <li class="dropdown">
+            <a href="#" id="notificationDropdown" class="notification-icon">
+                <i class="bi bi-bell-fill"></i>
+                <span class="badge bg-danger">{{ notifications|length }}</span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="notificationDropdown">
+                {% for notification in notifications %}
+                    <li>
+                        <a class="dropdown-item" href="{{ path('app_notification_view', {'id': notification.id}) }}">
+                            {{ notification.message }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li><a class="dropdown-item" href="#">Aucune notification</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
@@ -31,4 +75,98 @@
         </div>
     </div>
 </div>
+
+{# Notification Section #}
+<div id="notification-container"></div>
+
+{# FullCalendar JS et CSS pour la fonctionnalité de calendrier #}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            selectable: true,
+            selectHelper: true,
+            events: [
+                {
+                    title: 'Événement Exemple',
+                    start: '2025-04-07',
+                    end: '2025-04-07'
+                }
+            ],
+            select: function (start, end) {
+                let selectedDate = start.format('YYYY-MM-DD');
+                $('#reservation_date').val(selectedDate); // Adjust the ID if needed
+                $('#calendar').fullCalendar('unselect');
+            }
+        });
+    });
+
+    {# Adding the notification setup #}
+    const eventSource = new EventSource("{{ mercure('/reservation/updates')|escape('js') }}");
+
+    eventSource.onmessage = event => {
+        const data = JSON.parse(event.data);
+        displayNotification(data);
+    };
+
+    function displayNotification(data) {
+        const notificationContainer = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `<strong>Modification de réservation:</strong> ${data.message}`;
+        
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 5000); // Remove notification after 5 seconds
+    }
+</script>
+
+<style>
+    .btn-gradient {
+        background: linear-gradient(to right, #4e73df, #1cc88a);
+        color: white;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .form-control, .form-select {
+        border-radius: 5px;
+    }
+
+    /* Style for notifications */
+    #notification-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1050;
+    }
+
+    .notification {
+        background-color: #4e73df;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
 {% endblock %}
+
+{% block footer %}{% endblock %}

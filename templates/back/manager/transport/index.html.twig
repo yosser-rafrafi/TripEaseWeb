@@ -9,6 +9,18 @@
         <a href="{{ path('app_transport_new') }}" class="btn btn-primary">+ Créer un nouveau transport</a>
     </div>
 
+    {# Display flash messages #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <div class="row g-4">
         {% for transport in transports %}
             {% set agencyMap = {
@@ -60,14 +72,59 @@
                         <div class="mt-auto d-flex gap-2">
                             <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-outline-primary btn-sm w-100">👁 Voir</a>
                             <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-outline-warning btn-sm w-100">✏ Modifier</a>
-                            <form method="post" action="{{ path('app_transport_delete', {'id': transport.id}) }}" class="d-inline w-100" onsubmit="return confirm('Êtes-vous sûr ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
-                                <button class="btn btn-outline-danger btn-sm w-100">🗑 Supprimer</button>
-                            </form>
+
+                            {% if transport.hasReservations %}
+                                <!-- Show the warning modal for cannot delete -->
+                                <button class="btn btn-outline-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#cannotDeleteModal{{ transport.id }}">🗑 Supprimer</button>
+                            {% else %}
+                                <!-- Show the delete confirmation modal -->
+                                <form method="post" action="{{ path('app_transport_delete', {'id': transport.id}) }}" class="d-inline w-100" onsubmit="return confirm('Êtes-vous sûr ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
+                                    <button class="btn btn-outline-danger btn-sm w-100">🗑 Supprimer</button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+
+            {# Modal for Cannot Delete (Because of Reservations) #}
+            <div class="modal fade" id="cannotDeleteModal{{ transport.id }}" tabindex="-1" aria-labelledby="cannotDeleteModalLabel{{ transport.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cannotDeleteModalLabel{{ transport.id }}">Avertissement</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Ce transport ne peut pas être supprimé car il a des réservations.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Modal for Deletion Confirmation (If No Reservations) #}
+            <div class="modal fade" id="deleteWarningModal{{ transport.id }}" tabindex="-1" aria-labelledby="deleteWarningModalLabel{{ transport.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteWarningModalLabel{{ transport.id }}">Avertissement</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Ce transport est réservé. Voulez-vous vraiment le supprimer ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <a href="{{ path('app_transport_delete', {'id': transport.id}) }}" class="btn btn-danger">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         {% else %}
             <div class="col-12 text-center text-muted">Aucun transport trouvé.</div>
         {% endfor %}
