@@ -45,6 +45,34 @@ class VoyageRepository extends ServiceEntityRepository
 }
 
 
+public function countDestinations(): array
+{
+    return $this->createQueryBuilder('v')
+        ->select('v.destination, COUNT(v.id) AS count')
+        ->groupBy('v.destination')
+        ->orderBy('count', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
+public function findVoyagesByMonth(): array
+{
+    $conn = $this->getEntityManager()->getConnection();
+    
+    $sql = "
+        SELECT 
+            EXTRACT(MONTH FROM v.date_depart) as month, 
+            COUNT(v.id) as count
+        FROM voyage v
+        GROUP BY month
+        ORDER BY month ASC
+    ";
+    
+    $stmt = $conn->executeQuery($sql);
+    return $stmt->fetchAllAssociative();
+}
+
+
 //    /**
 //     * @return Voyage[] Returns an array of Voyage objects
 //     */

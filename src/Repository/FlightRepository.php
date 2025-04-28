@@ -16,6 +16,17 @@ class FlightRepository extends ServiceEntityRepository
         parent::__construct($registry, Flight::class);
     }
 
+    public function findTopAirlines(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('f.airline as company, COUNT(f.id) as flightCount')
+            ->groupBy('f.airline')
+            ->orderBy('flightCount', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Flight[] Returns an array of Flight objects
 //     */

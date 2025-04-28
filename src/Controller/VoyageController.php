@@ -8,6 +8,7 @@ use App\Service\AviationStackService;
 use Symfony\Component\Form\FormError;
 use App\Form\VoyageType;
 use App\Repository\VoyageRepository;
+use App\Repository\FlightRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,14 +102,39 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
         'form' => $form->createView(),
         'selected_users' => [],
     ]);
+    
 }
+    #[Route('/voyages/statistiques', name: 'app_voyage_statistics', methods: ['GET'])]
+    public function statistics(VoyageRepository $voyageRepository , FlightRepository $flightRepository
+    ): Response
+    {
+        $destinations = $voyageRepository->countDestinations();
+        // Nouvelle requête pour les voyages par mois
+        $voyagesParMois = $voyageRepository->findVoyagesByMonth();
+        $flightAirlines = $flightRepository->findTopAirlines();
+    
+        return $this->render('back/manager/voyage/stat.html.twig', [
+            'destinations' => $destinations,
+            'voyagesParMois' => $voyagesParMois,
+            'topAirlines' => $flightAirlines,
+
+        ]);
+       
+
+    }
     #[Route('/{id}', name: 'app_voyage_show', methods: ['GET'])]
     public function show(Voyage $voyage): Response
     {
+        if (!$voyage) {
+            throw $this->createNotFoundException('Voyage not found');
+        }
+        
         return $this->render('/back/manager/voyage/show.html.twig', [
             'voyage' => $voyage,
         ]);
     }
+
+   
 
     #[Route('/{id}/edit', name: 'app_voyage_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Voyage $voyage, EntityManagerInterface $entityManager): Response
