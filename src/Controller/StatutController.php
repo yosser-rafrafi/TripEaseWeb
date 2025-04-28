@@ -36,7 +36,7 @@ final class StatutController extends AbstractController{
         $currentUser = $this->getUser();
 
         return $this->render("/forum/statut/index.html.twig", [
-            'statuts' => $statutRepository->findAll(),
+            'statuts' => $statutRepository->findAllOrderedByDateDesc(),
             'base_template' => $template,
             'is_employee' => $isEmployee,
             'current_user' => $currentUser 

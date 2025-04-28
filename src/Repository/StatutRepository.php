@@ -16,6 +16,14 @@ class StatutRepository extends ServiceEntityRepository
         parent::__construct($registry, Statut::class);
     }
 
+    public function findAllOrderedByDateDesc(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.date_creation', 'Desc')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Statut[] Returns an array of Statut objects
 //     */
