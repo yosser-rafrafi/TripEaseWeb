@@ -37,15 +37,33 @@
     <h2 class="mb-4">📋 Liste des demandes d’avances</h2>
 
     <!-- Formulaire recherche -->
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="recherche" class="form-control" placeholder="🔍 Recherche par motif"
-                   value="{{ rechercheActuelle }}">
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Rechercher</button>
-        </div>
-    </form>
+<form method="get" class="row g-3 mb-4 align-items-center">
+  {# Colonne Recherche #}
+  <div class="col-md-4">
+    <input type="text"
+           name="recherche"
+           class="form-control"
+           placeholder="🔍 Recherche par motif"
+           value="{{ rechercheActuelle }}">
+  </div>
+
+  {# Colonne Bouton #}
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+  </div>
+
+  {# Colonne “vide” qui pousse la carte à droite #}
+  <div class="col d-flex justify-content-end">
+    <div id="currency-card" class="card">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <h5 class="card-title mb-0">Taux de Change Actuel:  </h5>
+        <p id="tnd-usd" class="mb-0">…</p>
+        <p  class="mb-0">| </p>
+        <p id="tnd-eur" class="mb-0">…</p>
+      </div>
+    </div>
+  </div>
+</form>
 
     <!-- Tableau -->
     <table class="table table-hover table-bordered shadow-sm rounded">
@@ -129,6 +147,21 @@
         params.set('order', order);
         window.location.search = params.toString(); // Rafraîchit la page avec les nouveaux paramètres
     }
+
+    
 </script>
+<script>
+  fetch('{{ path("currency_rates") }}')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('tnd-usd').textContent =
+        `1 TND = ${data.TND_USD.toFixed(2)} USD`;
+      document.getElementById('tnd-eur').textContent =
+        `1 TND = ${data.TND_EUR.toFixed(2)} EUR`;
+    })
+    .catch(console.error);
+</script>
+
+
 
 {% endblock %}
