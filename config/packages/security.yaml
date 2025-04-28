@@ -45,6 +45,8 @@ security:
         - { path: ^/travel-request, roles: ROLE_USER }
         - { path: ^/expense, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/forum, roles: ROLE_USER }
+
 
 when@test:
     security:
