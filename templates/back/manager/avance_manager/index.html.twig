@@ -82,6 +82,10 @@
                         <a href="{{ path('manager_avance_frais', {'id': demande.id}) }}" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation();">
                             <i class="bi bi-eye"></i> Voir dépenses
                         </a>
+                            <!-- Ajout du bouton pour générer le PDF -->
+    <a href="{{ path('avance_facture', {'id': demande.id}) }}" class="btn btn-outline-success btn-sm" onclick="event.stopPropagation();">
+        <i class="bi bi-file-earmark-pdf"></i> Générer PDF
+    </a>
                     </td>
                 </tr>
             {% else %}
