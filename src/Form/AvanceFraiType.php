@@ -15,38 +15,32 @@ class AvanceFraiType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            
-            ->add('montant_demande', NumberType::class, [
+            ->add('montantDemande', NumberType::class, [  // propriété camelCase
                 'label' => 'Montant demandé',
-                
-                'scale' => 2,  
-                'attr' => ['step' => '0.01'], 
+                'scale' => 2,
+                'attr'  => ['step' => '0.01'],
             ])
             ->add('devise', ChoiceType::class, [
-                'label' => 'Devise',
-                'choices' => [
-                    'EUR' => 'EUR',
-                    'USD' => 'USD',
-                    'TND' => 'TND',
-                ],
-                'required' => true, 
+                'label'   => 'Devise',
+                'choices' => array_combine(
+                    $options['currencies'],
+                    $options['currencies']                  
+                ),
+                'required' => true,
             ])
             ->add('motif', TextareaType::class, [
                 'label' => 'Motif',
-               
-                'attr' => ['rows' => 5], 
+                'attr'  => ['rows' => 5],
             ])
-            ->add('type_avance', ChoiceType::class, [
-                'label' => 'Type d\'avance',
+            ->add('typeAvance', ChoiceType::class, [
+                'label'   => 'Type d\'avance',
                 'choices' => [
                     'Avance sur frais' => 'avance',
-                    'Transport' => 'Transport',
-                    'Hébergement' => 'Hébergement',
-                    'Repas' => 'Repas',
-                    'Autre' => 'Autre',
-                    
+                    'Transport'        => 'Transport',
+                    'Hébergement'      => 'Hébergement',
+                    'Repas'            => 'Repas',
+                    'Autre'            => 'Autre',
                 ],
-                
             ]);
     }
 
@@ -54,6 +48,7 @@ class AvanceFraiType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AvanceFrai::class,
+            'currencies' => [],  // option pour la liste dynamique
         ]);
     }
 }

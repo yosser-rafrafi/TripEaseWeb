@@ -45,4 +45,13 @@ class CurrencyApiService
         $usdAmount = $amount / $this->exchangeRates[$fromCurrency];
         return $usdAmount * $this->exchangeRates[$toCurrency];
     }
+
+    public function getExchangeRates(): array
+{
+    if ($this->exchangeRates === null) {
+        $this->fetchExchangeRates();
+    }
+    return $this->exchangeRates;
+}
+
 }

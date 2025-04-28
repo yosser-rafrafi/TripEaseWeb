@@ -61,6 +61,7 @@ class AvanceFrai
     private ?\DateTimeInterface $dateDemande = null;
 
   
+  
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $date_validation = null;
 
@@ -73,7 +74,7 @@ class AvanceFrai
 
     public function __construct()
     {
-        $this->date_demande = new \DateTime();
+        $this->dateDemande = new \DateTime();
         $this->frais = new ArrayCollection();
     }
 
@@ -87,7 +88,11 @@ class AvanceFrai
     public function setVoyageId(int $voyage_id): self { $this->voyage_id = $voyage_id; return $this; }
 
     public function getMontantDemande(): ?float { return $this->montantDemande; }
-    public function setMontantDemande(float $montantDemande): self { $this->montant_demande = $montantDemande; return $this; }
+    public function setMontantDemande(float $montantDemande): self 
+    {
+        $this->montantDemande = $montantDemande; 
+        return $this;
+    }
 
     public function getMontantAccorde(): ?float { return $this->montant_accorde; }
     public function setMontantAccorde(?float $montant_accorde): self { $this->montant_accorde = $montant_accorde; return $this; }
