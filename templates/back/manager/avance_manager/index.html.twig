@@ -36,84 +36,68 @@
 <div class="container mt-4">
     <h2 class="mb-4">📋 Liste des demandes d’avances</h2>
 
+    <!-- Formulaire recherche -->
     <form method="get" class="row g-3 mb-4">
-        <div class="col-md-3">
-            <input type="text" name="recherche" class="form-control" placeholder="🔍 Recherche globale"
+        <div class="col-md-4">
+            <input type="text" name="recherche" class="form-control" placeholder="🔍 Recherche par motif"
                    value="{{ rechercheActuelle }}">
         </div>
         <div class="col-md-2">
-            <select name="statut" class="form-select">
-                <option value="all" {% if statutActuel == 'all' or not statutActuel %}selected{% endif %}>Tous les statuts</option>
-                <option value="en attente" {% if statutActuel == 'en attente' %}selected{% endif %}>⏳ En attente</option>
-                <option value="Traité" {% if statutActuel == 'Traité' %}selected{% endif %}>✅ Traité</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select name="devise" class="form-select">
-                <option value="all" {% if deviseActuelle == 'all' or not deviseActuelle %}selected{% endif %}>Toutes devises</option>
-                <option value="TND" {% if deviseActuelle == 'TND' %}selected{% endif %}>TND</option>
-                <option value="EUR" {% if deviseActuelle == 'EUR' %}selected{% endif %}>EUR</option>
-                <option value="USD" {% if deviseActuelle == 'USD' %}selected{% endif %}>USD</option>
-            </select>
-        </div>
-       
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary">Filtrer</button>
-            <a href="{{ path('manager_avances') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
         </div>
     </form>
-
-    <!-- Tri par date -->
-    <div class="mb-4">
-        <button type="button" class="btn btn-outline-secondary btn-sort" id="sortDateAsc">🔼 Date Ascendant</button>
-        <button type="button" class="btn btn-outline-secondary btn-sort" id="sortDateDesc">🔽 Date Descendant</button>
-    </div>
 
     <!-- Tableau -->
     <table class="table table-hover table-bordered shadow-sm rounded">
         <thead class="table-light">
             <tr>
-                <th>Montant demandé ⬇️</th>
+                <th><a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'sortBy': 'montantDemande', 'order': app.request.get('order') == 'ASC' ? 'DESC' : 'ASC'})) }}">Montant demandé ⬇️</a></th>
                 <th>Devise</th>
                 <th>Motif</th>
-                <th>Date de demande</th>
+                <th><a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'sortBy': 'dateDemande', 'order': app.request.get('order') == 'ASC' ? 'DESC' : 'ASC'})) }}">Date de demande 📅</a></th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for demande in demandes %}
-            <tr class="clickable-row" data-href="{{ path('manager_avance_show', {'id': demande.id}) }}">
-                <td>{{ demande.montantDemande }}</td>
-                <td>{{ demande.devise }}</td>
-                <td>{{ demande.motif|length > 20 ? demande.motif[:20] ~ '...' : demande.motif }}</td>
-                <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : 'Non spécifiée' }}</td>
-                <td>
-                    {% if demande.statut == 'Traité' %}
-                        <span class="badge bg-success">✅ Traité</span>
-                    {% else %}
-                        <span class="badge bg-warning text-dark">⏳ En attente</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if demande.statut != 'Traité' %}
-                        <a href="{{ path('manager_traiter_avance', {'id': demande.id}) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
-                            <i class="bi bi-pencil-square"></i> Traiter
+            {% for demande in demandes %}
+                <tr class="clickable-row" data-href="{{ path('manager_avance_show', {'id': demande.id}) }}">
+                    <td>{{ demande.montantDemande }}</td>
+                    <td>{{ demande.devise }}</td>
+                    <td>{{ demande.motif|length > 20 ? demande.motif[:20] ~ '...' : demande.motif }}</td>
+                    <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : 'Non spécifiée' }}</td>
+                    <td>
+                        {% if demande.statut == 'Traité' %}
+                            <span class="badge bg-success">✅ Traité</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">⏳ En attente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if demande.statut != 'Traité' %}
+                            <a href="{{ path('manager_traiter_avance', {'id': demande.id}) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
+                                <i class="bi bi-pencil-square"></i> Traiter
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('manager_avance_frais', {'id': demande.id}) }}" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation();">
+                            <i class="bi bi-eye"></i> Voir dépenses
                         </a>
-                    {% endif %}
-                    <a href="{{ path('manager_avance_frais', {'id': demande.id}) }}" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation();">
-                        <i class="bi bi-eye"></i> Voir dépenses
-                    </a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6" class="text-center">Aucune demande trouvée.</td>
-            </tr>
-        {% endfor %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucune demande trouvée.</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(demandes) }}
+    </div>
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

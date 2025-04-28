@@ -12,47 +12,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 class AvanceManagerController extends AbstractController
 {
     #[Route('/manager/avances', name: 'manager_avances')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
-        
-        $sortBy = $request->query->get('sortBy', 'date_demande');
-        $order = $request->query->get('order', 'ASC');
-
-      // tri dynamique
-        $queryBuilder = $em->getRepository(AvanceFrai::class)->createQueryBuilder('a')
-            ->orderBy('a.' . $sortBy, $order);
-
-       
+        $queryBuilder = $em->getRepository(AvanceFrai::class)->createQueryBuilder('a');
+    
+        // Recherche par motif
         $recherche = $request->query->get('recherche');
         if ($recherche) {
             $queryBuilder->andWhere('a.motif LIKE :recherche')
                          ->setParameter('recherche', '%' . $recherche . '%');
         }
-
-        $statut = $request->query->get('statut');
-        if ($statut && $statut != 'all') {
-            $queryBuilder->andWhere('a.statut = :statut')
-                         ->setParameter('statut', $statut);
+    
+        // Tri dynamique
+        $sortBy = $request->query->get('sortBy', 'dateDemande');
+        $order = strtoupper($request->query->get('order', 'DESC'));
+        if (!in_array($order, ['ASC', 'DESC'])) {
+            $order = 'DESC';
         }
-
-        $devise = $request->query->get('devise');
-        if ($devise && $devise != 'all') {
-            $queryBuilder->andWhere('a.devise = :devise')
-                         ->setParameter('devise', $devise);
-        }
-
-       
-        $demandes = $queryBuilder->getQuery()->getResult();
-
+        $queryBuilder->orderBy('a.' . $sortBy, $order);
+    
+        // Pagination
+        $demandes = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            5 // Nombre d'éléments par page
+        );
+    
         return $this->render('back/manager/avance_manager/index.html.twig', [
             'demandes' => $demandes,
             'rechercheActuelle' => $recherche,
-            'statutActuel' => $statut,
-            'deviseActuelle' => $devise,
         ]);
     }
     
