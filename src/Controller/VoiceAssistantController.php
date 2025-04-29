@@ -49,8 +49,8 @@ class VoiceAssistantController extends AbstractController
 
         // Ajout de logs pour déboguer
         // Log l'intention et les entités pour vérifier leur extraction
-       // $this->logger->info('Intent: ' . ($intent ?? 'Aucune intention détectée'));
-       // $this->logger->info('Entities: ' . json_encode($entities));
+        $this->logger->info('Intent: ' . ($intent ?? 'Aucune intention détectée'));
+        $this->logger->info('Entities: ' . json_encode($entities));
         $this->logger->info('Réponse complète Wit.ai : ' . json_encode($content));
 
         // Traitement en fonction de l'intention
@@ -62,8 +62,38 @@ class VoiceAssistantController extends AbstractController
                     'message' => 'Vous allez être redirigé vers le formulaire pour ajouter un nouveau voyage.',
                     'redirect_url' => $this->generateUrl('app_voyage_new'),
                 ]);
+            case 'app_voyage_statistics':
+                return $this->json([
+                    'action' => 'app_voyage_statistics',
+                    'message' => 'Vous allez être redirigé vers la page des statistiques',
+                    'redirect_url' => $this->generateUrl('app_voyage_statistics'),
+                ]);
+            case 'app_statut_index':
+                return $this->json([
+                    'action' => 'app_statut_index',
+                    'message' => 'Vous allez être redirigé vers la page du forum',
+                    'redirect_url' => $this->generateUrl('app_statut_index'),
+                ]);
+            case 'manager_avances':
+                return $this->json([
+                    'action' => 'manager_avances',
+                    'message' => 'Vous allez être redirigé vers la page des avances',
+                    'redirect_url' => $this->generateUrl('manager_avances'),
+                ]);
+            case 'app_hotel_index':
+                return $this->json([
+                    'action' => 'app_hotel_index',
+                    'message' => 'Vous allez être redirigé vers la page des Établissements Hôteliers',
+                    'redirect_url' => $this->generateUrl('app_hotel_index'),
+                ]);
+            case 'app_transport_index':
+                return $this->json([
+                    'action' => 'app_transport_index',
+                    'message' => 'Vous allez être redirigé vers la page des moyens de transports',
+                    'redirect_url' => $this->generateUrl('app_transport_index'),
+                ]);
 
-            case 'app_voyage_edit':
+            /*case 'app_voyage_edit':
                 // Logique pour modifier un voyage existant
                 if (isset($entities['trip_title'][0]['value'])) {
                     $title = $entities['trip_title'][0]['value'];
@@ -80,14 +110,9 @@ class VoiceAssistantController extends AbstractController
                     }
                 } else {
                     return $this->json(['response' => "Le titre du voyage n'a pas été trouvé dans la commande."]);
-                }
-            case 'app_voyage_statistics':
-                return $this->json([
-                    'action' => 'app_voyage_statistics',
-                    'message' => 'Vous allez être redirigé vers le formulaire pour ajouter un nouveau voyage.',
-                    'redirect_url' => $this->generateUrl('app_voyage_statistics'),
-                ]);
-            case 'app_voyage_delete':
+                }*/
+            
+            /*case 'app_voyage_delete':
                 // Initialisation de la variable title
                 $title = null;
             
@@ -123,7 +148,7 @@ class VoiceAssistantController extends AbstractController
             
                 // Si aucun titre n'est trouvé, renvoyer une réponse d'erreur
                 return $this->json(['response' => "Le titre du voyage n'a pas été trouvé dans la commande."]);
-                
+                */
             default:
                 return $this->json(['response' => "Désolé, je n'ai pas compris la demande."]);
         }
