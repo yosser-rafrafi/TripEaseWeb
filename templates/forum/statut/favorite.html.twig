@@ -1,0 +1,16 @@
+{# templates/forum/statut/favorites.html.twig #}
+{% extends base_template %}
+
+{% block body %}
+<h1>Your Favorites</h1>
+{% for reaction in favorites %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <p>{{ reaction.getStatut().getContenu() }}</p>
+      <p>Liked on: {{ reaction.getCreationDate()|date('Y-m-d') }}</p>
+    </div>
+  </div>
+{% else %}
+  <p>No favorites yet!</p>
+{% endfor %}
+{% endblock %}

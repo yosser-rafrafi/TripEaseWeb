@@ -28,6 +28,49 @@ class VoyageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findVoyagesByUserAndEtat(User $user, ?string $etat): array
+{
+    $qb = $this->createQueryBuilder('v')
+        ->innerJoin('v.users', 'u')
+        ->where('u = :user')
+        ->setParameter('user', $user)
+        ->andWhere('v.etat = :etat');
+
+    if ($etat) {
+        $qb->andWhere('v.etat = :etat')
+           ->setParameter('etat', $etat);
+    }
+
+    return $qb->getQuery()->getResult();
+}
+
+
+public function countDestinations(): array
+{
+    return $this->createQueryBuilder('v')
+        ->select('v.destination, COUNT(v.id) AS count')
+        ->groupBy('v.destination')
+        ->orderBy('count', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
+public function findVoyagesByMonth(): array
+{
+    $conn = $this->getEntityManager()->getConnection();
+    
+    $sql = "
+        SELECT 
+            EXTRACT(MONTH FROM v.date_depart) as month, 
+            COUNT(v.id) as count
+        FROM voyage v
+        GROUP BY month
+        ORDER BY month ASC
+    ";
+    
+    $stmt = $conn->executeQuery($sql);
+    return $stmt->fetchAllAssociative();
+}
 
 
 //    /**

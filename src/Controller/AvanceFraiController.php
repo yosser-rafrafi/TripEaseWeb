@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AvanceFrai;
+use App\Entity\User;
 use App\Form\AvanceFraiType;
 use App\Repository\AvanceFraiRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security; 
+use App\Service\CurrencyApiService;
 
 #[Route('/avance/frais', name: 'app_avance_frai_')]
 class AvanceFraiController extends AbstractController
@@ -18,13 +20,13 @@ class AvanceFraiController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(AvanceFraiRepository $avanceFraiRepository, Security $security): Response
     {
-        // Récupérer l'utilisateur connecté
+        
         $user = $security->getUser();
-    
+    /** @var \App\Entity\User $user */
         // Récupérer l'ID de l'utilisateur connecté
         $employe_id = $user->getId();
     
-        // Filtrer les avances de frais pour cet utilisateur (par employe_id)
+        
         $avanceFrais = $avanceFraiRepository->findBy(['employe_id' => $employe_id]);
     
         return $this->render('front/avance_frai/index.html.twig', [
@@ -38,26 +40,38 @@ class AvanceFraiController extends AbstractController
     
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, AvanceFraiRepository $avanceFraiRepository, Security $security): Response
-    {
-        $avanceFrai = new AvanceFrai();
+    public function new(
+        Request $request,
+        AvanceFraiRepository $avanceFraiRepository,
+        Security $security,
+        CurrencyApiService $currencyApiService
+    ): Response {
+        // Récupère et ordonne la liste des devises
+        $currencyApiService->fetchExchangeRates();
+        $codes     = array_keys($currencyApiService->getExchangeRates());
+        $preferred = ['TND','EUR','USD'];
+        $others    = array_diff($codes, $preferred);
+        sort($others);
+        $currencies = array_merge($preferred, $others);
     
-        $form = $this->createForm(AvanceFraiType::class, $avanceFrai);
+        $avanceFrai = new AvanceFrai();
+        $form = $this->createForm(AvanceFraiType::class, $avanceFrai, [
+            'currencies' => $currencies,
+        ]);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // ✅ Définir l'employé connecté AVANT de sauvegarder
+            /** @var User $user */
             $user = $security->getUser();
-           $avanceFrai->setEmployeId($user->getId());
-    
+            $avanceFrai->setEmployeId($user->getId());
             $avanceFraiRepository->save($avanceFrai, true);
     
             return $this->redirectToRoute('app_avance_frai_index', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->renderForm('front/avance_frai/new.html.twig', [
-            'avance_frai' => $avanceFrai,
-            'form' => $form,
+            'form'       => $form,
+            'currencies' => $currencies,  // utile aussi pour la calculatrice
         ]);
     }
     
@@ -98,4 +112,6 @@ class AvanceFraiController extends AbstractController
 
         return $this->redirectToRoute('app_avance_frai_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

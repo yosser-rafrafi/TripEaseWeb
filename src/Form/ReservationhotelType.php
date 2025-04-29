@@ -33,17 +33,13 @@ class ReservationhotelType extends AbstractType
                 'label' => 'Date de début',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La date de début est obligatoire']),
-                ],
+                
             ])
             ->add('date_fin', \Symfony\Component\Form\Extension\Core\Type\DateType::class, [
                 'label' => 'Date de fin',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La date de fin est obligatoire']),
-                ],
+                
             ])
             ->add('statut', ChoiceType::class, [
                 'label' => 'Statut',

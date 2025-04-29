@@ -12,7 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use App\Service\Ocr\AzureFormRecognizerService;
+use Symfony\Component\Form\FormError;
 #[Route('/frai')]
 final class FraiController extends AbstractController
 {
@@ -26,7 +27,7 @@ final class FraiController extends AbstractController
 
     
 
-    #[Route('/frai/linked/{avance_frai_id}', name: 'app_frai_linked_frais', methods: ['GET'])]
+    #[Route(path: '/frai/linked/{avance_frai_id}', name: 'app_frai_linked_frais', methods: ['GET'])]
     public function linkedFrais($avance_frai_id, FraiRepository $fraiRepository, AvanceFraiRepository $avanceFraiRepository): Response
     {
         // Trouver l'AvanceFrai par son ID
@@ -47,53 +48,90 @@ final class FraiController extends AbstractController
     }
     
 
-#[Route('/new/{avance_frai_id}', name: 'app_frai_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, AvanceFraiRepository $avanceFraiRepository, $avance_frai_id): Response
-{
-    // Récupérer l'avance de frais correspondant à l'ID passé en paramètre
-    $avanceFrai = $avanceFraiRepository->find($avance_frai_id);
-    
-    if (!$avanceFrai) {
-        throw $this->createNotFoundException('Avance de frais non trouvée');
-    }
-
-    $frai = new Frai();
-    
-    // Assigner l'ID de l'employé de l'AvanceFrai au Frai
-    $frai->setEmployeId($avanceFrai->getEmployeId());  // Utilisation de l'employe_id de l'AvanceFrai
-    
-    $frai->setAvanceFrai($avanceFrai);  // Lier le frais à l'avance de frais
-
-    // Créer le formulaire lié à l'entité Frai
-    $form = $this->createForm(FraiType::class, $frai);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Gérer le téléchargement du fichier PDF
-        $pdfFile = $form->get('pdf')->getData();
-        
-        if ($pdfFile) {
-            // Lire le fichier PDF en binaire et le stocker dans la base de données
-            $pdfContent = file_get_contents($pdfFile->getPathname());
-            $frai->setPdf($pdfContent); // Sauvegarder le contenu du PDF dans l'entité
+    #[Route('/new/{avance_frai_id}', name: 'app_frai_new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        AvanceFraiRepository $avanceFraiRepository,
+        AzureFormRecognizerService $ocrService,
+        int $avance_frai_id
+    ): Response {
+        // Récupérer l'avance de frais
+        $avanceFrai = $avanceFraiRepository->find($avance_frai_id);
+        if (!$avanceFrai) {
+            throw $this->createNotFoundException('Avance de frais non trouvée');
         }
 
-        // Persister l'entité Frai dans la base de données
-        $entityManager->persist($frai);
-        $entityManager->flush();
+        // Initialiser l'entité Frai
+        $frai = new Frai();
+        $frai->setEmployeId($avanceFrai->getEmployeId());
+        $frai->setAvanceFrai($avanceFrai);
 
-        // Rediriger vers la page de détails de l'avance de frais après succès
-        return $this->redirectToRoute('app_avance_frai_show', ['id' => $avanceFrai->getId()]);
-    }
+        $form = $this->createForm(FraiType::class, $frai);
+        $form->handleRequest($request);
 
-    // Si le formulaire n'est pas soumis ou pas valide, afficher à nouveau le formulaire
-    return $this->render('front/frai/new.html.twig', [
-        'frai' => $frai,
-        'form' => $form->createView(),
-    ]);
-}
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $errors = [];
+                // Traitement du PDF justificatif
+                $pdfFile = $form->get('pdf')->getData();
+                if ($pdfFile) {
+                    $filePath = $pdfFile->getPathname();
+                    $frai->setPdf(file_get_contents($filePath));
+
+                    // Appel au service OCR Azure
+                    $extractedText = $ocrService->extractTextFromInvoice($filePath);
+
+                    // Extraction du montant détecté
+                    $extractedAmount = null;
+                    if (preg_match('/(\d+[\.,]\d{2})/', $extractedText, $m)) {
+                        $extractedAmount = floatval(str_replace(',', '.', $m[1]));
+                        if (abs($extractedAmount - $frai->getMontant()) > 0.01) {
+                            $errors[] = sprintf(
+                                'Le montant saisi (%.2f) ne correspond pas au montant détecté (%.2f).',
+                                $frai->getMontant(),
+                                $extractedAmount
+                            );
+                        }
+                    }
+
+                    // Extraction de la date détectée
+                    $extractedDate = null;
+                    if (preg_match('/(\d{2}[\/\-]\d{2}[\/\-]\d{4})/', $extractedText, $d)) {
+                        $extractedDate = \DateTime::createFromFormat('d/m/Y', $d[1]) ?: new \DateTime($d[1]);
+                        if ($frai->getDateDepense() && $extractedDate->format('Y-m-d') !== $frai->getDateDepense()->format('Y-m-d')) {
+                            $errors[] = sprintf(
+                                'La date saisie (%s) ne correspond pas à la date détectée (%s).',
+                                $frai->getDateDepense()->format('Y-m-d'),
+                                $extractedDate->format('Y-m-d')
+                            );
+                        }
+                    }
+
+                    // Ajouter les erreurs au formulaire
+                    foreach ($errors as $errorMessage) {
+                        $form->addError(new FormError($errorMessage));
+                    }
+                }
+
+                // Si pas d'erreurs OCR, persister
+                if (0 === count($form->getErrors(true))) {
+                    $entityManager->persist($frai);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('app_avance_frai_index', ['id' => $avanceFrai->getId()]);
+                }
+            }
+            // En cas de soumission invalide ou erreurs OCR, rester sur le formulaire
+        }
+
+        return $this->render('front/frai/new.html.twig', [
+            'frai' => $frai,
+            'form' => $form->createView(),
+        ]);
+    } 
     
-// src/Controller/FraiController.php
+    
+
 
 #[Route('/frai/{id}/pdf', name: 'frai_pdf')]
 public function viewPdf(Frai $frai): Response

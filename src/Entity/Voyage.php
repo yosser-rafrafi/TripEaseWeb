@@ -47,7 +47,7 @@ class Voyage
     private ?int $budget = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $etat = null;
+    private ?string $etat = 'En cours'; // Valeur par défaut
 
 
     #[ORM\Column(type: 'string', nullable: false)]
@@ -66,15 +66,15 @@ class Voyage
         
 
     #[ORM\Column(name: 'numeroVol', type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: "Le numéro de vol est obligatoire")]
     #[Assert\Regex(
         pattern: "/^[A-Z]{2}[0-9]{3,4}$/",
         message: "Le numéro de vol doit commencer par 2 lettres suivies de 3 ou 4 chiffres"
     )]
     private ?string $numeroVol = null;
 
-    #[ORM\OneToMany(targetEntity: Flight::class, mappedBy: 'voyage')]
-    private Collection $flights;
+    #[ORM\OneToOne(mappedBy: 'voyage', targetEntity: Flight::class, cascade: ['persist', 'remove'])]
+    private ?Flight $flight = null;
+    
     
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'voyages')]
     #[ORM\JoinTable(name: 'voyage_user')]
@@ -113,8 +113,9 @@ class Voyage
     public function __construct()
     {
         $this->missions = new ArrayCollection();
-        $this->flights = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->calculerEtat();
+
 
         
     }
@@ -123,46 +124,58 @@ class Voyage
 
     public function getId(): ?int
     {
+        $this->calculerEtat();
+
         return $this->id;
+        
     }
 
     public function setId(int $id): self
     {
         $this->id = $id;
+        $this->calculerEtat();
+
         return $this;
     }
 
 
     public function getDestination(): ?string
     {
+        $this->calculerEtat();
         return $this->destination;
+        
     }
 
     public function setDestination(string $destination): static
     {
         $this->destination = $destination;
+        $this->calculerEtat();
 
         return $this;
     }
 
     public function getDateDepart(): ?\DateTimeInterface
     {
+        $this->calculerEtat();
         return $this->date_depart;
     }
     
     public function setDateDepart(?\DateTimeInterface $date_depart): static
     {
+        $this->calculerEtat();
         $this->date_depart = $date_depart;
         return $this;
     }
     
     public function getDateRetour(): ?\DateTimeInterface
     {
+        $this->calculerEtat();
         return $this->date_retour;
     }
     
     public function setDateRetour(?\DateTimeInterface $date_retour): static
     {
+        $this->calculerEtat();
         $this->date_retour = $date_retour;
         return $this;
     }
@@ -183,12 +196,27 @@ class Voyage
     }
 
 
+    // Toujours stocké mais recalculable
+    public function calculerEtat(): void
+    {
+        $aujourdhui = new \DateTime();
+    
+        if ($this-> date_retour < $aujourdhui) {
+            $this->setEtat('Terminé');
+        } elseif ($this-> date_depart > $aujourdhui) {
+            $this->setEtat('Pas encore commencé');
+        } else {
+            $this->setEtat('En cours') ;
+        }
+    }
+
+    // Utilisé pour affichage dynamique
     public function getEtat(): ?string
     {
         return $this->etat;
     }
 
-    public function setEtat(?string $etat): static
+    public function setEtat(string $etat): static
     {
         $this->etat = $etat;
 
@@ -253,11 +281,6 @@ class Voyage
         $this->user = $user;
         return $this;
     }
-    
-    
-    
-    
-
 
 
     public function getNumeroVol(): ?string
@@ -272,38 +295,24 @@ class Voyage
         return $this;
     }
 
-    
-
-
-    /**
-     * @return Collection<int, Flight>
-     */
-    public function getFlights(): Collection
+    public function getFlight(): ?Flight
     {
-        return $this->flights;
+        return $this->flight;
     }
-
-    public function addFlight(Flight $flight): static
+    
+    public function setFlight(?Flight $flight): self
     {
-        if (!$this->flights->contains($flight)) {
-            $this->flights->add($flight);
+        $this->flight = $flight;
+    
+        // Important pour synchroniser l'autre côté
+        if ($flight !== null && $flight->getVoyage() !== $this) {
             $flight->setVoyage($this);
         }
-
+    
         return $this;
     }
+    
 
-    public function removeFlight(Flight $flight): static
-    {
-        if ($this->flights->removeElement($flight)) {
-            // set the owning side to null (unless already changed)
-            if ($flight->getVoyage() === $this) {
-                $flight->setVoyage(null);
-            }
-        }
-
-        return $this;
-    }
 
    
 

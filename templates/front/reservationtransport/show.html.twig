@@ -4,11 +4,20 @@
 
 {% block body %}
     <div class="container mt-4">
-        <div class="page-title">
-            <div class="title_left">
-                <h5><a href="{{ path('app_reservationtransport_index') }}">Back to Reservation List</a></h5>
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <img src="{{ asset('assets/images/transport/employe.png') }}" alt="Transport Image" class="img-fluid rounded shadow-lg" style="max-height: 300px; object-fit: cover; width: 100%;">
             </div>
         </div>
+    
+        <div class="page-title">
+            <div class="title_left">
+                <a href="{{ path('app_reservationtransport_index') }}" class="btn" style="background: linear-gradient(to right, #4e73df, #1cc88a); color: white;">
+                    <i class="fa fa-calendar-check me-1"></i> ← Back to Reservation List
+                </a>
+            </div>
+        </div>
+
 
         <div class="clearfix"></div>
 

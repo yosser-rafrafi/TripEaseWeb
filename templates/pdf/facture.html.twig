@@ -1,0 +1,165 @@
+<style>
+    body {
+        font-family: DejaVu Sans, sans-serif;
+        font-size: 12px;
+        margin: 30px;
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .ref-facture {
+        text-align: right;
+        font-size: 14px;
+        margin-bottom: 20px;
+        color: #555;
+    }
+
+    .section {
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-weight: bold;
+        font-size: 15px;
+        color: #1a5276;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+
+    .block-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+
+    .block-table td {
+        vertical-align: top;
+        padding: 15px;
+        border: 1px solid #ccc;
+        background-color: #ffffff;
+        border-radius: 5px;
+        width: 50%;
+    }
+
+    table.frais {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+    }
+
+    table.frais th {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+    }
+
+    table.frais td {
+        border: 1px solid #999;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .signatures {
+        width: 100%;
+        margin-top: 80px;
+    }
+
+    .signatures td {
+        width: 50%;
+        text-align: center;
+        padding-top: 40px;
+    }
+
+    .signature-title {
+        font-weight: bold;
+        text-decoration: underline;
+        color: #2c3e50;
+    }
+</style>
+
+<h1>Facture - Avance sur Frais</h1>
+<div class="ref-facture">Réf. facture : FAC-{{ '%04d'|format(avance_frai.id) }}</div>
+
+<!-- Infos Employé -->
+<div class="section">
+    <div class="section-title">👤 Informations Employé</div>
+    <p><strong>Nom :</strong> {{ user ? user.prenom ~ ' ' ~ user.nom : 'Inconnu' }}</p>
+</div>
+
+<!-- Demande & Traitement côte à côte -->
+<table class="block-table">
+    <tr>
+        <td>
+            <div class="section-title">📌 Demande d'Avance</div>
+            <p><strong>Type :</strong> {{ avance_frai.typeAvance }}</p>
+            <p><strong>Montant demandé :</strong> {{ avance_frai.montantDemande }} {{ avance_frai.devise }}</p>
+            <p><strong>Motif :</strong> {{ avance_frai.motif }}</p>
+            <p><strong>Date demande :</strong> {{ avance_frai.dateDemande|date('d/m/Y') }}</p>
+        </td>
+        <td>
+            <div class="section-title">📝 Traitement de l'Avance</div>
+            <p><strong>Montant accordé :</strong> {{ avance_frai.montantAccorde }} {{ avance_frai.devise }}</p>
+            <p><strong>Date validation :</strong> {{ avance_frai.dateValidation ? avance_frai.dateValidation|date('d/m/Y') : 'Non validée' }}</p>
+            <p><strong>Statut :</strong> {{ avance_frai.statut }}</p>
+            <p><strong>Commentaire :</strong> {{ avance_frai.commentaireManager ?: '-' }}</p>
+        </td>
+    </tr>
+</table>
+
+<!-- Frais associés -->
+<!-- Frais associés -->
+<div class="section">
+    <div class="section-title">💼 Frais Associés</div>
+    <table class="frais">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set total_frais = 0 %}
+            {% for frais in fraisList %}
+                <tr>
+                    <td>{{ frais.type }}</td>
+                    <td>{{ frais.montant }}</td>
+                    <td>{{ frais.dateDepense|date('d/m/Y') }}</td>
+                </tr>
+                {% set total_frais = total_frais + frais.montant %}
+            {% else %}
+                <tr><td colspan="3">Aucun frais associé</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Montant total des frais -->
+    {% if total_frais > 0 %}
+        <p><strong>Total des frais :</strong> {{ total_frais }} {{ avance_frai.devise }}</p>
+    {% else %}
+        <p><strong>Total des frais :</strong> Aucun frais</p>
+    {% endif %}
+</div>
+
+<!-- Signatures -->
+<table class="signatures">
+    <tr>
+        <td>
+            <div class="signature-title">Signature Employé</div>
+        </td>
+        <td>
+            <div class="signature-title">Signature Entreprise</div>
+        </td>
+    </tr>
+</table>

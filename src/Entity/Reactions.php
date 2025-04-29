@@ -19,7 +19,7 @@ class Reactions
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: Statut::class)]
+    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'reactions')]
     #[ORM\JoinColumn(name: 'statut_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private ?Statut $statut = null;
 

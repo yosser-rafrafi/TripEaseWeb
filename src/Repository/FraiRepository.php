@@ -16,6 +16,15 @@ class FraiRepository extends ServiceEntityRepository
         parent::__construct($registry, Frai::class);
     }
 
+    public function findTotalByType(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('f.type AS type, SUM(f.montant) AS total')
+            ->groupBy('f.type')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 //    /**
 //     * @return Frai[] Returns an array of Frai objects
 //     */

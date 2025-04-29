@@ -15,34 +15,32 @@ class AvanceFraiType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            
-            ->add('montant_demande', NumberType::class, [
+            ->add('montantDemande', NumberType::class, [  // propriété camelCase
                 'label' => 'Montant demandé',
-                'required' => true,
-                'scale' => 2,  // Précise le nombre de décimales
-                'attr' => ['step' => '0.01'],  // Permet d'accepter des décimales
+                'scale' => 2,
+                'attr'  => ['step' => '0.01'],
             ])
             ->add('devise', ChoiceType::class, [
-                'label' => 'Devise',
-                'choices' => [
-                    'EUR' => 'EUR',
-                    'USD' => 'USD',
-                    'TND' => 'TND',
-                ],
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
+                'label'   => 'Devise',
+                'choices' => array_combine(
+                    $options['currencies'],
+                    $options['currencies']                  
+                ),
+                'required' => true,
             ])
             ->add('motif', TextareaType::class, [
                 'label' => 'Motif',
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
-                'attr' => ['rows' => 5], // Optionnel, pour définir la hauteur du textarea
+                'attr'  => ['rows' => 5],
             ])
-            ->add('type_avance', ChoiceType::class, [
-                'label' => 'Type d\'avance',
+            ->add('typeAvance', ChoiceType::class, [
+                'label'   => 'Type d\'avance',
                 'choices' => [
                     'Avance sur frais' => 'avance',
-                    'Remboursement' => 'remboursement',
+                    'Transport'        => 'Transport',
+                    'Hébergement'      => 'Hébergement',
+                    'Repas'            => 'Repas',
+                    'Autre'            => 'Autre',
                 ],
-                'required' => true,  // On peut ajouter "required" si c'est un champ obligatoire
             ]);
     }
 
@@ -50,6 +48,7 @@ class AvanceFraiType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AvanceFrai::class,
+            'currencies' => [],  // option pour la liste dynamique
         ]);
     }
 }

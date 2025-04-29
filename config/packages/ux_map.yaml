@@ -1,0 +1,4 @@
+ux_map:
+    google_maps:
+        default_map_id: 'default'  # obligatoire (n'importe quel id par défaut)
+    renderer: 'google'

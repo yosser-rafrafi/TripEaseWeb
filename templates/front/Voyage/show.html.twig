@@ -1,112 +1,163 @@
 {% extends 'front/employee_home/index.html.twig' %}
 
-{% block title %}Voyage{% endblock %}
+{% block title %}Détails du Voyage{% endblock %}
 
 {% block body %}
-    <h1>Voyage</h1>
+<style>
+    .map-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        flex: 1;
+        min-width: 300px;
+    }
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ voyage.id }}</td>
-            </tr>
-            <tr>
-                <th>Destination</th>
-                <td>{{ voyage.destination }}</td>
-            </tr>
-            <tr>
-                <th>Date_depart</th>
-                <td>{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_retour</th>
-                <td>{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Budget</th>
-                <td>{{ voyage.budget }}</td>
-            </tr>
-            <tr>
-                <th>Etat</th>
-                <td>{{ voyage.etat }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ voyage.title }}</td>
-            </tr>
-            <tr>
-                <th>UserId</th>
-                <td>{{ voyage.user ? voyage.user.id : '' }}</td>
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+    }
 
-            </tr>
-            <tr>
-                <th>NumeroVol</th>
-                <td>{{ voyage.numeroVol }}</td>
-            </tr>
-        </tbody>
-    </table>
+    .voyage-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin: 50px;
+        padding: 30px;
+    }
 
-    <h2>Missions liées à ce voyage</h2>
-{% if voyage.missions|length > 0 %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Lieu</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for mission in voyage.missions %}
-            <tr>
-                <td>{{ mission.id }}</td>
-                <td>{{ mission.title }}</td>
-                <td>{{ mission.lieu }}</td>
-                <td>{{ mission.dateDebut ? mission.dateDebut|date('Y-m-d H:i') : '' }}</td>
-                <td>{{ mission.dateFin ? mission.dateFin|date('Y-m-d H:i') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_mission_show', {'id': mission.id}) }}">voir</a> |
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Aucune mission associée à ce voyage.</p>
-{% endif %}
+    .info-box, .missions-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        flex: 1;
+        min-width: 300px;
+    }
 
+    .info-title, .mission-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #8cddcd;
+        padding-bottom: 10px;
+    }
 
-{% if voyage.users|length > 0 %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in voyage.users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.nom }}</td>
-                <td>{{ user.prenom }}</td>
-                <td>{{ user.email }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Aucun employe affecté à ce voyage.</p>
-{% endif %}
+    .info-item {
+        margin-bottom: 12px;
+    }
 
-    <a href="{{ path('app_my_travels') }}">back to list</a>
+    .info-label {
+        font-weight: bold;
+        color: #34495e;
+    }
 
-    
+    .mission-link {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: #2980b9;
+        text-decoration: none;
+    }
 
+    .mission-link:hover {
+        text-decoration: underline;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        color: #8cddcd;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="voyage-container">
+    <div class="info-box">
+        <div class="info-title">Informations du Voyage</div>
+        <div class="info-item"><span class="info-label">Titre :</span> {{ voyage.title }}</div>
+        <div class="info-item"><span class="info-label">Destination :</span> {{ voyage.destination }}</div>
+        <div class="info-item"><span class="info-label">Date Départ :</span> {{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</div>
+        <div class="info-item"><span class="info-label">Date Retour :</span> {{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</div>
+        <div class="info-item"><span class="info-label">Budget :</span> {{ voyage.budget }} €</div>
+        <div class="info-item"><span class="info-label">État :</span> {{ voyage.etat }}</div>
+        <div class="info-item"><span class="info-label">Numéro de vol :</span>
+            {% if voyage.flight %}
+                <a href="{{ path('app_flight_show', {'id': voyage.flight.id}) }}">
+                    {{ voyage.flight.flight_number}}
+                </a>
+            {% else %}
+                <span class="text-muted">Aucun vol lié</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="missions-box">
+        <div class="mission-title">Missions associées</div>
+        {% if voyage.missions|length > 0 %}
+            {% for mission in voyage.missions %}
+                <a class="mission-link" href="{{ path('app_mission_employee_show', {'id': mission.id}) }}">
+                    📌 {{ mission.title }}
+                </a>
+            {% endfor %}
+        {% else %}
+            <p>Aucune mission associée à ce voyage.</p>
+        {% endif %}
+    </div>
+
+    <div class="map-box">
+        <div class="info-title">📍 Localisation</div>
+        <div id="map"></div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize map
+        var map = L.map('map').setView([48.8566, 2.3522], 13); // Default to Paris
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Get destination from your data
+        var destination = "{{ voyage.destination|escape('js') }}";
+
+        // Use OpenStreetMap's Nominatim service for geocoding
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    var lat = parseFloat(data[0].lat);
+                    var lon = parseFloat(data[0].lon);
+                    
+                    // Center map on location
+                    map.setView([lat, lon], 13);
+                    
+                    // Add marker
+                    L.marker([lat, lon])
+                        .addTo(map)
+                        .bindPopup(destination)
+                        .openPopup();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching location data:', error);
+            });
+    });
+</script>
+
+<a href="{{ path('app_my_travels') }}" class="back-link">← Retour à la liste</a>
 {% endblock %}

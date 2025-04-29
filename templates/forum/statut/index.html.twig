@@ -1,98 +1,228 @@
 {% extends base_template %}
+{% block nav %}
+      <ul>
+          <li><a href="{{ path('app_employee_home') }}" >Home</a></li>
+          <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+          <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
 
-{% block body %}
-<section style="background-color: #eee;">
-  <div class="container my-5 py-5">
+          <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+              <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
 
-    {# Flash messages #}
-    {% for label, messages in app.flashes %}
-      {% for message in messages %}
-        <div class="alert alert-{{ label }} mt-3">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endfor %}
+          <li><a href="{{ path('app_statut_index') }}" class="active">Forum</a></li>
 
-{% if is_employee %}
-      <div class="mb-4 text-end">
-      <a href="{{ path('app_statut_new') }}" class="btn btn-success">
-        <i class="fas fa-plus me-2"></i> New Statut
-      </a>
-    </div>
+          <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+              <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+          </li>
 
-{% endif %}
-
-    <div class="row d-flex justify-content-center">
-      <div class="col-md-12 col-lg-10 col-xl-8">
-
-        {% for statut in statuts %}
-          <div class="card mb-4">
-            <div class="card-body">
-              <div class="d-flex flex-start align-items-center">
-                <img class="rounded-circle shadow-1-strong me-3"
-                  src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp"
-                  alt="avatar" width="60" height="60" />
-                <div>
-                  <h6 class="fw-bold text-primary mb-1">{{ statut.user.prenom }}</h6>
-                  <p class="text-muted small mb-0">
-                    Shared publicly - {{ statut.dateCreation|date('Y-m-d') }}
-                  </p>
-                </div>
-              </div>
-
-              <p class="mt-3 mb-4 pb-2">{{ statut.contenu }}</p>
-
-              <div class="d-flex align-items-center gap-2">
-                <a href="{{ path('app_statut_show', {'id': statut.id}) }}" class="btn btn-info btn-sm">
-                  <i class="fas fa-eye me-1"></i> View
-                </a>
-
-                <a href="{{ path('app_statut_edit', {'id': statut.id}) }}" class="btn btn-warning btn-sm">
-                  <i class="fas fa-edit me-1"></i> Edit
-                </a>
-
-                <form action="{{ path('app_statut_delete', {'id': statut.id}) }}" method="post" onsubmit="return confirm('Are you sure?');" style="display:inline;">
-                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statut.id) }}">
-                  <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="fas fa-trash me-1"></i> Delete
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            {# Show related comments #}
-            {% include 'forum/commentaire/index.html.twig' with {'commentaires': statut.commentaires} %}
-
-            {# Comment submission form #}
-            <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
-              <form method="post" action="{{ path('app_commentaire_new', {'statutId': statut.id}) }}">
-                <div class="d-flex flex-start w-100">
-                  <img class="rounded-circle shadow-1-strong me-3"
-                       src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp"
-                       alt="avatar" width="40" height="40" />
-                  <div class="form-outline w-100">
-<textarea name="contenu" class="form-control" rows="4" style="background: #fff;"></textarea>
-                    <label class="form-label">Message</label>
-                  </div>
-                </div>
-
-                <input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ statut.id) }}">
-
-                <div class="float-end mt-2 pt-1">
-                {# Champ caché pour passer l'ID du statut au formulaire #}
-                  <input type="hidden" name="statut_id" value="{{ statut.id }}">
-                  <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
-                  <button type="reset" class="btn btn-outline-primary btn-sm">Cancel</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-        {% else %}
-          <div class="alert alert-warning">No posts available.</div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</section>
+           
+          </li>
+        </ul>
 {% endblock %}
+{% block body %}
+
+	<section class="bg-light py-5">
+		<div
+			class="container">
+
+			{# Flash Messages #}
+			<div class="row justify-content-center">
+				{% for label, messages in app.flashes %}
+					{% for message in messages %}
+						<div class="alert alert-{{ label }} text-center col-md-10">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+			</div>
+
+			{% if is_employee %}
+				{# New Post Section #}
+				<div class="row justify-content-center mb-4">
+					<div class="col-md-10">
+						<div class="card shadow-sm rounded-4">
+							<div class="card-body">
+								<form method="post" action="{{ path('app_statut_new') }}" id="newPostForm" enctype="multipart/form-data" novalidate>
+									<div class="mb-3">
+										<textarea id="postContent" name="contenu" class="form-control rounded-4" rows="3" placeholder="What's on your mind?"></textarea>
+									</div>
+
+									{# Media Preview Area #}
+									<div id="mediaPreview" class="mb-3 text-center" style="display: none;">
+										<div class="preview-container">
+											<img id="imagePreview" class="img-fluid rounded-4" style="max-height: 300px; display: none;">
+											<video id="videoPreview" class="w-100 rounded-4" controls style="max-height: 300px; display: none;"></video>
+											<button type="button" class="btn btn-danger btn-sm rounded-pill mt-2" onclick="ForumHandler.removeMedia()">
+												<i class="fas fa-times"></i>
+												Remove
+											</button>
+										</div>
+									</div>
+
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<input type="file" name="media" id="mediaInput" accept="image/*,video/*" style="display: none;">
+											<button type="button" class="btn btn-outline-primary rounded-pill" onclick="document.getElementById('mediaInput').click()">
+												<i class="fas fa-image"></i>
+												Photo/Video
+											</button>
+											<span id="selectedFileName" class="ms-2"></span>
+										</div>
+										<div class="d-flex align-items-center gap-2">
+											<select id="languageSelect" class="form-select form-select-sm rounded-pill" style="width: auto;">
+												<option value="en-US" selected>English</option>
+												<option value="fr-FR">Français</option>
+											</select>
+											<button type="button" class="btn btn-outline-secondary rounded-pill" id="voiceBtn">
+												<i class="fas fa-microphone"></i>
+											</button>
+											<button type="reset" class="btn btn-light rounded-pill" id="cancelPost">Cancel</button>
+											<button type="submit" class="btn btn-primary rounded-pill">Share</button>
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			{# Posts List #}
+			<div class="row justify-content-center">
+				<div class="col-md-10">
+					{% for statut in statuts %}
+						<div class="card shadow-sm rounded-4 mb-4" id="post-{{ statut.id }}">
+							<div
+								class="card-body">
+
+								{# User Info #}
+								<div class="d-flex align-items-center mb-3">
+									<img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" class="rounded-circle shadow me-3" width="60" height="60" alt="avatar">
+									<div>
+										<h6 class="fw-bold text-primary mb-0">{{ statut.user.prenom }}</h6>
+										<small class="text-muted">Shared publicly -
+											{{ statut.dateCreation|date('Y-m-d') }}</small>
+									</div>
+								</div>
+
+								{# Post Content #}
+								<div class=" post-content mb-3" id="translateContainer-post-{{ statut.id }}">
+									<p class="post-text">{{ statut.contenu }}</p>
+									<select id="languageSelect-post-{{ statut.id }}" class="form-select form-select-sm rounded-pill" style="width: auto; display: inline-block;">
+										<option value="en">English</option>
+										<option value="fr" selected>Français</option>
+										<option value="ar">العربية</option>
+									</select>
+                  					<button type="button" onclick="translateText({{ statut.id }},'post')" class=" btn btn-sm btn-outline-secondary ">
+										<i class="fas fa-globe me-2"></i>Translate
+									</button>
+									<div class="translation-status" id="post-translation-status-{{ statut.id }}" style="display:none;">
+										<span class="loader"></span>
+										<span class="status-text">Translating...</span>
+									</div>
+								</div>
+
+								{# Media Content #}
+								{% if statut.mediaUrl %}
+									<div class="text-center mb-3">
+										{% if statut.typeContenu == 'image' %}
+											<img src="{{ statut.mediaUrl }}" class="img-fluid rounded-4" style="max-height: 500px;" alt="Post Image">
+										{% elseif statut.typeContenu == 'video' %}
+											<video controls class="w-100 rounded-4" style="max-height: 500px;">
+												<source src="{{ statut.mediaUrl }}" type="video/mp4">
+												Your browser does not support the video tag.
+											</video>
+										{% endif %}
+									</div>
+								{% endif %}
+
+								{# Action Buttons #}
+								<div class="d-flex justify-content-center flex-wrap gap-2">
+									{% set userReaction = statut.getReactions()|filter(r => (r.user is not null) and (r.user.id == app.user.id))|first %}
+
+									<button type="button" class="btn reaction-button {% if userReaction and userReaction.type == 'LIKE' %}btn-secondary{% else %}btn-outline-secondary{% endif %} rounded-pill" data-action="like" data-statut-id="{{ statut.id }}">
+										<i class="fas fa-thumbs-up me-1"></i>
+										<span class="like-count">{{ statut.getReactions()|filter(r => r.type == 'LIKE')|length }}</span>
+									</button>
+
+									<button type="button" class="btn  reaction-button {% if userReaction and userReaction.type == 'DISLIKE' %}btn-secondary {% else %}btn-outline-secondary{% endif %} rounded-pill" data-action="dislike" data-statut-id="{{ statut.id }}">
+										<i class="fas fa-thumbs-down me-1"></i>
+										<span class="dislike-count">{{ statut.getReactions()|filter(r => r.type == 'DISLIKE')|length }}</span>
+									</button>
+
+									<form method="post" novalidate>
+										<button type="button" class="btn btn-outline-secondary rounded-pill">
+											<i class="fas fa-heart"></i>
+										</button>
+
+									</form>
+
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_statut_show', {'id': statut.id}) }}" class="btn btn-outline-secondary rounded-pill">
+											<i class="fas fa-eye"></i>
+										</a>
+									{% endif %}
+
+									{% if statut.user.id == app.user.id %}
+										<button type="button" class=" edit-post btn btn-outline-secondary rounded-pill" data-post-id="{{ statut.id }}">
+											<i class="fas fa-edit"></i>
+										</button>
+
+										<form action="{{ path('app_statut_delete', {'id': statut.id}) }}" method="post" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statut.id) }}">
+											<button type="submit" class="btn btn-outline-secondary rounded-pill">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+
+									{% endif %}
+									
+								</div>
+
+								{# Comments Section #}
+								<div class="mt-4">
+									{% include 'forum/commentaire/index.html.twig' with {'commentaires': statut.commentaires} %}
+								</div>
+
+								{# Comment Form #}
+								<div class="card-footer bg-white border-0 mt-3">
+									<form method="post" action="{{ path('app_commentaire_new', {'statutId': statut.id}) }}" novalidate>
+										<div class="d-flex align-items-start">
+											<img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" class="rounded-circle shadow me-3" width="40" height="40" alt="avatar">
+											<textarea name="contenu" class="form-control rounded-4" rows="2" placeholder="Write a comment..."></textarea>
+										</div>
+										<input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ statut.id) }}">
+										<div class="text-end mt-2">
+											<button type="submit" class="btn btn-sm btn-primary rounded-pill">Post</button>
+											<button type="reset" class="btn btn-sm btn-outline-primary rounded-pill">Cancel</button>
+										</div>
+									</form>
+								</div>
+
+							</div>
+						</div>
+					{% else %}
+						<div class="alert alert-warning text-center">No posts available.</div>
+					{% endfor %}
+				</div>
+			</div>
+		</section>
+
+		<script src="{{ asset('assets/js/forum.js') }}"></script>
+		<script>
+			ForumHandler.init({editToken: '{{ csrf_token('edit-post') }}', removeMediaToken: '{{ csrf_token('remove-media') }}'});
+		</script>
+		<script src="{{ asset('assets/js/voice-input.js') }}"></script>
+	{% endblock %}
+
+	{% block javascripts %}
+		{{ parent() }}
+	{% endblock %}

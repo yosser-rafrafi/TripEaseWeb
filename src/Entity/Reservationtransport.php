@@ -5,9 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReservationtransportRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints as CustomAssert;
 
 #[ORM\Entity(repositoryClass: ReservationtransportRepository::class)]
 #[ORM\Table(name: 'reservationtransport')]
+
+
 class Reservationtransport
 {
     #[ORM\Id]
@@ -24,12 +27,17 @@ class Reservationtransport
     #[ORM\JoinColumn(name: 'id_transport', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
     #[Assert\NotNull(message: "Le transport est requis.")]
     private ?Transport $transport = null;
+
+  
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "Le format de la date est invalide.")]
+    #[Assert\GreaterThan("today", message: "La date de réservation doit être dans le futur.")]
+    private ?\DateTimeInterface $date_reservation_fin = null;
     
     #[ORM\Column(type: 'datetime', nullable: true)]
     #[Assert\Type(type: \DateTimeInterface::class, message: "Le format de la date est invalide.")]
     #[Assert\GreaterThan("today", message: "La date de réservation doit être dans le futur.")]
     private ?\DateTimeInterface $date_reservation = null;
-    
 
     #[ORM\Column(type: 'string', length: 20, nullable: false)]
     #[Assert\NotBlank(message: "Le type de réservation est requis.")]
@@ -94,6 +102,18 @@ class Reservationtransport
     public function setDateReservation(\DateTimeInterface $date_reservation): static
     {
         $this->date_reservation = $date_reservation;
+        return $this;
+    }
+
+    public function getDateReservationFin(): ?\DateTimeInterface
+    {
+        return $this->date_reservation_fin;
+    }
+    
+    public function setDateReservationFin(?\DateTimeInterface $date_reservation_fin): self
+    {
+        $this->date_reservation_fin = $date_reservation_fin;
+    
         return $this;
     }
 

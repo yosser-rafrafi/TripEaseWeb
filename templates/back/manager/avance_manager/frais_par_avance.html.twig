@@ -1,0 +1,45 @@
+{% extends 'back/base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+      <h3 class="mb-0">📝 Dépenses de l'avance : {{ avance.montantDemande }} {{ avance.devise }}</h3>
+
+    {% if frais is not empty %}
+        <table class="table table-bordered table-hover shadow-sm mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>Date dépense</th>
+                    <th>Facture</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in frais %}
+                    <tr>
+                        <td>{{ f.type }}</td>
+                        <td>{{ f.montant }} </td>
+                        <td>{{ f.dateDepense ? f.dateDepense|date('Y-m-d') : '' }}</td>
+                     <td>
+    {% if f.pdf %}
+        <a href="{{ path('frai_pdf', {'id': f.id}) }}" target="_blank" class="btn btn-sm btn-outline-dark">
+            Voir PDF
+        </a>
+    {% else %}
+        <span class="text-muted">Aucune</span>
+    {% endif %}
+</td>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">Aucune dépense liée à cette avance.</div>
+    {% endif %}
+
+      <a href="{{ path('manager_avances') }}" class="btn btn-secondary">
+                ← Retour à la liste
+            </a>
+</div>
+{% endblock %}
