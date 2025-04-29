@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Service\AviationStackService;
+use Symfony\UX\Map\Map;
+use Symfony\UX\Map\Point;
 
 #[Route('/flight')]
 final class FlightController extends AbstractController{
@@ -45,9 +47,13 @@ final class FlightController extends AbstractController{
     #[Route('/{id}', name: 'app_flight_show', methods: ['GET'])]
     public function show(Flight $flight): Response
     {
+        
         return $this->render('flight/show.html.twig', [
             'flight' => $flight,
+            
         ]);
+
+       
     }
   
     

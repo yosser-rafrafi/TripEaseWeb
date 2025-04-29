@@ -34,6 +34,30 @@ class AvanceFraiRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Top 5 des employés ayant le plus de demandes d’avances,
+     * avec leur nom complet ou "Indisponible".
+     *
+     * @return array<int, array{employeeName: string, total: int}>
+     */
+    public function findTop5ByRequests(): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select(
+                "COALESCE(CONCAT(u.prenom, ' ', u.nom), 'Indisponible') AS employeeName",
+                'COUNT(a.id) AS total'
+            )
+            // jointure sur l’entité User, bien que non mappée en relation Doctrine
+            ->leftJoin('App\Entity\User', 'u', 'WITH', 'u.id = a.employe_id')
+            ->groupBy('u.id')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults(5)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return AvanceFrai[] Returns an array of AvanceFrai objects
 //     */

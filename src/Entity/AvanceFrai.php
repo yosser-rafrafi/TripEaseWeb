@@ -28,8 +28,11 @@ class AvanceFrai
 
     #[Assert\NotBlank(message: "Le montant demandé est requis.")]
     #[Assert\Positive(message: "Le montant demandé doit être supérieur à zéro.")]
-    #[ORM\Column(type: 'decimal', nullable: false)]
-    private ?float $montant_demande = null;
+    #[ORM\Column(name: "montant_demande", type: 'decimal', nullable: false)]
+    private ?float $montantDemande = null;
+
+     
+
 
     #[Assert\PositiveOrZero(message: "Le montant accordé doit être supérieur ou égal à zéro.")]
     #[ORM\Column(type: 'decimal', nullable: true)]
@@ -54,9 +57,10 @@ class AvanceFrai
     private ?string $statut = 'en attente';
 
  
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $date_demande = null;
+    #[ORM\Column(name: "date_demande", type: 'datetime')]
+    private ?\DateTimeInterface $dateDemande = null;
 
+  
   
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $date_validation = null;
@@ -70,7 +74,7 @@ class AvanceFrai
 
     public function __construct()
     {
-        $this->date_demande = new \DateTime();
+        $this->dateDemande = new \DateTime();
         $this->frais = new ArrayCollection();
     }
 
@@ -83,8 +87,12 @@ class AvanceFrai
     public function getVoyageId(): ?int { return $this->voyage_id; }
     public function setVoyageId(int $voyage_id): self { $this->voyage_id = $voyage_id; return $this; }
 
-    public function getMontantDemande(): ?float { return $this->montant_demande; }
-    public function setMontantDemande(float $montant_demande): self { $this->montant_demande = $montant_demande; return $this; }
+    public function getMontantDemande(): ?float { return $this->montantDemande; }
+    public function setMontantDemande(float $montantDemande): self 
+    {
+        $this->montantDemande = $montantDemande; 
+        return $this;
+    }
 
     public function getMontantAccorde(): ?float { return $this->montant_accorde; }
     public function setMontantAccorde(?float $montant_accorde): self { $this->montant_accorde = $montant_accorde; return $this; }
@@ -101,8 +109,17 @@ class AvanceFrai
     public function getStatut(): ?string { return $this->statut; }
     public function setStatut(string $statut): self { $this->statut = $statut; return $this; }
 
-    public function getDateDemande(): ?\DateTimeInterface { return $this->date_demande; }
-    public function setDateDemande(\DateTimeInterface $date_demande): self { $this->date_demande = $date_demande; return $this; }
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->dateDemande;
+    }
+    
+    public function setDateDemande(?\DateTimeInterface $dateDemande): self
+    {
+        $this->dateDemande = $dateDemande;
+    
+        return $this;
+    }
 
     public function getDateValidation(): ?\DateTimeInterface { return $this->date_validation; }
     public function setDateValidation(?\DateTimeInterface $date_validation): self { $this->date_validation = $date_validation; return $this; }

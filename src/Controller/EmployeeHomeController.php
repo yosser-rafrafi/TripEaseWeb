@@ -5,10 +5,16 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\VoyageRepository;
-use App\Entity\Voyage;
-use App\Entity\Mission;
-use App\Controller\MissionController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Calendar\VoyageCalendar;
+use App\Entity\Mission;
+use App\Entity\Voyage;
+use Symfony\Component\HttpFoundation\Request;
+use CalendarBundle\Event\CalendarEvent;
+use CalendarBundle\Entity\Event;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\UX\Map\Map;
+use Symfony\UX\Map\Point;
 
 class EmployeeHomeController extends AbstractController
 {
@@ -23,26 +29,42 @@ class EmployeeHomeController extends AbstractController
     {
         return $this->render('front/employee_home/travel_request.html.twig');
     }
+    
+   
 
-    #[Route('/employee/my-travels', name: 'app_my_travels')]
-    public function myTravels(VoyageRepository $voyageRepository): Response
-    {
+#[Route('/employee/my-travels', name: 'app_my_travels')]
+public function myTravels(Request $request, VoyageRepository $voyageRepository, VoyageCalendar $voyageCalendar): Response
+{
+    $user = $this->getUser();
+    $etat = $request->query->get('etat'); 
+    //$voyages = $voyageRepository->findVoyagesByUser($user);
 
-        $user = $this->getUser();
-
+    if ($etat) {
+        // Filtrer selon l'état
+        $voyages = $voyageRepository->findVoyagesByUserAndEtat($user , $etat);
+    } else {
+        // Aucun filtre => tout afficher
         $voyages = $voyageRepository->findVoyagesByUser($user);
-     
-         return $this->render('front/Voyage/my_travels.html.twig', [
-             'voyages' => $voyages,
-         ]);
-       
     }
+    
 
+    return $this->render('front/Voyage/my_travels.html.twig', [
+        'voyages' => $voyages,
+       
+    ]);
+}
     #[Route('/show/{id}', name: 'app_voyage_show_employee', methods: ['GET'])]
-    public function show(Voyage $voyage): Response
+    public function show(Voyage $voyage , ParameterBagInterface $params): Response
     {
+        $map = (new Map())
+            ->center(new Point(48.856614,2.352222))
+            ->zoom(12)
+        ;
         return $this->render('/front/Voyage/show.html.twig', [
             'voyage' => $voyage,
+            'googleMapsApiKey' => $params->get('google_maps_api_key'),
+            'map' => $map,
+
         ]);
     }
 

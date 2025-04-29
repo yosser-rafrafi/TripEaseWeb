@@ -12,47 +12,41 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Service\CurrencyApiService;
 
 class AvanceManagerController extends AbstractController
 {
     #[Route('/manager/avances', name: 'manager_avances')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
-        
-        $sortBy = $request->query->get('sortBy', 'date_demande');
-        $order = $request->query->get('order', 'ASC');
-
-      // tri dynamique
-        $queryBuilder = $em->getRepository(AvanceFrai::class)->createQueryBuilder('a')
-            ->orderBy('a.' . $sortBy, $order);
-
-       
+        $queryBuilder = $em->getRepository(AvanceFrai::class)->createQueryBuilder('a');
+    
+        // Recherche par motif
         $recherche = $request->query->get('recherche');
         if ($recherche) {
             $queryBuilder->andWhere('a.motif LIKE :recherche')
                          ->setParameter('recherche', '%' . $recherche . '%');
         }
-
-        $statut = $request->query->get('statut');
-        if ($statut && $statut != 'all') {
-            $queryBuilder->andWhere('a.statut = :statut')
-                         ->setParameter('statut', $statut);
+    
+        // Tri dynamique
+        $sortBy = $request->query->get('sortBy', 'dateDemande');
+        $order = strtoupper($request->query->get('order', 'DESC'));
+        if (!in_array($order, ['ASC', 'DESC'])) {
+            $order = 'DESC';
         }
-
-        $devise = $request->query->get('devise');
-        if ($devise && $devise != 'all') {
-            $queryBuilder->andWhere('a.devise = :devise')
-                         ->setParameter('devise', $devise);
-        }
-
-       
-        $demandes = $queryBuilder->getQuery()->getResult();
-
+        $queryBuilder->orderBy('a.' . $sortBy, $order);
+    
+        // Pagination
+        $demandes = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            5 // Nombre d'éléments par page
+        );
+    
         return $this->render('back/manager/avance_manager/index.html.twig', [
             'demandes' => $demandes,
             'rechercheActuelle' => $recherche,
-            'statutActuel' => $statut,
-            'deviseActuelle' => $devise,
         ]);
     }
     
@@ -68,11 +62,27 @@ public function voirFraisParAvance(AvanceFrai $avance): Response
     ]);
 }
 
-    #[Route('/manager/avances/{id}', name: 'manager_avance_show')]
-public function show(AvanceFrai $avanceFrai): Response
-{
+#[Route('/manager/avances/{id}', name: 'manager_avance_show')]
+public function show(
+    AvanceFrai $avanceFrai,
+    CurrencyApiService $currencyApiService
+): Response {
+    // 1. Récupérer les taux
+    $currencyApiService->fetchExchangeRates();
+
+    // 2. Construire la liste des devises (TND, EUR, USD en tête)
+    $allCodes   = array_keys($currencyApiService->getExchangeRates());
+    $preferred  = ['TND', 'EUR', 'USD'];
+    $others     = array_diff($allCodes, $preferred);
+    sort($others);
+    $currencies = array_merge($preferred, $others);
+
+    // 3. Passer tout à Twig
     return $this->render('back/manager/avance_manager/show.html.twig', [
-        'avance' => $avanceFrai,
+        'avance'       => $avanceFrai,
+        'currencies'   => $currencies,
+        'baseCurrency' => $avanceFrai->getDevise(),
+        'amount'       => $avanceFrai->getMontantDemande(),
     ]);
 }
 

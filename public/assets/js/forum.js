@@ -123,9 +123,6 @@ const ForumHandler = {
                         <i class="fas fa-trash"></i> Remove Media
                     </button>
                 ` : ''}
-                <div class="new-media-upload mt-2">
-                    <input type="file" class="form-control" name="media" accept="image/*,video/*">
-                </div>
             </div>
             <div class="d-flex justify-content-end gap-2">
                 <button type="button" class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
@@ -221,23 +218,32 @@ const ForumHandler = {
             console.error('Error:', error);
         }
     },
-
     updateReactionUI(button, data) {
         const buttonsContainer = button.closest('.d-flex');
+    
+        const likeButton = buttonsContainer.querySelector('[data-action="like"]');
+        const dislikeButton = buttonsContainer.querySelector('[data-action="dislike"]');
+    
+        // Remove all previous classes
+        likeButton.className = 'btn btn-outline-secondary reaction-button rounded-pill';
+        dislikeButton.className = 'btn btn-outline-secondary reaction-button rounded-pill';
+    
+        // Now if user reacted, fill the corresponding one
+        if (data.userReaction === 'LIKE') {
+            likeButton.classList.remove('btn-outline-secondary');
+            likeButton.classList.add('btn-secondary');
+            this.animateButton(likeButton);
+        } else if (data.userReaction === 'DISLIKE') {
+            dislikeButton.classList.remove('btn-outline-secondary');
+            dislikeButton.classList.add('btn-secondary');
+            this.animateButton(dislikeButton);
+        }
+    
+        // Update like and dislike counters
         buttonsContainer.querySelector('.like-count').textContent = data.likeCount;
         buttonsContainer.querySelector('.dislike-count').textContent = data.dislikeCount;
-
-        buttonsContainer.querySelector('[data-action="like"]')
-            .classList.replace('btn-primary', 'btn-outline-primary');
-        buttonsContainer.querySelector('[data-action="dislike"]')
-            .classList.replace('btn-danger', 'btn-outline-danger');
-
-        if (data.userReaction === 'LIKE') {
-            button.classList.replace('btn-outline-primary', 'btn-primary');
-        } else if (data.userReaction === 'DISLIKE') {
-            button.classList.replace('btn-outline-danger', 'btn-danger');
-        }
     },
+    
 
     removeMedia() {
         console.log('Removing media');
@@ -280,7 +286,16 @@ const ForumHandler = {
                 </div>
             ` : ''}
         `;
+    },
+    animateButton(button) {
+        button.classList.add('animate-pop');
+    
+        // Remove the animation class after animation ends
+        setTimeout(() => {
+            button.classList.remove('animate-pop');
+        }, 300); // Match with CSS animation duration
     }
+    
 };
 
 // Export the handler

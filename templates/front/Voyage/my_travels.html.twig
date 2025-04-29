@@ -1,41 +1,188 @@
 {% extends 'front/employee_home/index.html.twig' %}
 
-{% block title %}My Travels - TripEase{% endblock %}
-{% block nav %}
-        <ul>
-          <li><a href="{{ path('app_employee_home') }}" >Home</a></li>
-          <li><a href="{{ path('app_my_travels') }}" class="active" >Mes voyages</a></li>
-          <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
-          <li><a href="{{ path('app_transport_list') }}">Book Transport</a></li>
-          <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
-          <li class="dropdown">
-            <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="{{ path('app_user_settings') }}">Settings</a></li>
-              <li><a href="{{ path('app_logout') }}">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-        {% endblock %}
-
 {% block body %}
-<section class="container py-5">
-    <h1 class="mb-4 text-center">Mes Voyages</h1>
-    <div class="voyage-cards">
-        {% for voyage in voyages %}
-            
-            <div class="voyage-card" onclick="location.href='{{ path('app_voyage_show_employee', {'id': voyage.id}) }}'">
-                <h3 class="voyage-title">✈ {{ voyage.title }}</h3>
-                <p class="voyage-date">📅 Début : {{ voyage.dateDepart ? voyage.dateDepart|date('d M Y') : 'Non défini' }}</p>
-                <p class="voyage-date">📅 Fin : {{ voyage.dateRetour ? voyage.dateRetour|date('d M Y') : 'Non défini' }}</p>
-                <p class="voyage-etat">📌 État : {{ voyage.etat }}</p>
-                <a href="{{ path('app_voyage_show_employee', {'id': voyage.id}) }}" class="btn-details">Voir Détails</a>
-            </div>
-            
+<div class="travel-container">
+    <!-- Section Voyages (Gauche) -->
+    <section class="voyages-section">
+        <h1 class="mb-4">Mes Voyages</h1>
+        <form method="get" action="{{ path('app_my_travels') }}" class="mb-4">
+            <label for="etat">Filtrer par état :</label>
+            <select name="etat" id="etat" class="form-select" style="max-width: 300px;" onchange="this.form.submit()">
+                <option value="">Tous</option>
+                <option value="En cours" {% if app.request.get('etat') == 'En cours' %}selected{% endif %}>En cours</option>
+                <option value="Pas encore commencé" {% if app.request.get('etat') == 'Pas encore commencé' %}selected{% endif %}>Pas encore commencé</option>
+                <option value="Terminé" {% if app.request.get('etat') == 'Terminé' %}selected{% endif %}>Terminé</option>
+            </select>
+        </form>
+        
+        {% if voyages|length > 0 %}
+            {% for voyage in voyages %}
+                <div class="voyage-card" onclick="location.href='{{ path('app_voyage_show_employee', {'id': voyage.id}) }}'">
+                    <h3 class="voyage-title">✈ {{ voyage.title }}</h3>
+                    <p class="voyage-date">📅 Début : {{ voyage.dateDepart ? voyage.dateDepart|date('d M Y') : 'Non défini' }}</p>
+                    <p class="voyage-date">📅 Fin : {{ voyage.dateRetour ? voyage.dateRetour|date('d M Y') : 'Non défini' }}</p>
+                    <p class="voyage-etat">📌 État : 
+                        <span class="badge bg-{{ voyage.etat == 'Validé' ? 'success' : (voyage.etat == 'Refusé' ? 'danger' : 'warning') }}">
+                            {{ voyage.etat }}
+                        </span>
+                    </p>
+                    <a href="{{ path('app_voyage_show_employee', {'id': voyage.id}) }}" class="btn-details">Voir Détails</a>
+                </div>
+            {% endfor %}
         {% else %}
-            <p>Aucun voyage trouvé.</p>
-        {% endfor %}
-    </div>
-</section>
+            <div class="alert alert-info">Aucun voyage trouvé.</div>
+        {% endif %}
+    </section>
 
+    <!-- Section Calendrier (Droite) -->
+    <section class="calendar-section">
+        <h1>📅 Calendrier de mes voyages</h1>
+        <div id="calendar-holder"></div>
+    </section>
+
+
+  
+{% endblock %}
+
+
+
+{% block scripts %}
+{{ parent() }}
+<!-- Load FullCalendar from CDN -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar-holder');
+            if (!calendarEl) return; // Vérification de l'existence de l'élément
+            
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                firstDay: 1,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {
+                    url: '{{ path("fc_load_events") }}',
+                    method: 'GET',
+                    failure: function() {
+                        console.error('Erreur de chargement des événements');
+                    }
+                },
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+            
+            calendar.render();
+            console.log('Calendrier initialisé'); // Vérification dans la console
+        });
+    </script>
+
+{% endblock %}
+
+
+
+{% block styles %}
+{{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+
+
+
+<style>
+    #calendar-holder {
+        height: 600px; /* ou toute autre valeur appropriée */
+    }
+
+    #calendar-holder {
+        width: 100%;
+        height: 600px; /* Hauteur fixe obligatoire */
+    }
+    /* Supprime le preloader si nécessaire */
+    #preloader {
+        display: none !important;
+    }
+
+    /* Conteneur principal flex */
+    .travel-container {
+        display: flex;
+        gap: 30px;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Section voyages (gauche) */
+    .voyages-section {
+        flex: 1;
+        min-width: 400px;
+        max-width: 600px;
+    }
+
+    /* Section calendrier (droite) */
+    .calendar-section {
+        flex: 1;
+        min-width: 500px;
+        position: sticky;
+        top: 20px;
+        align-self: flex-start;
+    }
+
+    /* Styles des cartes de voyage */
+    .voyage-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .voyage-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .voyage-title {
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .voyage-date {
+        color: #7f8c8d;
+        margin-bottom: 8px;
+    }
+
+    .voyage-etat {
+        font-weight: 500;
+    }
+
+    .btn-details {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 8px 15px;
+        background-color: #8cddcd;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .travel-container {
+            flex-direction: column;
+        }
+        
+        .voyages-section,
+        .calendar-section {
+            min-width: 100%;
+        }
+    }
+</style>
 {% endblock %}

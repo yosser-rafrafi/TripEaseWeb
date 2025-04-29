@@ -62,7 +62,7 @@ public function setAvanceFrai(AvanceFrai $avanceFrai): self
 
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Le type de dépense est requis.")]
-    #[Assert\Length(max: 20, maxMessage: "Le type ne peut pas dépasser {{ limit }} caractères.")]
+    #[Assert\Length(max: 100, maxMessage: "Le type ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $type = null;
 
     public function getType(): ?string
