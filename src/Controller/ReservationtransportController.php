@@ -86,6 +86,7 @@ final class ReservationtransportController extends AbstractController
 
         // Create new Reservation
         $reservationtransport = new Reservationtransport();
+        $reservationtransport->setStatusDePaiement('non payé');
         $reservationtransport->setTransport($transport);
 
         // Get the currently logged-in user (employe)
@@ -170,6 +171,7 @@ final class ReservationtransportController extends AbstractController
             'reservationtransport' => $reservationtransport,
             'form' => $form->createView(),
             'notifications' => $this->getNotificationsForUser(), // Pass notifications to the template
+            'transport_name' => $reservationtransport->getTransport()->getTransportName()
         ]);
     }
 
@@ -183,4 +185,34 @@ final class ReservationtransportController extends AbstractController
 
         return $this->redirectToRoute('app_reservationtransport_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/payment/success/{id}', name: 'app_reservationtransport_payment_success')]
+    public function markAsPaid(
+        Reservationtransport $reservationtransport,
+        EntityManagerInterface $em
+    ): Response {
+        // Set status to "payé"
+        $reservationtransport->setStatusDePaiement('payé');
+        $em->flush();
+    
+        return $this->render('front/reservationtransport/payment_success.html.twig', [
+            'reservationtransport' => $reservationtransport,
+            'notifications' => $this->getNotificationsForUser(),
+            'message' => 'Votre paiement a été confirmé ! ✅',
+        ]);
+        
+    }
+
+    #[Route('/payment/cancel/{id}', name: 'app_reservationtransport_payment_cancel')]
+    public function paymentCancelled(
+        Reservationtransport $reservationtransport
+    ): Response {
+        return $this->render('front/reservationtransport/payment_cancel.html.twig', [
+            'reservationtransport' => $reservationtransport,
+            'notifications' => $this->getNotificationsForUser(),
+            'message' => 'Le paiement a été annulé. ❌',
+        ]);
+        
+    }
+    
 }

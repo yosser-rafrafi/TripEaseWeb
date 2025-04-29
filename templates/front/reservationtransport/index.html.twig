@@ -79,6 +79,7 @@
                             <th scope="col" class="ps-4 py-3">Transport</th>
                             <th scope="col" class="py-3">Date</th>
                             <th scope="col" class="py-3">Type</th>
+                            <th scope="col" class="py-3">Statut de Paiement</th>
                             <th scope="col" class="py-3">Priorité</th>
                             <th scope="col" class="py-3">Notes</th>
                             <th scope="col" class="pe-4 py-3 text-end">Actions</th>
@@ -97,6 +98,10 @@
                                     <span class="badge bg-info bg-opacity-10 text-info">{{ reservation.typeReservation }}</span>
                                 </td>
                                 <td class="py-3">
+                                   <span class="badge bg-secondary">{{ reservation.statusDePaiement }}</span>
+                                </td>
+
+                                <td class="py-3">
                                     {% set priorityClass = {
                                         'High': 'bg-danger bg-opacity-10 text-danger',
                                         'Medium': 'bg-warning bg-opacity-10 text-warning',
@@ -110,6 +115,7 @@
                                         {{ reservation.notesReservation }}
                                     </div>
                                 </td>
+
                                 <td class="pe-4 py-3 text-end">
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ path('app_reservationtransport_show', {'id': reservation.id}) }}"
