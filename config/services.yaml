@@ -62,4 +62,10 @@ services:
 
     App\Service\CurrencyApiService:
         arguments:
-            $appId: '%currency_api_app_id%'        
+            $appId: '%currency_api_app_id%'   
+
+
+    App\Service\TranslationService:
+        arguments:
+            $defaultLanguage: '%env(DEFAULT_LANGUAGE)%'
+             

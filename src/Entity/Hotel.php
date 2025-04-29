@@ -46,7 +46,12 @@ class Hotel
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: "L'adresse est requise.")]
+  //  #[Assert\NotBlank(message: "L'adresse est requise.")]//
+    #[Assert\NotBlank(message: 'L\'adresse ne doit pas être vide.')]
+    #[Assert\Regex(
+    pattern: '/^\d{1,4}\s+[A-Za-zÀ-ÿ\s\-]+,\s*[A-Za-zÀ-ÿ\s\-]+,\s*[A-Za-zÀ-ÿ\s\-]+$/',
+    message: ' saisir une adresse valide au format : "12 rue Exemple, Ville, Pays"'
+)]    
     private ?string $adresse = null;
 
     public function getAdresse(): ?string
@@ -167,6 +172,8 @@ class Hotel
     public function __construct()
     {
         $this->chambres = new ArrayCollection();
+        $this->avis = new ArrayCollection();  // Ajoutez cette ligne pour initialiser la collection
+
     }
 
     /**
@@ -217,5 +224,20 @@ class Hotel
 
         return $this;
     }
+    #[ORM\OneToMany(targetEntity: Avi::class, mappedBy: 'hotel')]
+    private $avis;
 
+
+public function getAvis(): ?Collection
+{
+    return $this->avis;
+
+}
+public function setAvis(?Collection $avis): static
+{
+    $this->avis = $avis;
+
+    return $this;
+
+}
 }

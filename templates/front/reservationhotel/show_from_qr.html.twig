@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Réservation{% endblock %}
+
+{% block body %}
+<div class="container mt-5 p-4 border rounded bg-light shadow">
+    <h2 class="mb-4">Détails de la réservation</h2>
+    
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Numéro :</strong> {{ reservation.id_reservation }}</li>
+       {#<li class="list-group-item"><strong>Nom :</strong> {{ reservation.nom }}</li>#} 
+        {#<li class="list-group-item"><strong>Email :</strong> {{ reservation.email }}</li>#} 
+        <li class="list-group-item"><strong>Date :</strong> {{ reservation.dateReservation|date('d/m/Y H:i') }}</li>
+        {# Ajoute d'autres champs ici si tu veux #}
+    </ul>
+    
+    {#<a href="{{ path('app_reservation_index') }}" class="btn btn-primary mt-4">Retour</a>#}
+</div>
+{% endblock %}

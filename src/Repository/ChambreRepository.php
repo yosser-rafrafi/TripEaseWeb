@@ -40,4 +40,29 @@ class ChambreRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+
+public function findAvailableRooms(\DateTime $startDate, \DateTime $endDate, int $hotelId): array
+{
+    $qb = $this->createQueryBuilder('c');
+
+    $subQb = $this->getEntityManager()->createQueryBuilder()
+        ->select('1')
+        ->from('App\Entity\Reservationhotel', 'r')
+        ->where('r.chambre = c')
+        ->andWhere('r.date_debut <= :endDate')
+        ->andWhere('r.date_fin >= :startDate');
+
+    $qb->andWhere('c.hotel = :hotelId')
+        ->andWhere($qb->expr()->not($qb->expr()->exists($subQb->getDQL())))
+        ->setParameter('hotelId', $hotelId)
+        ->setParameter('startDate', $startDate)
+        ->setParameter('endDate', $endDate);
+
+    return $qb->getQuery()->getResult();
+}
+
+
+
 }
