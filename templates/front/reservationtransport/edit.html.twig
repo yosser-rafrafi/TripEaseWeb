@@ -1,0 +1,34 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Modifier la Réservation{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <img src="{{ asset('assets/images/transport/employe.png') }}" alt="Image de Transport" class="img-fluid rounded shadow-lg" style="max-height: 300px; object-fit: cover; width: 100%;">
+        </div>
+    </div>
+    <div class="page-title">
+        <div class="title_left">
+            <a href="{{ path('app_reservationtransport_index') }}" class="btn" style="background: linear-gradient(to right, #4e73df, #1cc88a); color: white;">
+                <i class="fa fa-calendar-check me-1"></i> ← Retour à la Liste des Réservations
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Modifier la Réservation</h2>
+                </div>
+
+                <div class="card-body">
+                    {{ include('front/reservationtransport/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

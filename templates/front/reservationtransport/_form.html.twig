@@ -1,0 +1,123 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div class="mb-4">
+    <label class="form-label custom-label">Transport Selected</label>
+    <div class="form-control custom-input bg-light text-dark fw-bold shadow-sm">
+        {{ transport_name }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.date_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+        {{ form_widget(form.date_reservation, {'attr': {'class': 'form-control custom-input shadow-sm', 'placeholder': 'Select Reservation Date'}}) }}
+    </div>
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.date_reservation) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.date_reservation_fin, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+        {{ form_widget(form.date_reservation_fin, {'attr': {'class': 'form-control custom-input shadow-sm', 'placeholder': 'Select Reservation End Date'}}) }}
+    </div>
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.date_reservation_fin) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.type_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-tag"></i></span>
+        {{ form_widget(form.type_reservation, {'attr': {'class': 'form-control custom-input shadow-sm', 'placeholder': 'Enter Reservation Type'}}) }}
+    </div>
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.type_reservation) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.priorite_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-exclamation-triangle"></i></span>
+        {{ form_widget(form.priorite_reservation, {'attr': {'class': 'form-select custom-select shadow-sm'}}) }}
+    </div>
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.priorite_reservation) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.notes_reservation, null, {'label_attr': {'class': 'form-label custom-label'}}) }}
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-sticky-note"></i></span>
+        {{ form_widget(form.notes_reservation, {'attr': {'class': 'form-control custom-input shadow-sm', 'placeholder': 'Additional Notes'}}) }}
+    </div>
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.notes_reservation) }}
+    </div>
+</div>
+
+{{ form_rest(form) }}
+
+<div class="d-flex justify-content-between mt-4">
+    <button type="submit" class="btn btn-custom-success btn-lg">Submit Reservation</button>
+    <a href="{{ path('app_reservationtransport_index') }}" class="btn btn-custom-danger btn-lg">Cancel</a>
+</div>
+
+{{ form_end(form) }}
+
+<style>
+    .custom-label {
+        font-weight: 500;
+        color: #343a40;
+    }
+    .custom-input, .custom-select {
+        border-radius: 8px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .custom-input:focus, .custom-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+    }
+    .invalid-feedback {
+        font-size: 0.875rem;
+        color: #dc3545;
+    }
+    .shadow-sm {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
+    }
+    .btn-custom-success {
+        background: linear-gradient(to right, #28a745, #218838);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-custom-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    .btn-custom-danger {
+        background: linear-gradient(to right, #dc3545, #c82333);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-custom-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>

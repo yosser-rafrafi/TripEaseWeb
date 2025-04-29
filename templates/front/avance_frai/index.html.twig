@@ -1,0 +1,84 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Liste des avances frais{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Liste des avances frais</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Montant demandé</th>
+                        <th>Devise</th>
+                        <th>Statut</th>
+                        <th>Date demande</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for avance_frai in avance_frais %}
+                    <tr>
+                        <td>{{ avance_frai.montantDemande }} </td>
+                        <td>{{ avance_frai.devise }}</td>
+                        <td>{{ avance_frai.statut }}</td>
+                        <td>{{ avance_frai.dateDemande ? avance_frai.dateDemande|date('Y-m-d') : '' }}</td>
+                        <td>
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-success dropdown-toggle" id="actions-btn-{{ avance_frai.id }}">
+    Actions
+</button>
+                                <div class="dropdown-menu" id="dropdown-menu-{{ avance_frai.id }}">
+                                    <a class="dropdown-item" href="{{ path('app_avance_frai_show', {'id': avance_frai.id}) }}">Voir</a>
+                                    <a class="dropdown-item" href="{{ path('app_avance_frai_edit', {'id': avance_frai.id}) }}">Modifier</a>
+                                    <a class="dropdown-item" href="{{ path('app_frai_new', {'avance_frai_id': avance_frai.id}) }}">Ajouter frais</a>
+                                    <a class="dropdown-item" href="{{ path('app_frai_linked_frais', {'avance_frai_id': avance_frai.id}) }}">Voir les Frais</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_avance_frai_new') }}" class="btn btn-success btn-lg">Créer nouvelle demande</a>
+        </div>
+    </div>
+
+    {# Ajout du script JS pour activer le dropdown #}
+    <script>
+        // Attacher l'événement pour activer le dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.dropdown-toggle');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const menu = document.querySelector(`#dropdown-menu-${this.id.split('-')[2]}`);
+                    const isVisible = menu.classList.contains('show');
+                    
+                    // Fermer tous les menus ouverts
+                    document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+                    
+                    // Si le menu n'est pas déjà ouvert, on l'ouvre
+                    if (!isVisible) {
+                        menu.classList.add('show');
+                    }
+                });
+            });
+
+            // Fermer tous les menus si on clique ailleurs sur la page
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.btn-group')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => menu.classList.remove('show'));
+                }
+            });
+        });
+    </script>
+{% endblock %}

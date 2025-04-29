@@ -1,0 +1,111 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <!-- Box 1: Informations de base -->
+    <div class="form-section mb-4">
+        <h4 class="form-section-title">
+            <i class="fas fa-info-circle me-2"></i>Informations de base
+        </h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.date_reservation, 'Date de réservation') }}
+                    {{ form_widget(form.date_reservation, {
+                        'attr': {
+                            'class': 'form-control datepicker',
+                            'placeholder': 'JJ/MM/AAAA'
+                        }
+                    }) }}
+                    {{ form_errors(form.date_reservation) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.statut, 'Statut de réservation') }}
+                    {{ form_widget(form.statut, {
+                        'attr': {
+                            'class': 'form-select'
+                        }
+                    }) }}
+                    {{ form_errors(form.statut) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Box 2: Période de séjour -->
+    <div class="form-section mb-4">
+        <h4 class="form-section-title">
+            <i class="fas fa-calendar-day me-2"></i>Période de séjour
+        </h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.date_debut, 'Date d\'arrivée') }}
+                    {{ form_widget(form.date_debut, {
+                        'attr': {
+                            'class': 'form-control datepicker',
+                            'placeholder': 'JJ/MM/AAAA'
+                        }
+                    }) }}
+                   
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.date_fin, 'Date de départ') }}
+                    {{ form_widget(form.date_fin, {
+                        'attr': {
+                            'class': 'form-control datepicker',
+                            'placeholder': 'JJ/MM/AAAA'
+                        }
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Box 3: Détails hébergement -->
+    <div class="form-section mb-4">
+        <h4 class="form-section-title">
+            <i class="fas fa-hotel me-2"></i>Détails de l'hébergement
+        </h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.hotel, 'Établissement hôtelier') }}
+                    {{ form_widget(form.hotel, {
+                        'attr': {
+                            'class': 'form-select'
+                        }
+                    }) }}
+                    {{ form_errors(form.hotel) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.chambre, 'Type de chambre') }}
+                    {{ form_widget(form.chambre, {
+                        'attr': {
+                            'class': 'form-select',
+                            'disabled': form.vars.value.hotel is null
+                        }
+                    }) }}
+                    {{ form_errors(form.chambre) }}
+                    <small class="text-muted">Sélectionnez d'abord un hôtel</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="reset" class="btn btn-outline-danger">
+            <i class="fas fa-eraser me-2"></i>Réinitialiser
+        </button>
+        <div>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save me-2"></i>{{ button_label|default('Enregistrer') }}
+            </button>
+        </div>
+    </div>
+
+{{ form_end(form) }}

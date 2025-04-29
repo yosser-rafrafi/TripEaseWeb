@@ -1,0 +1,110 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div class="mb-4">
+    {{ form_label(form.transport_name, 'Nom du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_name, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Entrez le nom du transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_name) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_description, 'Description du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_description, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Décrivez le transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_description) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_location, 'Lieu du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_location, {'attr': {'class': 'form-control custom-input', 'id': 'transport_location', 'placeholder': 'Le lieu sera défini après un clic sur la carte'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_location) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_type, 'Type de Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_type, { 'attr': {'class': 'form-select custom-select'} }) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_type) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_agence, 'Agence de Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_agence, {'attr': {'class': 'form-select custom-select'} }) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_agence) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_pays, 'Pays du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control custom-input', 'id': 'transport_pays', 'placeholder': 'Le pays sera défini après un clic sur la carte'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_pays) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_prix, 'Prix du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Entrez le prix du transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_prix) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    <label class="form-label custom-label">Sélectionnez un lieu sur la carte</label>
+    <div id="transport-map" style="height: 300px; border-radius: 8px; margin-bottom: 1rem;"></div>
+</div>
+
+<div style="display: none;">
+    {{ form_widget(form.latitude, {'attr': {'id': 'transport_latitude'}}) }}
+    {{ form_widget(form.longitude, {'attr': {'id': 'transport_longitude'}}) }}
+</div>
+
+<div class="d-flex justify-content-between mt-4">
+    <button type="submit" class="btn btn-success btn-lg custom-button">Soumettre</button>
+    <a href="{{ path('app_transport_index') }}" class="btn btn-danger btn-lg custom-button">Annuler</a>
+</div>
+
+{{ form_end(form) }}
+
+<script>
+    function initMap() {
+        const defaultLatLng = { lat: 36.8065, lng: 10.1815 };
+
+        const transportLat = {{ latitude ?? defaultLatLng.lat }};
+        const transportLng = {{ longitude ?? defaultLatLng.lng }};
+
+        const map = new google.maps.Map(document.getElementById("transport-map"), {
+            zoom: 12,
+            center: { lat: transportLat, lng: transportLng },
+        });
+
+        const marker = new google.maps.Marker({
+            map: map,
+            position: { lat: transportLat, lng: transportLng },
+            draggable: true,
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function (event) {
+            document.getElementById("transport_latitude").value = event.latLng.lat();
+            document.getElementById("transport_longitude").value = event.latLng.lng();
+        });
+
+        map.addListener("click", (event) => {
+            document.getElementById("transport_latitude").value = event.latLng.lat();
+            document.getElementById("transport_longitude").value = event.latLng.lng();
+
+            marker.setPosition(event.latLng);
+        });
+    }
+</script>
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap">
+</script>

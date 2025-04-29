@@ -1,0 +1,88 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Nouvelle Réservation{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <img src="{{ asset('assets/images/transport/employe.png') }}" alt="Image de Transport" class="img-fluid rounded shadow-lg" style="max-height: 300px; object-fit: cover; width: 100%;">
+        </div>
+    </div>
+
+    <div class="page-title mb-4">
+        <div class="title_left">
+            <a href="{{ path('app_transport_list') }}" class="btn btn-gradient">
+                <i class="fa fa-calendar-check me-1"></i> Retour à la Liste des Transports
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h2 class="h5 mb-0">Créer une Nouvelle Réservation</h2>
+                </div>
+                <div class="card-body">
+                  
+                    {{ include('front/reservationtransport/_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+{# FullCalendar JS et CSS pour la fonctionnalité de calendrier #}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            selectable: true,
+            selectHelper: true,
+            events: [
+                {
+                    title: 'Événement Exemple',
+                    start: '2025-04-07',
+                    end: '2025-04-07'
+                }
+            ],
+            select: function (start, end) {
+                let selectedDate = start.format('YYYY-MM-DD');
+                $('#reservation_date').val(selectedDate); // Ajuster l'ID si nécessaire
+                $('#calendar').fullCalendar('unselect');
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-gradient {
+        background: linear-gradient(to right, #4e73df, #1cc88a);
+        color: white;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .form-control, .form-select {
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}{% endblock %}

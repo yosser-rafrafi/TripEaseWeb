@@ -1,0 +1,70 @@
+
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Dashboard Statistiques{% endblock %}
+
+{% block body %}
+  <div class="container-fluid p-4">
+    <h1 class="mb-4">Statistiques Frais & Demandes d’Avances</h1>
+
+    {# Charger Google Charts #}
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .card {
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+      .card-header {
+        padding: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .card-body {
+        padding: 1rem;
+        flex: 1;
+      }
+      .chart-container {
+        width: 100%;
+        height: 100%;
+        min-height: 250px;
+      }
+    </style>
+
+    <div class="dashboard-grid">
+      {# Card 1: PieChart frais par type #}
+      <div class="card">
+        <div class="card-header">Répartition des frais par type</div>
+        <div class="card-body">
+          <div id="frais_chart" class="chart-container"></div>
+        </div>
+      </div>
+
+      {# Card 2: Top 5 employés demandes d’avances #}
+      <div class="card">
+        <div class="card-header">Top 5 des employés (demandes d’avances)</div>
+        <div class="card-body">
+          <div id="top5_chart" class="chart-container"></div>
+        </div>
+      </div>
+    </div>
+
+    {# Initialisation des graphiques #}
+    <script>
+      // PieChart
+      {{ gc_draw(pieChart, 'frais_chart') }}
+
+      // BarChart Top 5
+      {{ gc_draw(barChartTop5, 'top5_chart') }}
+    </script>
+  </div>
+{% endblock %}

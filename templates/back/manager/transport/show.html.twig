@@ -1,0 +1,135 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Détails du Transport{% endblock %}
+
+{% block body %}
+<div class="background-container">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">Détails du Transport</h2>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <a href="{{ path('app_transport_index') }}" class="btn btn-sm btn-outline-primary">Retour à la liste</a>
+                        </div>
+
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Description</th>
+                                    <th>Localisation</th>
+                                    <th>Type</th>
+                                    <th>Disponibilité</th>
+                                    <th>Pays</th>
+                                    <th>Prix</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>{{ transport.transportName }}</td><td>{{ transport.transportDescription }}</td><td>{{ transport.transportLocation }}</td><td>{{ transport.transportType }}</td><td>{{ transport.transportDisponibilite }}</td><td>{{ transport.transportPays }}</td><td>{{ transport.transportPrix }}</td><td>{{ transport.latitude }}</td><td>{{ transport.longitude }}</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-sm btn-primary">Modifier le Transport</a>
+                            <div class="ml-2">
+                                {{ include('back/manager/transport/_delete_form.html.twig') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+.background-container {
+    position: relative;
+    padding: 20px;
+}
+
+.background-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('{{ asset('assets/images/transport/manager_form.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.thead-light th {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+
+.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+form button[type="submit"] {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    width: auto;
+}
+
+form button[type="submit"]:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+</style>
+
+{% endblock %}

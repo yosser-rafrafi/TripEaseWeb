@@ -1,0 +1,20 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Nouveau Frais{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Ajouter un Nouveau Frais</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Formulaire de Dépense</h5>
+        </div>
+        <div class="card-body">
+            {{ include('front/frai/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+        </div>
+    </div>
+
+  
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}show Mission{% endblock %}
+
+{% block body %}
+    <h1>Mission</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Title</th>
+                <td>{{ mission.title }}</td>
+            </tr>
+            <tr>
+                <th>Lieu</th>
+                <td>{{ mission.lieu }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ mission.description }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ mission.dateDebut ? mission.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFin</th>
+                <td>{{ mission.dateFin ? mission.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ mission.type }}</td>
+            </tr>
+            <tr>
+                <th>Duree</th>
+                <td>{{ mission.duree }}</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_voyage_show', {'id': mission.voyage.id}) }}">back to list</a>
+
+    <a href="{{ path('app_mission_edit', {'id': mission.id}) }}">edit</a>
+    
+
+    {{ include('back/manager/mission/_delete_form.html.twig') }}
+{% endblock %}

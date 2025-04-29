@@ -1,0 +1,111 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Liste des Transports{% endblock %}
+
+{% block body %}
+<main class="main">
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <img src="{{ asset('assets/images/transport/employe.png') }}" alt="Image du Transport" class="img-fluid rounded shadow-lg" style="max-height: 300px; object-fit: cover; width: 100%;">
+            </div>
+        </div>
+        
+        <div class="page-title">
+            <div class="title_left">
+                <a href="{{ path('app_reservationtransport_index') }}" class="btn" style="background: linear-gradient(to right, #4e73df, #1cc88a); color: white;">
+                    <i class="fa fa-calendar-check me-1"></i> Mes Réservations
+                </a>
+            </div>
+        </div>
+
+        <div class="clearfix my-3"></div>
+
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="btn-group" role="group" aria-label="Transport Type Toggle">
+                    <button type="button" id="publicButton" class="btn btn-outline-primary" onclick="toggleTransportType('public')">Transports Publics</button>
+                    <button type="button" id="privateButton" class="btn btn-outline-secondary active" onclick="toggleTransportType('private')">Transports Privés</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for transport in transports %}
+                {% set agencyMap = {
+                    'Elite Logistics Group': 1,
+                    'Prime Fleet Solutions': 2,
+                    'Pioneer Transit Services': 3,
+                    'Velocity Transport Co.': 4,
+                    'EcoDrive Electric Rentals': 5
+                } %}
+                {% set agencyId = agencyMap[transport.transportAgence] ?? 0 %}
+                {% set agencyFolder = 'agence_' ~ agencyId %}
+                {% set transportFolder = transport.transportType|lower %}
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm border-0 rounded-4 h-100">
+                        <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 250px;">
+                            {% if agencyId == 5 %}
+                                <img src="{{ asset('assets/images/transport/' ~ agencyFolder ~ '/eco.png') }}" alt="EcoDrive Electric Rentals" class="img-fluid" style="max-height: 240px;">
+                            {% else %}
+                                <img src="{{ asset('assets/images/transport/' ~ agencyFolder ~ '/' ~ transportFolder ~ '.png') }}" alt="{{ transport.transportType|capitalize }}" class="img-fluid" style="max-height: 240px;">
+                            {% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <span class="fw-bold text-muted">🚚 <span class="fw-bold">Agence :</span></span>
+                                <span class="ms-1">{{ transport.transportAgence }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-bold text-muted">📛 <span class="fw-bold">Nom :</span></span>
+                                <span class="ms-1">{{ transport.transportName }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-bold text-muted">📍 <span class="fw-bold">Localisation :</span></span>
+                                <span class="ms-1">{{ transport.transportLocation }} — {{ transport.transportPays }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-bold text-muted">ℹ️ <span class="fw-bold">Description :</span></span>
+                                <span class="ms-1 text-truncate d-block" title="{{ transport.transportDescription }}">{{ transport.transportDescription }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-bold text-muted">🚗 <span class="fw-bold">Type :</span></span>
+                                <span class="ms-1">{{ transport.transportType|capitalize }}</span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="fw-bold text-muted">💰 <span class="fw-bold">Prix :</span></span>
+                                <span class="ms-1">{{ transport.transportPrix|number_format(2, '.', ',') }} €</span>
+                            </div>
+
+                            <div class="mt-auto d-flex">
+                                <a href="{{ path('app_reservationtransport_new', {'transport_id': transport.id}) }}" class="btn btn-primary btn-sm w-100">📅 Réserver</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center text-muted">Aucun transport disponible.</div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block javascripts %}
+<script>
+    function toggleTransportType(type) {
+        if (type === 'public') {
+            document.getElementById('publicButton').classList.add('active');
+            document.getElementById('privateButton').classList.remove('active');
+        } else {
+            document.getElementById('privateButton').classList.add('active');
+            document.getElementById('publicButton').classList.remove('active');
+        }
+    }
+</script>
+{% endblock %}

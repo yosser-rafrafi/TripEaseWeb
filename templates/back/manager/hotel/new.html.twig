@@ -1,0 +1,30 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Création d'un Nouvel Hôtel{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <!-- Card principale pour la création d'un hôtel -->
+            <div class="col-md-7">
+                <div class="card shadow-lg">
+                    <!-- En-tête ajustée -->
+                    <div class="card-header d-flex align-items-center">
+                        <!-- Bouton aligné à gauche -->
+                        <a href="{{ path('app_hotel_index') }}" class="btn btn-sm btn-outline-secondary me-auto" title="Retour à la liste">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <!-- Titre centré -->
+                        <h3 class="mb-0 mx-auto text-center">
+                            <i class="fas fa-hotel"></i> Créer un Nouvel Hôtel
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Inclure directement le formulaire sans ajouter un autre <form> -->
+                        {{ include('back/manager/hotel/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

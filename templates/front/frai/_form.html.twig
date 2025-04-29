@@ -1,0 +1,94 @@
+{{ form_start(form, {
+    'attr': {
+        'class': 'needs-validation',
+        'novalidate': 'novalidate'
+    }
+}) }}
+
+{# Erreurs globales (validation + OCR) #}
+{% if form_errors(form) %}
+  <div class="alert alert-danger">
+    {{ form_errors(form) }}
+  </div>
+{% endif %}
+
+{# Flash messages (warnings OCR, etc.) #}
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }}">{{ message }}</div>
+  {% endfor %}
+{% endfor %}
+
+<div class="row g-3">
+
+  {# Montant #}
+  <div class="col-md-6">
+    {{ form_label(form.montant, 'Montant du frais', { label_attr: { class: 'form-label' } }) }}
+    {% set montantClass = 'form-control' ~ (form_errors(form.montant) ? ' is-invalid' : '') %}
+    {{ form_widget(form.montant, { attr: { class: montantClass, step: '0.01' } }) }}
+    {% if form_errors(form.montant) %}
+      <div class="invalid-feedback">
+        {{ form_errors(form.montant) }}
+      </div>
+    {% endif %}
+  </div>
+
+  {# Type de frais #}
+  <div class="col-md-6">
+    {{ form_label(form.type, 'Type de frais', { label_attr: { class: 'form-label' } }) }}
+    {% set typeClass = 'form-control' ~ (form_errors(form.type) ? ' is-invalid' : '') %}
+    {{ form_widget(form.type, { attr: { class: typeClass } }) }}
+    {% if form_errors(form.type) %}
+      <div class="invalid-feedback">
+        {{ form_errors(form.type) }}
+      </div>
+    {% endif %}
+  </div>
+
+  {# Date de la dépense #}
+  <div class="col-md-6">
+    {{ form_label(form.date_depense, 'Date de la dépense', { label_attr: { class: 'form-label' } }) }}
+    {% set dateClass = 'form-control' ~ (form_errors(form.date_depense) ? ' is-invalid' : '') %}
+    {{ form_widget(form.date_depense, { attr: { class: dateClass } }) }}
+    {% if form_errors(form.date_depense) %}
+      <div class="invalid-feedback">
+        {{ form_errors(form.date_depense) }}
+      </div>
+    {% endif %}
+  </div>
+
+  {# Justificatif PDF (si présent dans le form) #}
+  {% if form.pdf is defined %}
+    <div class="col-md-6">
+      {{ form_label(form.pdf, 'Justificatif PDF', { label_attr: { class: 'form-label' } }) }}
+      {% set pdfClass = 'form-control' ~ (form_errors(form.pdf) ? ' is-invalid' : '') %}
+      {{ form_widget(form.pdf, { attr: { class: pdfClass } }) }}
+      {% if form_errors(form.pdf) %}
+        <div class="invalid-feedback">
+          {{ form_errors(form.pdf) }}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# Avance associée #}
+  <div class="col-md-12">
+    {{ form_label(form.avanceFrai, 'Avance associée', { label_attr: { class: 'form-label' } }) }}
+    {% set avanceClass = 'form-select' ~ (form_errors(form.avanceFrai) ? ' is-invalid' : '') %}
+    {{ form_widget(form.avanceFrai, { attr: { class: avanceClass } }) }}
+    {% if form_errors(form.avanceFrai) %}
+      <div class="invalid-feedback">
+        {{ form_errors(form.avanceFrai) }}
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="mt-4">
+  <button type="submit" class="btn btn-success">
+    {{ button_label|default('Enregistrer') }}
+  </button>
+</div>
+
+{{ form_end(form) }}

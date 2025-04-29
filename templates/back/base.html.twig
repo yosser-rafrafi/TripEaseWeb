@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}TripEase{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="">
+    <meta name="author" content="Phoenixcoded" />
+    
+    {# Favicon #}
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon">
+    
+    {# Stylesheets #}
+    {% block stylesheets %}
+        {# Add Bootstrap CSS from CDN first #}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6v9pM2pXA8soxSji4W7Y2V3GoZp5r7Zr0M2XddI1A6p3pHrZxdxfKpZCBm" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        {# Then add custom styles #}
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    {% endblock %}
+</head>
+<body>
+    {# Pre-loader #}
+    {% block preloader %}
+        <div class="loader-bg">
+            <div class="loader-track">
+                <div class="loader-fill"></div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {# Navigation menu #}
+    {% block navigation %}
+        {% include 'back/partials/_navigation.html.twig' %}
+    {% endblock %}
+
+    {# Header #}
+    {% block header %}
+        {% include 'back/partials/_header.html.twig' %}
+    {% endblock %}
+
+    {# Main Content #}
+    <div class="pcoded-main-container">
+        {% block body %}{% endblock %}
+    </div>
+
+    {# JavaScript #}
+    {% block javascripts %}
+        <script src="{{ asset('assets/js/vendor-all.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pcoded.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/dashboard-main.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+        {# Add Bootstrap JS from CDN #}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8Fq25X/2MW5e4SuE8k2VtL5f53A67lIcR6GVVh+eD44VdX" crossorigin="anonymous"></script>
+    {% endblock %}
+</body>
+</html>

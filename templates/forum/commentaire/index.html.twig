@@ -1,0 +1,103 @@
+{# Import the macro file itself to make it available #}
+{% import _self as macros %}
+
+{# Macro to recursively display comments and their replies #}
+{% macro display_comment(comment, all_comments, level = 0) %}
+    {% set indentation = level * 30 %} {# Adjust indentation as needed #}
+
+    <div class="card mb-2" style="margin-left: {{ indentation }}px;">
+        <div class="card-body">
+            <div id="comment-display-{{ comment.id }}">
+                <div class="d-flex justify-content-between">
+                    <p class="mb-1">
+                        <strong>{{ comment.user.prenom }} </strong>
+                        — <small class="text-muted">{{ comment.datePublication|date('Y-m-d H:i') }}</small>
+                    </p>
+                    <div class="btn-group">
+                        {# Show Edit and Delete buttons only for owner or admin #}
+                        {% if comment.user.id == app.user.id or is_granted('ROLE_ADMIN') %}
+                            <button type="button" onclick="showEditForm({{ comment.id }})" class="btn btn-sm btn-warning">Edit</button>
+                            <form action="{{ path('app_commentaire_delete', {'id': comment.id}) }}" method="post" onsubmit="return confirm('Delete comment?');" style="display: inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                        {# Reply button is always visible #}
+                        <button type="button" onclick="showReplyForm({{ comment.id }})" class="btn btn-sm btn-info">Reply</button>
+                    </div>
+                </div>
+                <p>{{ comment.contenu }}</p>
+            </div>
+
+            {# --- Edit Form Section (Initially Hidden) --- #}
+            <div id="comment-edit-form-{{ comment.id }}" style="display: none;">
+                <form action="{{ path('app_commentaire_edit', {'id': comment.id}) }}" method="post">
+                    <div class="mb-3">
+                        <label for="edit-contenu-{{ comment.id }}" class="form-label">Edit comment:</label>
+                        <textarea class="form-control" id="edit-contenu-{{ comment.id }}" name="commentaire[contenu]" rows="3">{{ comment.contenu }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    <button type="button" onclick="hideEditForm({{ comment.id }})" class="btn btn-sm btn-secondary">Cancel</button>
+                </form>
+            </div>
+
+            {# --- Reply Form Section (Initially Hidden) --- #}
+            <div id="comment-reply-form-{{ comment.id }}" style="display: none; margin-top: 10px;">
+                <form action="{{ path('app_commentaire_new', {'statutId': comment.statut.id }) }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ comment.statut.id) }}">
+                    <input type="hidden" name="parentCommentId" value="{{ comment.id }}">
+                    <div class="form-outline w-100 mb-2">
+                        <textarea name="contenu" class="form-control" rows="2" placeholder="Write a reply..." required></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary btn-sm">Post Reply</button>
+                        <button type="button" onclick="hideReplyForm({{ comment.id }})" class="btn btn-outline-secondary btn-sm">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div> {# End card-body #}
+    </div> {# End card #}
+
+    {# Recursively display replies #}
+    {% for reply in all_comments %}
+        {% if reply.commentaireParentId == comment.id %}
+            {{ _self.display_comment(reply, all_comments, level + 1) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{# Block for JavaScript needed for inline editing/replying #}
+{% block javascripts %}
+    <script>
+        function showEditForm(commentId) {
+            document.getElementById('comment-display-' + commentId).style.display = 'none';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'block';
+        }
+
+        function hideEditForm(commentId) {
+            document.getElementById('comment-display-' + commentId).style.display = 'block';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'none';
+        }
+
+        function showReplyForm(commentId) {
+            document.getElementById('comment-reply-form-' + commentId).style.display = 'block';
+        }
+
+        function hideReplyForm(commentId) {
+            document.getElementById('comment-reply-form-' + commentId).style.display = 'none';
+        }
+    </script>
+{% endblock %}
+
+{# Main body iterates only through top-level comments #}
+{% block body %}
+    {% if commentaires is defined and commentaires|length > 0 %}
+        {% for commentaire in commentaires %}
+            {% if commentaire.commentaireParentId is null %}
+                {{ macros.display_comment(commentaire, commentaires) }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="text-muted ms-5">No comments yet.</p>
+    {% endif %}
+{% endblock %}
