@@ -138,39 +138,31 @@ public function new(Request $request, EntityManagerInterface $entityManager, Csr
     #[Route('/{id}/edit', name: 'app_commentaire_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
     {
-        // Authorization Check: Ensure the current user is the author or an admin/manager
+        // Authorization Check
         $user = $this->getUser();
         if (!$user || ($commentaire->getUser() !== $user && !$this->isGranted('ROLE_MANAGER') && !$this->isGranted('ROLE_ADMIN'))) {
-             throw new AccessDeniedException('You are not allowed to edit this comment.');
+            throw new AccessDeniedException('You are not allowed to edit this comment.');
         }
-
-        $form = $this->createForm(CommentaireType::class, $commentaire);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Comment updated successfully!'); // Add success message
-
-            // Redirect back to the main status page
-            return $this->redirectToRoute('app_statut_index', [], Response::HTTP_SEE_OTHER);
+    
+        if ($request->isMethod('POST')) {
+            echo "token !!!!!!";
+            echo $request->request->get('_token');
+            if ($this->isCsrfTokenValid('edit'.$commentaire->getId(), $request->request->get('_token'))) {
+                $newContent = $request->request->get('contenu');
+                
+                if (!empty(trim($newContent))) {
+                    $commentaire->setContenu($newContent);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Comment updated successfully!');
+                } else {
+                    $this->addFlash('error', 'Comment content cannot be empty.');
+                }
+            } else {
+                $this->addFlash('error', 'Invalid security token.');
+            }
         }
-
-        // If GET request or form is invalid, we redirect back instead of rendering a separate page
-        // In case of invalid POST, the errors should ideally be displayed.
-        // For simplicity, we'll just redirect on GET or invalid POST for now.
-        if ($request->isMethod('GET')) {
-             $this->addFlash('warning', 'Direct access to edit page is not supported for inline editing.');
-        } elseif ($form->isSubmitted() && !$form->isValid()) {
-             // Add form errors to flash bag to display them on the index page
-             foreach ($form->getErrors(true) as $error) {
-                 $this->addFlash('error', $error->getMessage());
-             }
-        }
-
-        // Always redirect back for this inline approach
+    
         return $this->redirectToRoute('app_statut_index');
-
     }
 
     #[Route('/{id}', name: 'app_commentaire_delete', methods: ['POST'])]

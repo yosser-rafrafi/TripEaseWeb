@@ -22,6 +22,36 @@
 
 <div class="container mt-4">
     <h2 class="mb-4">📋 Détails de la demande d'avance</h2>
+  
+  
+{# Bloc de conversion de devises #}
+<div class="card mb-4 shadow-sm">
+  <div class="card-header d-flex align-items-center bg-light">
+    <i class="bi bi-currency-exchange fs-4 me-2"></i>
+    <span class="fs-5">Conversion de devises</span>
+  </div>
+  <div class="card-body d-flex flex-wrap align-items-center" style="gap: 1rem;">
+    {# Form-Floating pour la sélection #}
+    <div class="form-floating flex-grow-1" style="max-width: 200px;">
+      <select id="currency-select" class="form-select" aria-label="Devise cible">
+        {% for curr in currencies %}
+          <option value="{{ curr }}">{{ curr }}</option>
+        {% endfor %}
+      </select>
+      <label for="currency-select">Devise cible</label>
+    </div>
+
+    {# Bouton de conversion #}
+    <button id="convert-btn" class="btn btn-outline-primary d-flex align-items-center">
+      <i class="bi bi-arrow-right-circle me-1"></i>
+      Convertir
+    </button>
+
+    {# Affichage du résultat #}
+    <div id="conversion-results" class="ms-auto fs-5 text-success fw-bold"></div>
+  </div>
+</div>
+
 
     <div class="card">
         <div class="card-body">
@@ -65,4 +95,35 @@
         </div>
     </div>
 </div>
+
+{# Script JS pour la conversion #}
+<script>
+  document.getElementById('convert-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const amount = {{ amount|json_encode }};
+    const from   = '{{ baseCurrency }}';
+    const to     = document.getElementById('currency-select').value;
+    const url    = '{{ path("currency_convert") }}'
+                 + `?amount=${amount}&from=${from}&to=${to}`;
+
+    fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error('Erreur réseau');
+        return r.json();
+      })
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          document.getElementById('conversion-results').textContent =
+            `${to} : ${data.converted.toFixed(2)}`;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Erreur lors de la conversion');
+      });
+  });
+</script>
+
 {% endblock %}

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Service\CurrencyApiService;
 
 class AvanceManagerController extends AbstractController
 {
@@ -61,11 +62,27 @@ public function voirFraisParAvance(AvanceFrai $avance): Response
     ]);
 }
 
-    #[Route('/manager/avances/{id}', name: 'manager_avance_show')]
-public function show(AvanceFrai $avanceFrai): Response
-{
+#[Route('/manager/avances/{id}', name: 'manager_avance_show')]
+public function show(
+    AvanceFrai $avanceFrai,
+    CurrencyApiService $currencyApiService
+): Response {
+    // 1. Récupérer les taux
+    $currencyApiService->fetchExchangeRates();
+
+    // 2. Construire la liste des devises (TND, EUR, USD en tête)
+    $allCodes   = array_keys($currencyApiService->getExchangeRates());
+    $preferred  = ['TND', 'EUR', 'USD'];
+    $others     = array_diff($allCodes, $preferred);
+    sort($others);
+    $currencies = array_merge($preferred, $others);
+
+    // 3. Passer tout à Twig
     return $this->render('back/manager/avance_manager/show.html.twig', [
-        'avance' => $avanceFrai,
+        'avance'       => $avanceFrai,
+        'currencies'   => $currencies,
+        'baseCurrency' => $avanceFrai->getDevise(),
+        'amount'       => $avanceFrai->getMontantDemande(),
     ]);
 }
 
