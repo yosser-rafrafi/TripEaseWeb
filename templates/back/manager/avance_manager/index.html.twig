@@ -100,13 +100,10 @@
                         <a href="{{ path('manager_avance_frais', {'id': demande.id}) }}" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation();">
                             <i class="bi bi-eye"></i> Voir dépenses
                         </a>
-<<<<<<< HEAD
-=======
                             <!-- Ajout du bouton pour générer le PDF -->
     <a href="{{ path('avance_facture', {'id': demande.id}) }}" class="btn btn-outline-success btn-sm" onclick="event.stopPropagation();">
         <i class="bi bi-file-earmark-pdf"></i> Générer PDF
     </a>
->>>>>>> 274975ad5707c321693453abd1e0bbe668780386
                     </td>
                 </tr>
             {% else %}
@@ -150,10 +147,6 @@
         params.set('order', order);
         window.location.search = params.toString(); // Rafraîchit la page avec les nouveaux paramètres
     }
-<<<<<<< HEAD
-</script>
-
-=======
 
     
 </script>
@@ -171,5 +164,4 @@
 
 
 
->>>>>>> 274975ad5707c321693453abd1e0bbe668780386
 {% endblock %}

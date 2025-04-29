@@ -1,422 +1,90 @@
-{% extends 'back/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Users List - TripEase{% endblock %}
+{% block title %}Mot de passe oublié - TripEase{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .sort-icon {
-            cursor: pointer;
-            transition: color 0.2s;
+        body {
+            background: url('https://images.unsplash.com/photo-1606768666853-403c90a981ad?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
         }
-        .sort-icon:hover {
-            color: #3B82F6;
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 138, 0.3);
+            z-index: -1;
         }
-        .sort-icon.active {
-            color: #3B82F6;
+
+        .forgot-password-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            animation: fadeSlide 1s ease;
+            backdrop-filter: blur(5px);
         }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        .pagination button {
-            padding: 0.5rem 1rem;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.375rem;
-            background-color: white;
-            color: #374151;
-            transition: all 0.2s;
-        }
-        .pagination button:hover {
-            background-color: #F3F4F6;
-        }
-        .pagination button.active {
-            background-color: #3B82F6;
-            color: white;
-            border-color: #3B82F6;
-        }
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gray-100">
-    <!-- Main Content Full Width -->
-    <header class="bg-white shadow w-full">
-        <div class="flex items-center justify-between px-6 py-6">
-            <h1 class="text-3xl font-bold text-gray-800 text-center w-full">Liste des utilisateurs</h1>
-            <div class="flex items-center space-x-4 absolute right-10">
-                <!-- Bouton Statistiques -->
-                <a href="{{ path('app_statistics') }}" class="flex items-center px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md">
-                    <i class="fas fa-chart-bar mr-2"></i>
-                    <span>Statistiques</span>
-                </a>
-                <a href="{{ path('user_settings') }}" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span class="mx-2">Paramètres</span>
-                </a>
-                <a href="{{ path('app_logout') }}" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                    <span class="mx-2">Logout</span>
-                </a>
-            </div>
-        </div>
-    </header>
-    <main class="p-6 w-full">
-        <div class="bg-white rounded-lg shadow overflow-x-auto w-full">
-            <div class="p-6">
-                <!-- Search Bar -->
-                <div class="mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <!-- Recherche textuelle -->
-                        <div class="relative">
-                            <input type="text" 
-                                   id="searchInput" 
-                                   class="w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                   placeholder="Rechercher par nom, email...">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
-                            </div>
-                        </div>
-
-                        <!-- Filtre par rôle -->
-                        <div>
-                            <select id="roleFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Tous les rôles</option>
-                                <option value="ADMIN">Admin</option>
-                                <option value="MANAGER">Manager</option>
-                                <option value="EMPLOYE">Employé</option>
-                            </select>
-                        </div>
-
-                        <!-- Filtre par statut -->
-                        <div>
-                            <select id="statusFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Tous les statuts</option>
-                                <option value="active">Actif</option>
-                                <option value="inactive">Inactif</option>
-                            </select>
-                        </div>
-
-                        <!-- Bouton de réinitialisation -->
-                        <div>
-                            <button id="resetFilters" class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                <i class="fas fa-undo mr-2"></i>Réinitialiser
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Indicateur de chargement -->
-                    <div id="searchSpinner" class="hidden mt-4 text-center">
-                        <svg class="inline-block animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span class="ml-2 text-gray-500">Recherche en cours...</span>
-                    </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="forgot-password-card">
+                <div class="text-center mb-4">
+                    <h2 class="text-primary mb-2">Mot de passe oublié ?</h2>
+                    <p class="text-muted">Entrez votre adresse email pour réinitialiser votre mot de passe</p>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200 text-center">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                ID
-                                <i class="fas fa-sort sort-icon" data-sort="id"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Nom
-                                <i class="fas fa-sort sort-icon" data-sort="nom"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Prénom
-                                <i class="fas fa-sort sort-icon" data-sort="prenom"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Email
-                                <i class="fas fa-sort sort-icon" data-sort="email"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Téléphone
-                                <i class="fas fa-sort sort-icon" data-sort="numTel"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Rôle
-                                <i class="fas fa-sort sort-icon" data-sort="role"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                                Statut
-                                <i class="fas fa-sort sort-icon" data-sort="isActive"></i>
-                            </th>
-                            <th class="px-4 py-2 text-xs font-bold text-gray-500 uppercase">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
-                        {% for user in users %}
-                        <tr class="hover:bg-gray-100">
-                            <td class="px-4 py-2">{{ user.id }}</td>
-                            <td class="px-4 py-2">{{ user.nom }}</td>
-                            <td class="px-4 py-2">{{ user.prenom }}</td>
-                            <td class="px-4 py-2">{{ user.email }}</td>
-                            <td class="px-4 py-2">{{ user.numTel }}</td>
-                            <td class="px-4 py-2">
-                                {% set role = user.role is defined and user.role ? user.role|replace({ '"': '' })|trim|upper : '' %}
-                                {% if role == 'ADMIN' %}
-                                    <span class="inline-flex items-center"><i class="fa fa-shield-alt text-red-500 mr-1"></i><span class="inline-block bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold mr-1">Admin</span></span>
-                                {% elseif role == 'MANAGER' %}
-                                    <span class="inline-flex items-center"><i class="fa fa-briefcase text-blue-600 mr-1"></i><span class="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold mr-1">Manager</span></span>
-                                {% elseif role == 'EMPLOYE' %}
-                                    <span class="inline-flex items-center"><i class="fa fa-id-badge text-green-600 mr-1"></i><span class="inline-block bg-green-600 text-white text-xs px-3 py-1 rounded-full font-semibold">Employé</span></span>
-                                {% else %}
-                                    <span class="inline-flex items-center"><i class="fa fa-user text-gray-400 mr-1"></i><span class="inline-block bg-gray-400 text-white text-xs px-3 py-1 rounded-full font-semibold">Inconnu</span></span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2">
-                                {% if user.isActive %}
-                                    <span class="inline-block bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Actif</span>
-                                {% else %}
-                                    <span class="inline-block bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Inactif</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2 flex justify-center space-x-2">
-                                <form method="post" action="{{ path('app_user_toggle_active', {'id': user.id}) }}" onsubmit="return confirm('Voulez-vous vraiment {% if user.isActive %}désactiver{% else %}activer{% endif %} cet utilisateur ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ user.id) }}">
-                                    {% if user.isActive %}
-                                        <button type="submit" class="bg-green-400 hover:bg-green-600 text-white px-3 py-1 rounded flex items-center text-xs font-semibold">
-                                            <i class="fa fa-user-slash mr-1"></i> Désactiver
-                                        </button>
-                                    {% else %}
-                                        <button type="submit" class="bg-yellow-400 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center text-xs font-semibold">
-                                            <i class="fa fa-user-check mr-1"></i> Activer
-                                        </button>
-                                    {% endif %}
-                                </form>
-                                <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded flex items-center text-xs font-semibold"><i class="fa fa-trash mr-1"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {% for flash_error in app.flashes('reset_password_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
 
-                <!-- Pagination -->
-                <div id="pagination" class="pagination mt-4">
-                    <!-- La pagination sera générée dynamiquement par JavaScript -->
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-{% endblock %}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const roleFilter = document.getElementById('roleFilter');
-            const statusFilter = document.getElementById('statusFilter');
-            const resetFilters = document.getElementById('resetFilters');
-            const searchSpinner = document.getElementById('searchSpinner');
-            const usersTableBody = document.getElementById('usersTableBody');
-            const pagination = document.getElementById('pagination');
-            let debounceTimer;
-            let currentPage = 1;
-            let currentSort = { field: 'id', order: 'ASC' };
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" 
+                               name="email" 
+                               id="email" 
+                               class="form-control" 
+                               required 
+                               autofocus
+                               placeholder="Entrez votre adresse email">
+                    </div>
 
-            function getRoleBadge(role) {
-                role = role ? role.replace(/"/g, '').trim().toUpperCase() : '';
-                switch(role) {
-                    case 'ADMIN':
-                        return `<span class="inline-flex items-center"><i class="fa fa-shield-alt text-red-500 mr-1"></i><span class="inline-block bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold mr-1">Admin</span></span>`;
-                    case 'MANAGER':
-                        return `<span class="inline-flex items-center"><i class="fa fa-briefcase text-blue-600 mr-1"></i><span class="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold mr-1">Manager</span></span>`;
-                    case 'EMPLOYE':
-                        return `<span class="inline-flex items-center"><i class="fa fa-id-badge text-green-600 mr-1"></i><span class="inline-block bg-green-600 text-white text-xs px-3 py-1 rounded-full font-semibold">Employé</span></span>`;
-                    default:
-                        return `<span class="inline-flex items-center"><i class="fa fa-user text-gray-400 mr-1"></i><span class="inline-block bg-gray-400 text-white text-xs px-3 py-1 rounded-full font-semibold">Inconnu</span></span>`;
-                }
-            }
-
-            function getStatusBadge(isActive) {
-                return isActive 
-                    ? `<span class="inline-block bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Actif</span>`
-                    : `<span class="inline-block bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Inactif</span>`;
-            }
-
-            function getActionButtons(user) {
-                const toggleToken = '{{ csrf_token('toggle') }}' + user.id;
-                const deleteToken = '{{ csrf_token('delete') }}' + user.id;
-                const toggleButton = user.isActive 
-                    ? `<button type="submit" class="bg-green-400 hover:bg-green-600 text-white px-3 py-1 rounded flex items-center text-xs font-semibold"><i class="fa fa-user-slash mr-1"></i> Désactiver</button>`
-                    : `<button type="submit" class="bg-yellow-400 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center text-xs font-semibold"><i class="fa fa-user-check mr-1"></i> Activer</button>`;
-
-                const toggleUrl = '{{ path('app_user_toggle_active', {'id': 'USER_ID'}) }}'.replace('USER_ID', user.id);
-                const deleteUrl = '{{ path('app_user_delete', {'id': 'USER_ID'}) }}'.replace('USER_ID', user.id);
-
-                return `
-                    <form method="post" action="${toggleUrl}" class="inline-block" onsubmit="return confirm('Voulez-vous vraiment ${user.isActive ? 'désactiver' : 'activer'} cet utilisateur ?');">
-                        <input type="hidden" name="_token" value="${toggleToken}">
-                        ${toggleButton}
-                    </form>
-                    <form method="post" action="${deleteUrl}" class="inline-block ml-2" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                        <input type="hidden" name="_token" value="${deleteToken}">
-                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded flex items-center text-xs font-semibold"><i class="fa fa-trash mr-1"></i></button>
-                    </form>
-                `;
-            }
-
-            function updatePagination(totalPages) {
-                let html = '';
-                
-                // Bouton précédent
-                html += `
-                    <button class="pagination-prev" ${currentPage === 1 ? 'disabled' : ''}>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                `;
-
-                // Pages
-                for (let i = 1; i <= totalPages; i++) {
-                    html += `
-                        <button class="pagination-page ${i === currentPage ? 'active' : ''}" data-page="${i}">
-                            ${i}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit">
+                            Envoyer le lien de réinitialisation
                         </button>
-                    `;
-                }
+                    </div>
+                </form>
 
-                // Bouton suivant
-                html += `
-                    <button class="pagination-next" ${currentPage === totalPages ? 'disabled' : ''}>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                `;
-
-                pagination.innerHTML = html;
-
-                // Ajouter les événements
-                pagination.querySelector('.pagination-prev').addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        performSearch();
-                    }
-                });
-
-                pagination.querySelector('.pagination-next').addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        performSearch();
-                    }
-                });
-
-                pagination.querySelectorAll('.pagination-page').forEach(button => {
-                    button.addEventListener('click', () => {
-                        currentPage = parseInt(button.dataset.page);
-                        performSearch();
-                    });
-                });
-            }
-
-            function performSearch() {
-                const searchTerm = searchInput.value.trim();
-                const role = roleFilter.value;
-                const status = statusFilter.value;
-
-                searchSpinner.classList.remove('hidden');
-
-                // Construire l'URL avec les paramètres de recherche
-                const params = new URLSearchParams();
-                if (searchTerm) params.append('q', searchTerm);
-                if (role) params.append('role', role);
-                if (status) params.append('status', status);
-                params.append('sortBy', currentSort.field);
-                params.append('sortOrder', currentSort.order);
-                params.append('page', currentPage);
-                params.append('limit', 10);
-
-                fetch(`/admin/users/search?${params.toString()}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        usersTableBody.innerHTML = data.users.map(user => `
-                            <tr class="hover:bg-gray-100">
-                                <td class="px-4 py-2">${user.id}</td>
-                                <td class="px-4 py-2">${user.nom}</td>
-                                <td class="px-4 py-2">${user.prenom}</td>
-                                <td class="px-4 py-2">${user.email}</td>
-                                <td class="px-4 py-2">${user.numTel}</td>
-                                <td class="px-4 py-2">${getRoleBadge(user.role)}</td>
-                                <td class="px-4 py-2">${getStatusBadge(user.isActive)}</td>
-                                <td class="px-4 py-2 flex justify-center space-x-2">${getActionButtons(user)}</td>
-                            </tr>
-                        `).join('');
-
-                        updatePagination(data.pagination.totalPages);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        usersTableBody.innerHTML = `
-                            <tr>
-                                <td colspan="8" class="px-4 py-4 text-center text-red-500">
-                                    Une erreur est survenue lors de la recherche. Veuillez réessayer.
-                                </td>
-                            </tr>
-                        `;
-                    })
-                    .finally(() => {
-                        searchSpinner.classList.add('hidden');
-                    });
-            }
-
-            // Gestionnaire d'événements pour la recherche
-            function handleSearch() {
-                clearTimeout(debounceTimer);
-                currentPage = 1; // Réinitialiser la page lors d'une nouvelle recherche
-                debounceTimer = setTimeout(performSearch, 300);
-            }
-
-            // Gestionnaire d'événements pour le tri
-            document.querySelectorAll('.sort-icon').forEach(icon => {
-                icon.addEventListener('click', () => {
-                    const field = icon.dataset.sort;
-                    if (currentSort.field === field) {
-                        currentSort.order = currentSort.order === 'ASC' ? 'DESC' : 'ASC';
-                    } else {
-                        currentSort.field = field;
-                        currentSort.order = 'ASC';
-                    }
-                    performSearch();
-                });
-            });
-
-            // Écouteurs d'événements
-            searchInput.addEventListener('input', handleSearch);
-            roleFilter.addEventListener('change', performSearch);
-            statusFilter.addEventListener('change', performSearch);
-
-            // Réinitialisation des filtres
-            resetFilters.addEventListener('click', function() {
-                searchInput.value = '';
-                roleFilter.value = '';
-                statusFilter.value = '';
-                currentPage = 1;
-                currentSort = { field: 'id', order: 'ASC' };
-                performSearch();
-            });
-
-            // Initialiser la recherche
-            performSearch();
-        });
-    </script>
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_login') }}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i> Retour à la connexion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 

@@ -61,30 +61,48 @@ class ResetPasswordController extends AbstractController
         EntityManagerInterface $entityManager,
         EmailService $emailService
     ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'] ?? null;
+        try {
+            $data = json_decode($request->getContent(), true);
+            $email = $data['email'] ?? null;
 
-        if (!$email) {
-            return new JsonResponse(['success' => false, 'message' => 'Email requis']);
+            if (!$email) {
+                return new JsonResponse(['success' => false, 'message' => 'Email requis']);
+            }
+
+            $user = $userRepository->findOneBy(['email' => $email]);
+
+            if (!$user) {
+                return new JsonResponse(['success' => false, 'message' => 'Aucun compte trouvé avec cet email']);
+            }
+
+            // Nettoyer l'ancien code de réinitialisation
+            $user->setResetPassword(null);
+            $entityManager->flush();
+
+            // Générer un nouveau code
+            $resetCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+            try {
+                // Envoyer l'email d'abord
+                $emailService->sendResetPasswordEmail($email, $resetCode);
+                
+                // Si l'email est envoyé avec succès, sauvegarder le code
+                $user->setResetPassword($resetCode);
+                $entityManager->flush();
+
+                return new JsonResponse(['success' => true]);
+            } catch (\Exception $e) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Erreur lors de l\'envoi de l\'email: ' . $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Erreur serveur: ' . $e->getMessage()
+            ]);
         }
-
-        $user = $userRepository->findOneBy(['email' => $email]);
-
-        if (!$user) {
-            return new JsonResponse(['success' => false, 'message' => 'Aucun compte trouvé avec cet email']);
-        }
-
-        // Générer un code de 6 chiffres
-        $resetCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        // Sauvegarder le code dans l'utilisateur
-        $user->setResetPassword($resetCode);
-        $entityManager->flush();
-
-        // Envoyer l'email
-        $emailService->sendResetPasswordEmail($email, $resetCode);
-
-        return new JsonResponse(['success' => true]);
     }
 
     #[Route('/reset-password', name: 'app_reset_password_ajax', methods: ['POST'])]

@@ -21,34 +21,6 @@ class AdminController extends AbstractController
         return $this->render('back/dashboard/index.html.twig');
     }
 
-    #[Route('/admin/dashboard', name: 'app_admin_dashboard')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function dashboard(UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findAll();
-        
-        // Statistiques de base
-        $stats = [
-            'total' => count($users),
-            'active' => count(array_filter($users, fn($user) => $user->isActive())),
-            'managers' => count(array_filter($users, fn($user) => in_array('ROLE_MANAGER', $user->getRoles()))),
-            'clients' => count(array_filter($users, fn($user) => count($user->getRoles()) === 1)),
-            'by_role' => [
-                'admin' => count(array_filter($users, fn($user) => in_array('ROLE_ADMIN', $user->getRoles()))),
-                'manager' => count(array_filter($users, fn($user) => in_array('ROLE_MANAGER', $user->getRoles()))),
-                'client' => count(array_filter($users, fn($user) => count($user->getRoles()) === 1))
-            ],
-            'by_status' => [
-                'active' => count(array_filter($users, fn($user) => $user->isActive())),
-                'inactive' => count(array_filter($users, fn($user) => !$user->isActive()))
-            ]
-        ];
-
-        return $this->render('back/dashboard/stats.html.twig', [
-            'stats' => $stats
-        ]);
-    }
-
     #[Route('/admin/users', name: 'app_admin_users')]
     #[IsGranted('ROLE_ADMIN')]
     public function listUsers(UserRepository $userRepository): Response
