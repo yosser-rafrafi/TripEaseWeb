@@ -1,0 +1,30 @@
+<div class="pagination-wrapper">
+    <ul class="pagination custom-pagination">
+        {% if pagination.currentPageNumber != 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path(route, query|merge({'page': 1})) }}" aria-label="First">
+                    <span aria-hidden="true">«</span>
+                </a>
+            </li>
+        {% endif %}
+
+        {# Use pagination.getPaginationData().pages instead of pagination.pages #}
+        {% for page in pagination.getPaginationData().pagesInRange %}
+            <li class="page-item {{ page == pagination.currentPageNumber ? 'active' : '' }}">
+                {% if page == pagination.currentPageNumber %}
+                    <span class="page-link">{{ page }}</span>
+                {% else %}
+                    <a class="page-link" href="{{ path(route, query|merge({'page': page})) }}">{{ page }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {% if pagination.currentPageNumber != pagination.pageCount %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path(route, query|merge({'page': pagination.pageCount})) }}" aria-label="Last">
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>

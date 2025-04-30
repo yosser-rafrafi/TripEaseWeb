@@ -1,0 +1,445 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Utilisateurs - Administration{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-card {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .sort-icon::after {
+            content: "↕️";
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+        .sort-active.asc::after {
+            content: "↑";
+            opacity: 1;
+        }
+        .sort-active.desc::after {
+            content: "↓";
+            opacity: 1;
+        }
+        .table th {
+            cursor: pointer;
+        }
+        .status-badge {
+            width: 80px;
+            cursor: pointer;
+        }
+        .btn-action {
+            margin: 0 2px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4 py-5">
+    <!-- En-tête avec statistiques -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 stats-card bg-gradient-primary text-white">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Utilisateurs</div>
+                            <div class="h5 mb-0 font-weight-bold" id="stats-total">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 stats-card bg-gradient-success text-white">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Utilisateurs Actifs</div>
+                            <div class="h5 mb-0 font-weight-bold" id="stats-active">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 stats-card bg-gradient-info text-white">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Admins</div>
+                            <div class="h5 mb-0 font-weight-bold" id="stats-admin">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-shield fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2 stats-card bg-gradient-warning text-white">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Employés</div>
+                            <div class="h5 mb-0 font-weight-bold" id="stats-employe">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-tie fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Liste des Utilisateurs</h6>
+            <div class="d-flex gap-2">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+                <select id="roleFilter" class="form-select">
+                    <option value="">Tous les rôles</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="EMPLOYE">Employé</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="usersTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th data-sort="prenom">Prénom</th>
+                            <th data-sort="email">Email</th>
+                            <th data-sort="role">Rôle</th>
+                            <th data-sort="adresse">Adresse</th>
+                            <th data-sort="numTel">Téléphone</th>
+                            <th data-sort="is_active">Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Les données seront injectées ici par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
+                    Affichage de <span id="startIndex">1</span> à <span id="endIndex">10</span> sur <span id="totalEntries">0</span> entrées
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pagination">
+                        <!-- La pagination sera générée par JavaScript -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de modification -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier l'utilisateur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="mb-3">
+                        <label for="editPrenom" class="form-label">Prénom</label>
+                        <input type="text" class="form-control" id="editPrenom" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRole" class="form-label">Rôle</label>
+                        <select class="form-select" id="editRole" required>
+                            <option value="ADMIN">Admin</option>
+                            <option value="MANAGER">Manager</option>
+                            <option value="EMPLOYE">Employé</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAdresse" class="form-label">Adresse</label>
+                        <input type="text" class="form-control" id="editAdresse">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNumTel" class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" id="editNumTel">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="saveEdit">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let currentSort = 'email';
+        let currentOrder = 'asc';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let editModal;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        });
+
+        function updateTable() {
+            const search = document.getElementById('searchInput').value;
+            const role = document.getElementById('roleFilter').value;
+            
+            fetch(`/admin/users/ajax?search=${encodeURIComponent(search)}&sort=${currentSort}&order=${currentOrder}&role=${role}&page=${currentPage}&limit=${itemsPerPage}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Mise à jour du tableau
+                    const tbody = document.querySelector('#usersTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    data.users.forEach(user => {
+                        const statusBadge = user.is_active 
+                            ? '<span class="badge bg-success status-badge" onclick="toggleStatus(' + user.id + ')">Actif</span>'
+                            : '<span class="badge bg-danger status-badge" onclick="toggleStatus(' + user.id + ')">Inactif</span>';
+                            
+                        const roleBadge = getRoleBadge(user.role);
+                        
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${user.prenom || '-'}</td>
+                                <td>${user.email}</td>
+                                <td>${roleBadge}</td>
+                                <td>${user.adresse || '-'}</td>
+                                <td>${user.numTel || '-'}</td>
+                                <td class="text-center">${statusBadge}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary btn-action" onclick="editUser(${user.id}, this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-action" onclick="deleteUser(${user.id}, this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                    });
+
+                    // Mise à jour des statistiques
+                    document.getElementById('stats-total').textContent = data.stats.total;
+                    document.getElementById('stats-active').textContent = data.stats.active;
+                    document.getElementById('stats-admin').textContent = data.stats.roles.ADMIN;
+                    document.getElementById('stats-employe').textContent = data.stats.roles.EMPLOYE;
+
+                    // Mise à jour de la pagination
+                    updatePagination(data.pagination);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors du chargement des données.');
+                });
+        }
+
+        function getRoleBadge(role) {
+            const badges = {
+                'ADMIN': '<span class="badge bg-danger">Admin</span>',
+                'MANAGER': '<span class="badge bg-warning">Manager</span>',
+                'EMPLOYE': '<span class="badge bg-info">Employé</span>'
+            };
+            return badges[role] || role;
+        }
+
+        function toggleStatus(userId) {
+            fetch(`/admin/users/${userId}/toggle-active`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    updateTable();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la mise à jour du statut.');
+            });
+        }
+
+        function editUser(userId, button) {
+            const row = button.closest('tr');
+            const user = {
+                id: userId,
+                prenom: row.cells[0].textContent.trim(),
+                email: row.cells[1].textContent.trim(),
+                role: row.cells[2].textContent.trim(),
+                adresse: row.cells[3].textContent.trim(),
+                numTel: row.cells[4].textContent.trim()
+            };
+
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editPrenom').value = user.prenom === '-' ? '' : user.prenom;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editAdresse').value = user.adresse === '-' ? '' : user.adresse;
+            document.getElementById('editNumTel').value = user.numTel === '-' ? '' : user.numTel;
+
+            editModal.show();
+        }
+
+        document.getElementById('saveEdit').addEventListener('click', function() {
+            const userId = document.getElementById('editUserId').value;
+            const userData = {
+                prenom: document.getElementById('editPrenom').value,
+                email: document.getElementById('editEmail').value,
+                role: document.getElementById('editRole').value,
+                adresse: document.getElementById('editAdresse').value,
+                numTel: document.getElementById('editNumTel').value
+            };
+
+            fetch(`/admin/users/${userId}/edit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    editModal.hide();
+                    updateTable();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la mise à jour de l\'utilisateur.');
+            });
+        });
+
+        function deleteUser(userId, button) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                fetch(`/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        button.closest('tr').remove();
+                        updateTable();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la suppression.');
+                });
+            }
+        }
+
+        function updatePagination(pagination) {
+            const totalPages = Math.ceil(pagination.total / pagination.limit);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            // Bouton précédent
+            paginationElement.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Précédent</a>
+                </li>`;
+
+            // Pages
+            for (let i = 1; i <= totalPages; i++) {
+                paginationElement.innerHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>`;
+            }
+
+            // Bouton suivant
+            paginationElement.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Suivant</a>
+                </li>`;
+
+            // Mise à jour des informations de pagination
+            const startIndex = ((currentPage - 1) * pagination.limit) + 1;
+            const endIndex = Math.min(startIndex + pagination.limit - 1, pagination.total);
+            document.getElementById('startIndex').textContent = startIndex;
+            document.getElementById('endIndex').textContent = endIndex;
+            document.getElementById('totalEntries').textContent = pagination.total;
+        }
+
+        function changePage(page) {
+            if (page < 1) return;
+            currentPage = page;
+            updateTable();
+        }
+
+        // Gestionnaires d'événements
+        document.getElementById('searchInput').addEventListener('input', () => {
+            currentPage = 1;
+            updateTable();
+        });
+
+        document.getElementById('roleFilter').addEventListener('change', () => {
+            currentPage = 1;
+            updateTable();
+        });
+
+        document.querySelectorAll('#usersTable th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const sort = th.dataset.sort;
+                if (currentSort === sort) {
+                    currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = sort;
+                    currentOrder = 'asc';
+                }
+                
+                // Mise à jour des icônes de tri
+                document.querySelectorAll('#usersTable th').forEach(header => {
+                    header.classList.remove('sort-active', 'asc', 'desc');
+                });
+                th.classList.add('sort-active', currentOrder);
+                
+                updateTable();
+            });
+        });
+
+        // Chargement initial
+        updateTable();
+    </script>
+{% endblock %} 

@@ -84,6 +84,21 @@ final class HotelController extends AbstractController
     }
 
     
-
+    #[Route('/hotel/{id}/recherche-chambres', name: 'recherche_chambres')]
+    public function rechercherChambres(
+        int $id,
+        HotelRepository $hotelRepository
+    ): Response {
+        $hotel = $hotelRepository->find($id);
+    
+        if (!$hotel) {
+            throw $this->createNotFoundException('Hôtel non trouvé');
+        }
+    
+        return $this->render('front/reservationhotel/recherche.html.twig', [
+            'hotel' => $hotel
+        ]);
+    }
+    
     
 }

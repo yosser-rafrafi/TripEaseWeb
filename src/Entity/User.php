@@ -282,4 +282,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return (string) $this->email;
     }
+
+    #[ORM\Column(type: 'boolean')]
+    private $isActive = false;
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    #[ORM\Column(length: 6, nullable: true)]
+    private ?string $reset_password = null;
+
+    public function getResetPassword(): ?string
+    {
+        return $this->reset_password;
+    }
+
+    public function setResetPassword(?string $reset_password): self
+    {
+        $this->reset_password = $reset_password;
+        return $this;
+    }
 }

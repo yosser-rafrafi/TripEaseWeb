@@ -40,4 +40,20 @@ class AviRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function getAvisQuery()
+{
+    return $this->createQueryBuilder('a')
+        ->orderBy('a.dateAvis', 'DESC') // exemple : trier par date descendante
+        ->getQuery();
+}
+public function getAvisByHotelQuery(int $hotelId)
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.hotel = :hotelId')
+        ->setParameter('hotelId', $hotelId)
+        ->orderBy('a.dateAvis', 'DESC')
+        ->getQuery();
+}
+
 }

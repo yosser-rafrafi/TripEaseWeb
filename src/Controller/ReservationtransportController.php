@@ -15,6 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
+use Symfony\Contracts\HttpClient\HttpClientInterface; // Import HttpClientInterface
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+
 
 #[Route('/employee/reservationtransport')]
 final class ReservationtransportController extends AbstractController
@@ -25,6 +28,25 @@ final class ReservationtransportController extends AbstractController
     {
         $this->notificationRepository = $notificationRepository;
     }
+
+    private function getWeatherData(HttpClientInterface $client, float $latitude, float $longitude): ?array
+{
+    // Construct the Open-Meteo API URL using latitude and longitude
+    $url = 'https://api.open-meteo.com/v1/forecast?latitude=' . $latitude . '&longitude=' . $longitude . '&current_weather=true';
+
+    // Make a request to Open-Meteo API
+    $response = $client->request('GET', $url);
+
+    // Parse the response and return weather data
+    $data = $response->toArray();
+    
+    // Check if the data contains current weather
+    if (isset($data['current_weather'])) {
+        return $data['current_weather'];
+    }
+
+    return null; // Return null if no weather data is available
+}
 
     // Helper method to get notifications for the logged-in user
     private function getNotificationsForUser(): array
@@ -75,13 +97,23 @@ final class ReservationtransportController extends AbstractController
     }
 
     #[Route('/new/{transport_id}', name: 'app_reservationtransport_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, $transport_id, HubInterface $hub): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, $transport_id, HubInterface $hub, HttpClientInterface $client): Response
     {
         // Fetch the transport using the provided ID
         $transport = $entityManager->getRepository(Transport::class)->find($transport_id);
 
         if (!$transport) {
             throw $this->createNotFoundException('No transport found for id ' . $transport_id);
+        }
+
+        $latitude = $transport->getLatitude();
+        $longitude = $transport->getLongitude();
+        
+        try {
+            $weatherData = $this->getWeatherData($client, $latitude, $longitude); // Call to fetch weather data
+        } catch (TransportExceptionInterface $e) {
+            $weatherData = null;
+            // You can handle the exception (e.g., log it) or show a default weather value
         }
 
         // Create new Reservation
@@ -142,6 +174,7 @@ final class ReservationtransportController extends AbstractController
             'reservationtransport' => $reservationtransport,
             'form' => $form->createView(),
             'transport_name' => $transport_name,
+            'weatherData' => $weatherData, // Pass weather data to the template
             'notifications' => $this->getNotificationsForUser(), // Pass notifications to the template
         ]);
     }
@@ -214,5 +247,7 @@ final class ReservationtransportController extends AbstractController
         ]);
         
     }
+
+    
     
 }
