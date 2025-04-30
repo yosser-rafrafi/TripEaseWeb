@@ -15,14 +15,48 @@ use CalendarBundle\Entity\Event;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Point;
+use App\Entity\NotificationVoyage;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class EmployeeHomeController extends AbstractController
 {
     #[Route('/employee/home', name: 'app_employee_home')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('front/employee_home/index.html.twig');
+         // Récupère l'utilisateur connecté
+         $user = $this->getUser();
+
+         // Récupérer toutes les notifications non lues de l'utilisateur connecté
+         $notifications = $entityManager->getRepository(NotificationVoyage::class)->findBy([
+            'user' => $user,
+            'isRead' => 0
+        ], ['createdAt' => 'DESC']);
+
+
+       
+
+        return $this->render('front/employee_home/index.html.twig', [
+            
+            'notifications' => $notifications,
+        ]);
     }
+
+    #[Route('/notification/{id}' , name:'notification_mark_as_read')]    
+   public function markAsRead(NotificationVoyage $notification, EntityManagerInterface $entityManager): Response
+   {
+       // Marquer la notification comme lue
+       $notification->setIsRead(true);
+       $entityManager->persist($notification);
+       $entityManager->flush();
+   
+       // Récupérer le voyage associé à la notification (si nécessaire, ajustez selon votre logique)
+       $voyage = $notification->getVoyage(); // Assurez-vous que vous avez un lien entre Notification et Voyage
+   
+       $notification->setIsRead(1);
+       // Rediriger vers la page de détails du voyage
+       return $this->redirectToRoute('app_voyage_show_employee', ['id' => $voyage->getId()]);
+   }
 
     #[Route('/employee/travel-request', name: 'app_travel_request')]
     public function travelRequest(): Response

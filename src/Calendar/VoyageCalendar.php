@@ -21,13 +21,19 @@ class VoyageCalendar implements EventSubscriberInterface
         $this->security = $security;
     }
 
+
+    
+    // CalendarEvents::SET_DATA est déclenché automatiquement par le bundle 
+    // lorsque tu appelles le calendrier via le helper Twig
     public static function getSubscribedEvents(): array
     {
+        // appelle la méthode onCalendarSetData()
         return [
             CalendarEvents::SET_DATA => 'onCalendarSetData',
         ];
     }
 
+    // Crée et personnalise chaque événement
     public function onCalendarSetData(CalendarEvent $calendarEvent): void
     {
         $user = $this->security->getUser();

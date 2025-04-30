@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Service\NotificationService;
+use App\Service\NotificationVoyageService;
 
 class UserController extends AbstractController
 {
@@ -88,7 +88,7 @@ class UserController extends AbstractController
         User $user, 
         EntityManagerInterface $entityManager, 
         Request $request,
-        NotificationService $notificationService
+        NotificationVoyageService $notificationService
     ): Response
     {
         if ($this->isCsrfTokenValid('toggle' . $user->getId(), $request->request->get('_token'))) {

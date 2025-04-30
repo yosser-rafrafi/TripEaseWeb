@@ -4,6 +4,45 @@
 
 {% block body %}
 <style>
+    .dates-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    .timeline {
+        position: relative;
+        margin-left: 20px;
+        padding-left: 20px;
+        border-left: 3px solid #8cddcd;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    .timeline-dot {
+        width: 15px;
+        height: 15px;
+        background-color: #8cddcd;
+        border-radius: 50%;
+        position: absolute;
+        left: -29px;
+        top: 5px;
+    }
+    .timeline-content {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .timeline-content h5 {
+        color: #2c3e50;
+    }
+    .timeline-content p {
+        margin: 0;
+    }
+        
     .map-box {
         background: white;
         padding: 20px;
@@ -77,36 +116,132 @@
     .back-link:hover {
         text-decoration: underline;
     }
+
+    .flight-box {
+
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-top: 20px;
+
+        cursor: pointer;
+        text-align: center;
+        
+    }
+    .flight-box:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .flight-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    .flight-separator {
+        width: 80px;
+        height: 2px;
+        background-color: #8cddcd;
+        border: none;
+        margin: 0 auto 15px;
+    }
+    .flight-times {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+    .flight-label {
+        font-weight: bold;
+        color: #34495e;
+    }
+    .flight-time {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+    .flight-arrow {
+        font-size: 20px;
+        color: #8cddcd;
+    }
+    
 </style>
 
 <div class="voyage-container">
-    <div class="info-box">
-        <div class="info-title">Informations du Voyage</div>
-        <div class="info-item"><span class="info-label">Titre :</span> {{ voyage.title }}</div>
-        <div class="info-item"><span class="info-label">Destination :</span> {{ voyage.destination }}</div>
-        <div class="info-item"><span class="info-label">Date Départ :</span> {{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : '' }}</div>
-        <div class="info-item"><span class="info-label">Date Retour :</span> {{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : '' }}</div>
-        <div class="info-item"><span class="info-label">Budget :</span> {{ voyage.budget }} €</div>
-        <div class="info-item"><span class="info-label">État :</span> {{ voyage.etat }}</div>
-        <div class="info-item"><span class="info-label">Numéro de vol :</span>
-            {% if voyage.flight %}
-                <a href="{{ path('app_flight_show', {'id': voyage.flight.id}) }}">
-                    {{ voyage.flight.flight_number}}
-                </a>
-            {% else %}
-                <span class="text-muted">Aucun vol lié</span>
-            {% endif %}
+
+    <div style="display: flex; flex-direction: column; gap: 20px; flex: 1; min-width: 300px;">
+        <div class="info-box">
+            <div class="info-title">Informations du Voyage</div>
+            <div class="info-item"><span class="info-label">Titre :</span> {{ voyage.title }}</div>
+            <div class="info-item"><span class="info-label">Budget :</span> {{ voyage.budget }} €</div>
+            <div class="info-item"><span class="info-label">État :</span> {{ voyage.etat }}</div>
+            <div class="info-item"><span class="info-label">Numéro de vol :</span>
+                {% if voyage.flight %}
+                    <a href="{{ path('app_flight_show', {'id': voyage.flight.id}) }}">
+                        {{ voyage.flight.flight_number}}
+                    </a>
+                {% else %}
+                    <span class="text-muted">Aucun vol lié</span>
+                {% endif %}
+            </div>
+            
+        </div>
+        <!-- Carte du vol -->
+        <div class="flight-box" onclick="window.location.href='{{ path('app_flight_show', {'id': voyage.flight.id}) }}'">
+            <div class="info-title">✈ Flight</div>
+            <hr class="flight-separator" />
+            <div class="flight-times">
+                <div>
+                    <div class="flight-label">🕒 Départ</div>
+                    <div class="flight-time">
+                        {{ voyage.flight.departureDatetime ? voyage.flight.departureDatetime|date('Y-m-d H:i:s') : '' }}
+                    </div>
+                </div>
+                <div class="flight-arrow">⬇</div>
+                <div>
+                    <div class="flight-label">🕒 Arrivée</div>
+                    <div class="flight-time">
+                        {{ voyage.flight.arrivalDatetime ? voyage.flight.arrivalDatetime|date('Y-m-d H:i:s') : '' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dates-box">
+            <div class="info-title">📅 Dates du voyage</div>
+            <div class="info-item">
+                <span style="font-weight: bold; color: #8cddcd;">📅</span>
+                <span style="font-weight: bold; color: #34495e;"> From </span>
+                <span style="color: #7f8c8d; font-size: 14px;">{{ voyage.dateDepart ? voyage.dateDepart|date('Y-m-d') : 'N/A' }}</span>
+                <span style="font-weight: bold; color: #34495e;"> - </span>
+                <span style="font-weight: bold; color: #8cddcd;">📅</span>
+                <span style="font-weight: bold; color: #34495e;"> To </span>
+                <span style="color: #7f8c8d; font-size: 14px;">{{ voyage.dateRetour ? voyage.dateRetour|date('Y-m-d') : 'N/A' }}</span>
+            </div>
         </div>
     </div>
+   
+   
 
     <div class="missions-box">
         <div class="mission-title">Missions associées</div>
         {% if voyage.missions|length > 0 %}
-            {% for mission in voyage.missions %}
-                <a class="mission-link" href="{{ path('app_mission_employee_show', {'id': mission.id}) }}">
-                    📌 {{ mission.title }}
-                </a>
-            {% endfor %}
+            <div class="timeline">
+                {% for mission in voyage.missions %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5 class="mb-1">
+                                <a href="{{ path('app_mission_employee_show', {'id': mission.id}) }}" class="mission-link">
+                                    {{ mission.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted mb-1">
+                                {{ mission.dateDebut|date('d/m/Y') }} → {{ mission.dateFin|date('d/m/Y') }}
+                            </p>
+                            <p class="small">{{ mission.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
             <p>Aucune mission associée à ce voyage.</p>
         {% endif %}
