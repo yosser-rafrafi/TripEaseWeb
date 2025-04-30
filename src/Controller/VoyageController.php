@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormError;
 use App\Form\VoyageType;
 use App\Repository\VoyageRepository;
 use App\Repository\FlightRepository;
-use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use App\Entity\Notification;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 
@@ -25,7 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 #[Route('/voyage')]
 final class VoyageController extends AbstractController{
     #[Route(name: 'app_voyage_index', methods: ['GET'])]
-    public function index(VoyageRepository $voyageRepository): Response
+    public function index( VoyageRepository $voyageRepository): Response
     {
         // Récupère l'utilisateur connecté
         $user = $this->getUser();
@@ -33,8 +34,11 @@ final class VoyageController extends AbstractController{
         // Récupère uniquement les voyages de cet utilisateur
         $voyages = $voyageRepository->findBy(['user' => $user]);
 
+       
+
         return $this->render('back/manager/voyage/index.html.twig', [
             'voyages' => $voyages,
+            
         ]);
         
     }
@@ -81,18 +85,38 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
         }
 
         // Gestion des utilisateurs sélectionnés
-        $selectedUserIds = explode(',', $request->request->get('selected_users', ''));
-        foreach ($selectedUserIds as $userId) {
-            if ($userId) {
-                $userToAdd = $entityManager->getRepository(User::class)->find($userId);
-                if ($userToAdd) {
-                    $voyage->addUser($userToAdd);
+        $entityManager->beginTransaction();
+        try {
+            $selectedUserIds = array_filter(explode(',', $request->request->get('selected_users', '')));
+            
+            foreach ($selectedUserIds as $userId) {
+                if ($userId) {
+                    $userToAdd = $entityManager->getRepository(User::class)->find($userId);
+                    if ($userToAdd) {
+                        $voyage->addUser($userToAdd);
+                        
+                        // Création de la notification
+                        $notification = new Notification();
+                        $notification->setUser($userToAdd);
+                        $notification->setMessage("Vous avez été affecté au voyage: " . $voyage->getTitle());
+                        $notification->setIsRead(false);
+                        $notification->setVoyage($voyage);
+                        
+                        
+                        $entityManager->persist($notification);
+                    }
                 }
             }
-        }
 
-        $entityManager->persist($voyage);
-        $entityManager->flush();
+            $entityManager->persist($voyage);
+            $entityManager->flush();
+            $entityManager->commit();
+            
+        } catch (\Exception $e) {
+            $entityManager->rollback();
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'affectation des employés');
+            throw $e;
+        }
 
         return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
     }
@@ -192,4 +216,6 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
 
         return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 }
