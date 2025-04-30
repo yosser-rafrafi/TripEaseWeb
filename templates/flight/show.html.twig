@@ -4,43 +4,33 @@
 
 {% block body %}
     <div class="container mt-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-primary text-white text-center">
-                <h2 class="mb-0">Flight Details</h2>
+        <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Flight Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Flight Number:</strong> {{ flight.flight_number }}</p>
+                        <p><strong>Airline:</strong> {{ flight.airline }}</p>
+                        <p><strong>Departure:</strong> 
+                            {{ flight.departureDatetime ? flight.departureDatetime|date('d M Y, H:i') : 'N/A' }}</p>
+                        <p><strong>Departure Airport:</strong> {{ flight.departureAirport }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <tbody>
-                        <tr>
-                            <th scope="row" class="w-25">Flight Number</th>
-                            <td>{{ flight.flight_number }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Airline</th>
-                            <td>{{ flight.airline }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Departure Date & Time</th>
-                            <td>
-                                {{ flight.departureDatetime ? flight.departureDatetime|date('l, d M Y - H:i') : 'N/A' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Departure Airport</th>
-                            <td>{{ flight.departureAirport }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Arrival Date & Time</th>
-                            <td>
-                                {{ flight.arrivalDatetime ? flight.arrivalDatetime|date('l, d M Y - H:i') : 'N/A' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Arrival Airport</th>
-                            <td>{{ flight.arrivalAirport }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Arrival Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Arrival:</strong> 
+                            {{ flight.arrivalDatetime ? flight.arrivalDatetime|date('d M Y, H:i') : 'N/A' }}</p>
+                        <p><strong>Arrival Airport:</strong> {{ flight.arrivalAirport }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
