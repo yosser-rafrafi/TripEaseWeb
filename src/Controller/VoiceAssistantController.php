@@ -66,7 +66,7 @@ class VoiceAssistantController extends AbstractController
                 return $this->json([
                     'action' => 'app_voyage_statistics',
                     'message' => 'Vous allez être redirigé vers la page des statistiques',
-                    'redirect_url' => $this->generateUrl('app_voyage_statistics'),
+                    'redirect_url' => $this->generateUrl('stats_frais'),
                 ]);
             case 'app_statut_index':
                 return $this->json([
