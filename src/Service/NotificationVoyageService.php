@@ -8,7 +8,7 @@ use Symfony\Component\Mime\Email;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class NotificationService
+class NotificationVoyageService
 {
     private $mailer;
     private $entityManager;

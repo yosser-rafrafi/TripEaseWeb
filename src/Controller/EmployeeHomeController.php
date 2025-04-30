@@ -15,7 +15,7 @@ use CalendarBundle\Entity\Event;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Point;
-use App\Entity\Notification;
+use App\Entity\NotificationVoyage;
 use Doctrine\ORM\EntityManagerInterface;
 
 
@@ -28,7 +28,7 @@ class EmployeeHomeController extends AbstractController
          $user = $this->getUser();
 
          // Récupérer toutes les notifications non lues de l'utilisateur connecté
-         $notifications = $entityManager->getRepository(Notification::class)->findBy([
+         $notifications = $entityManager->getRepository(NotificationVoyage::class)->findBy([
             'user' => $user,
             'isRead' => 0
         ], ['createdAt' => 'DESC']);
@@ -43,7 +43,7 @@ class EmployeeHomeController extends AbstractController
     }
 
     #[Route('/notification/{id}' , name:'notification_mark_as_read')]    
-   public function markAsRead(Notification $notification, EntityManagerInterface $entityManager): Response
+   public function markAsRead(NotificationVoyage $notification, EntityManagerInterface $entityManager): Response
    {
        // Marquer la notification comme lue
        $notification->setIsRead(true);

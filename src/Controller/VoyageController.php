@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Notification;
+use App\Entity\NotificationVoyage;
 use Doctrine\ORM\EntityManagerInterface;
 
 
@@ -96,7 +96,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
                         $voyage->addUser($userToAdd);
                         
                         // Création de la notification
-                        $notification = new Notification();
+                        $notification = new NotificationVoyage();
                         $notification->setUser($userToAdd);
                         $notification->setMessage("Vous avez été affecté au voyage: " . $voyage->getTitle());
                         $notification->setIsRead(false);
@@ -189,6 +189,15 @@ public function new(Request $request, EntityManagerInterface $entityManager, Sec
                     $userToAdd = $entityManager->getRepository(User::class)->find($userId);
                     if ($userToAdd) {
                         $voyage->addUser($userToAdd);
+                        // Création de la notification
+                        $notification = new NotificationVoyage();
+                        $notification->setUser($userToAdd);
+                        $notification->setMessage("Vous avez été affecté au voyage: " . $voyage->getTitle());
+                        $notification->setIsRead(false);
+                        $notification->setVoyage($voyage);
+                        
+                        
+                        $entityManager->persist($notification);
                     }
                 }
             }

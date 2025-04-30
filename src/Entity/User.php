@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\Notification;
+use App\Entity\NotificationVoyage;
 
 use App\Repository\UserRepository;
 
@@ -23,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Voyage::class, mappedBy: 'users')]
     private Collection $voyages;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: NotificationVoyage::class)]
     private Collection $notifications;
 
 
@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->notifications;
     }
 
-    public function addNotifications(Notification $notification): static
+    public function addNotifications(NotificationVoyage $notification): static
     {
         if (!$this->notifications->contains($notification)) {
             $this->notifications->add($notification);
