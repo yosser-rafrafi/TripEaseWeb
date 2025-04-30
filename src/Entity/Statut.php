@@ -63,6 +63,20 @@ class Statut
         $this->reactions = new ArrayCollection();
     }
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $anonymous = false;
+
+    public function isAnonymous(): bool
+    {
+        return $this->anonymous;
+    }
+
+    public function setAnonymous(bool $anonymous): self
+    {
+        $this->anonymous = $anonymous;
+        return $this;
+    }
+
     // Getters and setters...
 
     public function getId(): ?int
