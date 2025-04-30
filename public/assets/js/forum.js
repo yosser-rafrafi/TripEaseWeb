@@ -96,33 +96,102 @@ const ForumHandler = {
         const postId = button.dataset.postId;
         const postCard = document.getElementById(`post-${postId}`);
         const postContent = postCard.querySelector('.post-content');
-        const postText = postCard.querySelector('.post-text');
-        const postMedia = postCard.querySelector('.post-media');
-
+        const postText = postCard.querySelector('.post-text').innerHTML; // Get HTML content
+        
+        // Create the edit form
         const editForm = document.createElement('form');
         editForm.className = 'edit-post-form';
-        editForm.innerHTML = this.getEditFormHtml(postId, postText, postMedia);
-
+        
+        // Create a unique ID for the textarea
+        const textareaId = `edit-post-${postId}`;
+        
+        // Create the form HTML
+        editForm.innerHTML = `
+            <div class="form-group mb-3">
+                <textarea id="${textareaId}" name="contenu">${postText}</textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary btn-sm rounded-pill">Save</button>
+                <button type="button" class="btn btn-secondary btn-sm rounded-pill cancel-edit">Cancel</button>
+            </div>
+        `;
+    
+        // Replace content with form
         postContent.innerHTML = '';
         postContent.appendChild(editForm);
-
-        this.setupEditFormHandlers(editForm, postId, postContent, postText, postMedia);
+    
+        // Initialize CKEditor on the textarea
+        CKEDITOR.replace(textareaId, {
+            toolbar: [
+                {
+                    name: 'basicstyles',
+                    items: ['Bold', 'Italic', 'Underline', 'FontSize', 'Font', 'TextColor']
+                },
+                {
+                    name: 'paragraph',
+                    items: ['NumberedList', 'BulletedList']
+                },
+                {
+                    name: 'insert',
+                    items: ['Image', 'Table']
+                },
+                {
+                    name: 'styles',
+                    items: ['Format']
+                }
+            ],
+            font_names: 'Arial;Times New Roman;Verdana;Comic Sans MS',
+            height: 200
+        });
+    
+        // Setup form handlers with CKEditor support
+        this.setupEditFormHandlers(editForm, postId, postContent, postText, textareaId);
     },
-
-    getEditFormHtml(postId, postText, postMedia) {
+    
+    setupEditFormHandlers(editForm, postId, postContent, originalText, textareaId) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            
+            // Get content from CKEditor
+            const editorContent = CKEDITOR.instances[textareaId].getData();
+            formData.append('contenu', editorContent);
+            formData.append('_token', this.config.editToken);
+    
+            try {
+                const response = await fetch(`/forum/statut/${postId}/edit`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Destroy CKEditor instance before updating content
+                    CKEDITOR.instances[textareaId].destroy();
+                    postContent.innerHTML = this.getUpdatedContentHtml(data);
+                    this.showFlashMessage('success', 'Post updated successfully!');
+                } else {
+                    this.showFlashMessage('error', data.message || 'Error updating post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showFlashMessage('error', 'Error updating post');
+            }
+        });
+    
+        // Cancel edit handler
+        editForm.querySelector('.cancel-edit').addEventListener('click', () => {
+            // Destroy CKEditor instance before restoring content
+            CKEDITOR.instances[textareaId].destroy();
+            postContent.innerHTML = `<div class="post-text">${originalText}</div>`;
+        });
+    }
+    ,
+    
+    getEditFormHtml(postId, postText) {
         return `
             <div class="form-group mb-3">
-                <textarea class="form-control" name="contenu" rows="3">${postText.textContent}</textarea>
-            </div>
-            <div class="media-actions mb-3">
-                ${postMedia ? `
-                    <div class="current-media mb-2">
-                        ${postMedia.innerHTML}
-                    </div>
-                    <button type="button" class="btn btn-danger btn-sm remove-media" data-post-id="${postId}">
-                        <i class="fas fa-trash"></i> Remove Media
-                    </button>
-                ` : ''}
+                <textarea class="form-control" name="contenu" rows="3">${postText}</textarea>
             </div>
             <div class="d-flex justify-content-end gap-2">
                 <button type="button" class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
@@ -130,25 +199,8 @@ const ForumHandler = {
             </div>
         `;
     },
-
-    setupEditFormHandlers(editForm, postId, postContent, postText, postMedia) {
-        editForm.addEventListener('submit', (e) => this.handleEditSubmit(e, postId, postContent));
-        
-        editForm.querySelector('.cancel-edit').addEventListener('click', () => {
-            postContent.innerHTML = `
-                <p class="post-text">${postText.textContent}</p>
-                ${postMedia ? postMedia.outerHTML : ''}
-            `;
-        });
-
-        if (postMedia) {
-            const removeMediaBtn = editForm.querySelector('.remove-media');
-            if (removeMediaBtn) {
-                removeMediaBtn.addEventListener('click', () => this.handleRemoveMedia(postId, editForm));
-            }
-        }
-    },
-
+    
+ 
     async handleEditSubmit(e, postId, postContent) {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -275,15 +327,6 @@ const ForumHandler = {
         return `
             <p class="post-text">${data.contenu}</p>
             ${data.mediaUrl ? `
-                <div class="text-center post-media">
-                    ${data.typeContenu === 'image' 
-                        ? `<img src="${data.mediaUrl}" class="img-fluid rounded mb-3" style="max-height: 500px;" alt="Post image">`
-                        : `<video controls class="w-100 rounded mb-3" style="max-height: 500px;">
-                            <source src="${data.mediaUrl}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>`
-                    }
-                </div>
             ` : ''}
         `;
     },
