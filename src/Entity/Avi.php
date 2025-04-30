@@ -29,10 +29,14 @@ class Avi
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $idUser = null;
+    /*#[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $idUser = null;*/
 
-    public function getIdUser(): ?int
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'idUser', referencedColumnName: 'id', nullable: false)]
+    private ?User $user = null;
+
+    /*public function getIdUser(): ?int
     {
         return $this->idUser;
     }
@@ -41,12 +45,25 @@ class Avi
     {
         $this->idUser = $idUser;
         return $this;
+    }*/
+    public function getUser(): ?User {
+        return $this->user;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $idHotel = null;
+    public function setUser(?User $user): self {
+        $this->user = $user;
+        return $this;
+    }
 
-    public function getIdHotel(): ?int
+    /*#[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $idHotel = null;*/
+    #[ORM\ManyToOne(targetEntity: Hotel::class)]
+    #[ORM\JoinColumn(name: 'idHotel', referencedColumnName: 'id', nullable: false)]
+    private ?Hotel $hotel = null;
+
+ 
+
+    /*public function getIdHotel(): ?int
     {
         return $this->idHotel;
     }
@@ -55,7 +72,16 @@ class Avi
     {
         $this->idHotel = $idHotel;
         return $this;
+    }*/
+    public function getHotel(): ?Hotel {
+        return $this->hotel;
     }
+
+    public function setHotel(?Hotel $hotel): self {
+        $this->hotel = $hotel;
+        return $this;
+    }
+
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $commentaire = null;

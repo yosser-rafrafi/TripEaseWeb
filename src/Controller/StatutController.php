@@ -44,52 +44,55 @@ final class StatutController extends AbstractController{
     }
 
     #[Route('/new', name: 'app_statut_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
-{
-    $statut = new Statut();
-
-    if ($request->isMethod('POST')) {
-        $content = $request->request->get('contenu');
-        $mediaFile = $request->files->get('media');
-
-        $statut->setContenu($content);
-        $statut->setUser($this->getUser());
-        $statut->setDateCreation(new \DateTime());
-        $statut->setTypeContenu('texte');
-
-        if ($mediaFile) {
-            try {
-                $mediaUrl = $this->cloudinaryService->upload($mediaFile);
-                $statut->setMediaUrl($mediaUrl);
-                $statut->setTypeContenu($mediaFile->getMimeType() === 'video/mp4' ? 'video' : 'image');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de l\'upload : ' . $e->getMessage());
+    public function new(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    {
+        $statut = new Statut();
+    
+        if ($request->isMethod('POST')) {
+            $content = $request->request->get('contenu');
+            $mediaFile = $request->files->get('media');
+    
+            $statut->setContenu($content);
+            $statut->setDateCreation(new \DateTime());
+            $statut->setTypeContenu('texte');
+    
+            // Set anonymous flag based on the form input
+            $isAnonymous = $request->request->get('anonymous') === 'on';
+            $statut->setAnonymous($isAnonymous);
+            $statut->setUser($this->getUser()); // Always set user, anonymous or not
+    
+            if ($mediaFile) {
+                try {
+                    $mediaUrl = $this->cloudinaryService->upload($mediaFile);
+                    $statut->setMediaUrl($mediaUrl);
+                    $statut->setTypeContenu($mediaFile->getMimeType() === 'video/mp4' ? 'video' : 'image');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload : ' . $e->getMessage());
+                }
             }
-        }
-
-        // Valider les contraintes via ValidatorInterface
-        $errors = $validator->validate($statut);
-
-        if (count($errors) > 0) {
-            // Parcourir les erreurs et les afficher
-            foreach ($errors as $error) {
-                $this->addFlash('warning', $error->getMessage());
+    
+            // Valider les contraintes via ValidatorInterface
+            $errors = $validator->validate($statut);
+    
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $this->addFlash('warning', $error->getMessage());
+                }
+    
+                return $this->redirectToRoute('app_statut_index');
             }
-
+    
+            $entityManager->persist($statut);
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Post créé avec succès !');
             return $this->redirectToRoute('app_statut_index');
         }
-
-        $entityManager->persist($statut);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Post créé avec succès !');
-        return $this->redirectToRoute('app_statut_index');
+    
+        return $this->render('statut/new.html.twig', [
+            'statut' => $statut,
+        ]);
     }
-
-    return $this->render('statut/new.html.twig', [
-        'statut' => $statut,
-    ]);
-}
 
     #[Route('/{id}', name: 'app_statut_show', methods: ['GET'])]
     public function show(Statut $statut): Response

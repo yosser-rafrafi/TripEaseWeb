@@ -1,0 +1,232 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block styles %}
+    {{ parent() }}
+    <style>
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        #search-button {
+            grid-column: span 2;
+            padding: 0.75rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #search-button:hover {
+            background-color: #2980b9;
+        }
+
+        #chambres-container {
+            margin-top: 2rem;
+        }
+
+        .chambre-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chambre-item {
+            padding: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .chambre-item h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .chambre-item p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        .chambre-item button {
+            padding: 0.5rem 1rem;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chambre-item button:hover {
+            background-color: #27ae60;
+        }
+
+        .no-rooms {
+            text-align: center;
+            padding: 2rem;
+            color: #95a5a6;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="search-container">
+    <div class="search-header">
+        <h2>Rechercher des chambres pour l'hôtel : {{ hotel.nom }}</h2>
+        <p class="text-muted">{{ hotel.adresse }}</p>
+    </div>
+
+    <form id="search-form" class="search-form">
+        <div class="form-group">
+            <label for="date_debut">Date d'arrivée</label>
+            <input type="date" id="date_debut" name="date_debut" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="date_fin">Date de départ</label>
+            <input type="date" id="date_fin" name="date_fin" required class="form-control">
+        </div>
+
+        <button type="button" id="search-button" class="btn btn-primary">
+            <i class="fas fa-search me-2"></i>Rechercher
+        </button>
+    </form>
+
+    <div id="chambres-container"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const button = document.getElementById('search-button');
+        const chambresContainer = document.getElementById('chambres-container');
+
+        button.addEventListener('click', () => {
+            const dateDebut = document.getElementById('date_debut').value;
+            const dateFin = document.getElementById('date_fin').value;
+            const hotelId = {{ hotel.id }};
+
+            if (!dateDebut || !dateFin) {
+                alert("Veuillez remplir les deux dates.");
+                return;
+            }
+
+            if (new Date(dateFin) <= new Date(dateDebut)) {
+                alert("La date de départ doit être après la date d'arrivée.");
+                return;
+            }
+
+            const apiUrl = `/chambre/api/hotel/${hotelId}/chambres-disponibles?date_debut=${dateDebut}&date_fin=${dateFin}`;
+
+            // Afficher un indicateur de chargement
+            chambresContainer.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur HTTP");
+                    return response.json();
+                })
+                .then(data => {
+                    chambresContainer.innerHTML = '';
+
+                    if (data.length === 0) {
+                        chambresContainer.innerHTML = `
+                            <div class="no-rooms">
+                                <i class="far fa-calendar-times fa-3x mb-3"></i>
+                                <h4>Aucune chambre disponible pour ces dates</h4>
+                                <p>Veuillez essayer d'autres dates.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    chambresContainer.innerHTML = `
+                        <h3 class="mb-3">Chambres disponibles</h3>
+                        <div id="app">
+                            <div class="chambre-list">
+                                <div v-for="chambre in chambres" class="chambre-item">
+                                    <h4>[[ chambre.type_chambre ]]</h4>
+                                    <p><i class="fas fa-bed"></i> Type: [[ chambre.type_chambre ]]</p>
+                                    <p><i class="fas fa-euro-sign"></i> Prix par nuit: [[ chambre.prix_par_nuit ]]€</p>
+                                    <p><i class="fas fa-ruler-combined"></i> Superficie: [[ chambre.superficie ]] m²</p>
+                                    <button @click="reserverChambre(chambre.id)" class="btn btn-success">
+                                        <i class="fas fa-bookmark"></i> Réserver
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    new Vue({
+                        el: '#app',
+                        delimiters: ['[[', ']]'],
+                        data: {
+                            chambres: data,
+                            hotelId: {{ hotel.id }},
+                            dateDebut: dateDebut,
+                            dateFin: dateFin
+                        },
+                        methods: {
+                            reserverChambre(id) {
+                                const url = new URL(window.location.origin + `/reservationhotel/new/${this.hotelId}`);
+                                url.searchParams.append('chambreId', id);
+                                url.searchParams.append('dateDebut', this.dateDebut);
+                                url.searchParams.append('dateFin', this.dateFin);
+                                window.location.href = url.toString();
+                            }
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error('Erreur:', err);
+                    chambresContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Une erreur est survenue lors de la recherche.
+                        </div>
+                    `;
+                });
+        });
+    });
+</script>
+{% endblock %}

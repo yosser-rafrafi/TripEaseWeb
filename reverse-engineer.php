@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 
 // Database configuration - MODIFY THESE VALUES
 $dbHost = 'localhost';
-$dbName = 'tripeasev2';
+$dbName = 'tripeasev3';
 $dbUser = 'root';
 $dbPass = 'hana';
 $dbPort = 3306;

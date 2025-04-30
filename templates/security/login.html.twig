@@ -139,6 +139,11 @@
                             <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
                             <span class="show-password" onclick="toggleLoginPassword()">👁️</span>
                         </div>
+                        <div class="mb-3 text-end">
+                            <button type="button" class="btn btn-link p-0" style="color:#007B8A; font-size: 15px;" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+                                Mot de passe oublié ?
+                            </button>
+                        </div>
 
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
@@ -154,6 +159,48 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de réinitialisation de mot de passe -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetPasswordModalLabel">Réinitialisation du mot de passe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="step1">
+                    <p>Entrez votre adresse email pour recevoir un code de vérification.</p>
+                    <div class="mb-3">
+                        <label for="resetEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="resetEmail" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="sendVerificationCode()">
+                        Envoyer le code
+                    </button>
+                </div>
+                <div id="step2" style="display: none;">
+                    <p>Un code de vérification a été envoyé à votre email.</p>
+                    <div class="mb-3">
+                        <label for="verificationCode" class="form-label">Code de vérification</label>
+                        <input type="text" class="form-control" id="verificationCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="resetPassword()">
+                        Réinitialiser le mot de passe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -162,6 +209,77 @@
         function toggleLoginPassword() {
             const input = document.getElementById("inputPassword");
             input.type = input.type === "password" ? "text" : "password";
+        }
+
+        function sendVerificationCode() {
+            const email = document.getElementById('resetEmail').value;
+            if (!email) {
+                alert('Veuillez entrer votre adresse email');
+                return;
+            }
+
+            // Appel AJAX pour envoyer le code
+            fetch('/send-reset-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                } else {
+                    alert(data.message || 'Une erreur est survenue');
+                }
+            })
+            .catch(error => {
+                alert('Une erreur est survenue');
+                console.error('Error:', error);
+            });
+        }
+
+        function resetPassword() {
+            const code = document.getElementById('verificationCode').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!code || !newPassword || !confirmPassword) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+
+            // Appel AJAX pour réinitialiser le mot de passe
+            fetch('/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    code: code,
+                    password: newPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Mot de passe réinitialisé avec succès');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Une erreur est survenue');
+                }
+            })
+            .catch(error => {
+                alert('Une erreur est survenue');
+                console.error('Error:', error);
+            });
         }
     </script>
 {% endblock %}

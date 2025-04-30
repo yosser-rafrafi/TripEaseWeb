@@ -6,6 +6,9 @@
 parameters:
     google_maps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
     wmata_api_key: '%env(WMATA_API_KEY)%'
+    app.mailer_from: 'noreply@tripease.com'
+    app.admin_url: 'http://localhost:8000/admin'
+    app.website_url: 'http://localhost:8000'
     currency_api_app_id: '%env(OPENEXCHANGERATES_APP_ID)%'
  
 
@@ -59,4 +62,10 @@ services:
 
     App\Service\CurrencyApiService:
         arguments:
-            $appId: '%currency_api_app_id%'        
+            $appId: '%currency_api_app_id%'   
+
+
+    App\Service\TranslationService:
+        arguments:
+            $defaultLanguage: '%env(DEFAULT_LANGUAGE)%'
+             

@@ -52,4 +52,20 @@ public function findByUser(User $user)
         ->getQuery()
         ->getResult();
 }
+
+public function findTopRatedHotelsByCity(string $ville, int $limit = 5): array
+{
+    return $this->createQueryBuilder('h')
+        ->leftJoin('h.avis', 'a')
+        ->addSelect('AVG(a.note) as HIDDEN avgNote')
+        ->where('h.ville = :ville')
+        ->setParameter('ville', $ville)
+        ->groupBy('h.id')
+        ->having('COUNT(a.idAvis) > 0')
+        ->orderBy('avgNote', 'DESC')
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+}
+
 }

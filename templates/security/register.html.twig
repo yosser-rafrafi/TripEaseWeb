@@ -139,6 +139,11 @@
                             {{ form_errors(registrationForm.plainPassword.second) }}
                         </div>
 
+                        <div class="mb-4">
+                            {{ form_row(registrationForm.recaptcha) }}
+                            {{ form_errors(registrationForm.recaptcha) }}
+                        </div>
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">Créer mon compte ✨</button>
                         </div>
