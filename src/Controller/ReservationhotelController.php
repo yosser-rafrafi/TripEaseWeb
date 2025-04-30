@@ -269,16 +269,17 @@ final class ReservationhotelController extends AbstractController
                     $entityManager->persist($reservationhotel);
                     $entityManager->flush();
     
-                    // 2. Générer l'URL vers la page d'affichage
-                    $url = $this->generateUrl(
-                        'reservation_qr',
-                        ['id' => $reservationhotel->getId_reservation()],
-                        UrlGeneratorInterface::ABSOLUTE_URL
-                    );
-    
-                    // 3. Générer le QR code basé sur l’URL
-                    $qrCodePaths = $qrCodeService->generateQrCode($url);
-    
+                    $content = "🔒 Confirmation de réservation\n\n";
+                    $content .= "👤 Nom : " . $reservationhotel->getUser()->getNom() . "\n";
+                    $content .= "📧 Email : " . $reservationhotel->getUser()->getEmail() . "\n";
+                    $content .= "🏨 Hôtel : " . $reservationhotel->getHotel()->getNom() . "\n";
+                    $content .= "🛏️ Chambre : " . $reservationhotel->getChambre()->getTypeChambre() . "\n";
+                    $content .= "💰 Prix : " . $reservationhotel->getChambre()->getPrix_par_nuit() . " TND\n";
+                    $content .= "📅 Du : " . $reservationhotel->getDateDebut()->format('Y-m-d') . "\n";
+                    $content .= "📅 Au : " . $reservationhotel->getDateFin()->format('Y-m-d') . "\n";
+                    
+                    $qrCodePaths = $qrCodeService->generateQrCode($content);
+                    
                     // 4. Enregistrer le chemin du QR code
                     $reservationhotel->setQrcode($qrCodePaths['relative']);
                     $entityManager->flush();
