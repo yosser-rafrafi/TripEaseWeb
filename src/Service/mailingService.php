@@ -20,18 +20,18 @@ class mailingService
    
     public function sendEmailWithQrCode(Reservationhotel $reservationhotel): void
     {
-        // Génère les détails de la réservation à inclure dans le QR code
-        $details = sprintf(
-            "Réservation #%d\nHôtel : %s\nChambre : %s\nDate début : %s\nDate fin : %s",
-            $reservationhotel->getId_reservation(),
-            $reservationhotel->getHotel()->getNom(),
-            $reservationhotel->getChambre()->getTypeChambre(),
-            $reservationhotel->getDateDebut()->format('Y-m-d'),
-            $reservationhotel->getDateFin()->format('Y-m-d')
-        );
+        // Créer le contenu du QR code avec emojis et détails
+        $content = "🔒 Confirmation de réservation\n\n";
+        $content .= "👤 Nom : " . $reservationhotel->getUser()->getNom() . "\n";
+        $content .= "📧 Email : " . $reservationhotel->getUser()->getEmail() . "\n";
+        $content .= "🏨 Hôtel : " . $reservationhotel->getHotel()->getNom() . "\n";
+        $content .= "🛏️ Chambre : " . $reservationhotel->getChambre()->getTypeChambre() . "\n";
+        $content .= "💰 Prix : " . $reservationhotel->getChambre()->getPrix_par_nuit() . " TND\n";
+        $content .= "📅 Du : " . $reservationhotel->getDateDebut()->format('Y-m-d') . "\n";
+        $content .= "📅 Au : " . $reservationhotel->getDateFin()->format('Y-m-d') . "\n";
     
-        // Génère le QR code avec le service QrCodeService
-        $qrCodePaths = $this->qrCodeService->generateQrCode($details);
+        // Génère le QR code avec le nouveau contenu
+        $qrCodePaths = $this->qrCodeService->generateQrCode($content);
         $qrCodeFileAbsolute = $qrCodePaths['absolute'];
     
         // Construire l'e-mail
@@ -48,4 +48,5 @@ class mailingService
         // Supprime le fichier temporaire après envoi
         unlink($qrCodeFileAbsolute);
     }
+    
 }
