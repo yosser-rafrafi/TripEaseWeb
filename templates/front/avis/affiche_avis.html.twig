@@ -176,6 +176,16 @@
             {% else %}
                 {% for avi in pagination %}
                     <div class="review-card">
+                    <div class="review-meta text-muted mt-2">
+    <small>
+        <i class="far fa-calendar-alt me-1"></i>
+        {{ avi.dateAvis|date('d/m/Y') }}
+        &nbsp;&nbsp;—&nbsp;
+        <i class="fas fa-user me-1"></i>
+        {{ avi.user.prenom }} {{ avi.user.nom }}
+    </small>
+</div>
+
                         <div class="mb-3">
                             <div class="rating-stars">
                                 {% for i in 1..5 %}
@@ -192,12 +202,7 @@
                             </button>
                         </div>
 
-                        <div class="review-meta text-muted mt-2">
-                            <small>
-                                <i class="far fa-calendar-alt me-1"></i>
-                                {{ avi.dateAvis|date('d/m/Y') }}
-                            </small>
-                        </div>
+                      
                     </div>
                 {% endfor %}
 
