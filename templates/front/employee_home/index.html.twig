@@ -107,15 +107,15 @@ body > main {
         <div class="dropdown">
           <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-bell-fill fs-5"></i>
-            {% if notifications is defined and notifications|length > 0 %}
+            {% if notificationsVoyage is defined and notificationsVoyage|length > 0 %}
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ notifications|length }}
+                {{ notificationsVoyage|length }}
               </span>
             {% endif %}
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            {% if notifications is defined and notifications|length > 0 %}
-              {% for notif in notifications %}
+            {% if notificationsVoyage is defined and notificationsVoyage|length > 0 %}
+              {% for notif in notificationsVoyage %}
                 <li>
                   <a class="dropdown-item small text-dark" href="{{ path('notification_mark_as_read', {'id': notif.id}) }}">
                     {{ notif.message }}

@@ -6,6 +6,7 @@
 {$CADDY_EXTRA_CONFIG}
 
 http://localhost {
+	
 	log {
 		format filter {
 			fields {
@@ -38,7 +39,7 @@ http://localhost {
 	redir / /.well-known/mercure/ui/
 
 	respond /healthz 200
-	respond /robots.txt `User-agent: *
-	Disallow: /`
+	respond /robots.txt "User-agent: *\nDisallow: /"
 	respond "Not Found" 404
 }
+
