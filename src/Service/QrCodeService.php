@@ -37,7 +37,7 @@ class QrCodeService
         $filesystem->mkdir($uploadDir, 0700);
     }
 
-    // Nom de fichier unique
+    //Génère un nom de fichier unique du type
     $fileName = uniqid('qr_', true) . '.png';
     $filePathAbsolute = realpath($uploadDir) . DIRECTORY_SEPARATOR . $fileName;
 

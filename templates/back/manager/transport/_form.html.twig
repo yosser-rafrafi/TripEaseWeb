@@ -73,38 +73,74 @@
 
 {{ form_end(form) }}
 
+{# In your Twig template head section #}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        initMap();
+    });
+
     function initMap() {
         const defaultLatLng = { lat: 36.8065, lng: 10.1815 };
+        const transportLat = parseFloat(document.getElementById("transport_latitude").value) || defaultLatLng.lat;
+        const transportLng = parseFloat(document.getElementById("transport_longitude").value) || defaultLatLng.lng;
 
-        const transportLat = {{ latitude ?? defaultLatLng.lat }};
-        const transportLng = {{ longitude ?? defaultLatLng.lng }};
+        // Log for debugging
+        console.log("Latitude:", transportLat);
+        console.log("Longitude:", transportLng);
 
-        const map = new google.maps.Map(document.getElementById("transport-map"), {
-            zoom: 12,
-            center: { lat: transportLat, lng: transportLng },
+        const map = L.map('transport-map').setView([transportLat, transportLng], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        const marker = L.marker([transportLat, transportLng], { draggable: true }).addTo(map);
+
+        marker.on('dragend', function (event) {
+            const lat = event.target.getLatLng().lat;
+            const lng = event.target.getLatLng().lng;
+            updateLocation(lat, lng);
         });
 
-        const marker = new google.maps.Marker({
-            map: map,
-            position: { lat: transportLat, lng: transportLng },
-            draggable: true,
-        });
-
-        google.maps.event.addListener(marker, 'dragend', function (event) {
-            document.getElementById("transport_latitude").value = event.latLng.lat();
-            document.getElementById("transport_longitude").value = event.latLng.lng();
-        });
-
-        map.addListener("click", (event) => {
-            document.getElementById("transport_latitude").value = event.latLng.lat();
-            document.getElementById("transport_longitude").value = event.latLng.lng();
-
-            marker.setPosition(event.latLng);
+        map.on("click", function (event) {
+            const lat = event.latlng.lat;
+            const lng = event.latlng.lng;
+            marker.setLatLng(event.latlng);
+            updateLocation(lat, lng);
         });
     }
-</script>
 
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap">
+    function updateLocation(lat, lng) {
+        document.getElementById("transport_latitude").value = lat;
+        document.getElementById("transport_longitude").value = lng;
+
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'TripEaseApp/1.0 (contact@tripease.tn)' // replace with your own email
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const address = data.address || {};
+            const country = address.country || 'Inconnu';
+            const location = data.display_name || '';
+
+            document.getElementById("transport_location").value = location;
+            document.getElementById("transport_pays").value = country;
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération de l'adresse:", error);
+        });
+    }
 </script>

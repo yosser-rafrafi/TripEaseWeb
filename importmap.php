@@ -62,4 +62,10 @@ return [
     '@symfony/ux-leaflet-map' => [
         'path' => './vendor/symfony/ux-leaflet-map/assets/dist/map_controller.js',
     ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
+    'live' => [
+        'url' => 'https://cdn.jsdelivr.net/npm/@symfony/ux-live-component@latest/dist/live.js',
+    ],
 ];

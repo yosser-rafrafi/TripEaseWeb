@@ -1,6 +1,48 @@
 {% extends 'front/employee_home/index.html.twig' %}
 
 {% block title %}Nouvelle Réservation{% endblock %}
+{% block nav %}
+    <ul>
+        <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
+        <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+        <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+                <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
+        </li>
+
+        <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+                <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+        </li>
+
+        <!-- Notification Bell and Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Notifications <span class="badge bg-danger" id="notificationCount">{{ notifications|length }}</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="notificationDropdown" id="notificationList">
+                {% if notifications|length > 0 %}
+                    {% for notification in notifications %}
+                        <li><a class="dropdown-item" href="#">{{ notification.message }} <small>{{ notification.createdAt|date('Y-m-d H:i:s') }}</small></a></li>
+                    {% endfor %}
+                {% else %}
+                    <li><a class="dropdown-item" href="#">Aucune notification</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </ul>
+{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -9,6 +51,19 @@
             <img src="{{ asset('assets/images/transport/employe.png') }}" alt="Image de Transport" class="img-fluid rounded shadow-lg" style="max-height: 300px; object-fit: cover; width: 100%;">
         </div>
     </div>
+    <div class="row mb-4">
+    <div class="col-12">
+        <h3>Météo Actuelle</h3>
+        <p><strong>Température :</strong> {{ weatherData.temperature }}°C</p>
+        <p><strong>Vitesse du vent :</strong> {{ weatherData.windspeed }} km/h</p>
+        {% if weatherData.humidity is defined %}
+            <p><strong>Humidité :</strong> {{ weatherData.humidity }}%</p>
+        {% else %}
+            <p><strong>Humidité :</strong> Non disponible</p>
+        {% endif %}
+    </div>
+</div>
+
 
     <div class="page-title mb-4">
         <div class="title_left">
@@ -25,13 +80,11 @@
                     <h2 class="h5 mb-0">Créer une Nouvelle Réservation</h2>
                 </div>
                 <div class="card-body">
-                  
                     {{ include('front/reservationtransport/_form.html.twig') }}
                 </div>
             </div>
         </div>
     </div>
-
     
 </div>
 
@@ -60,11 +113,32 @@
             ],
             select: function (start, end) {
                 let selectedDate = start.format('YYYY-MM-DD');
-                $('#reservation_date').val(selectedDate); // Ajuster l'ID si nécessaire
+                $('#reservation_date').val(selectedDate); // Adjust the ID if needed
                 $('#calendar').fullCalendar('unselect');
             }
         });
     });
+
+    {# Adding the notification setup #}
+    const eventSource = new EventSource("{{ mercure('/reservation/updates')|escape('js') }}");
+
+    eventSource.onmessage = event => {
+        const data = JSON.parse(event.data);
+        displayNotification(data);
+    };
+
+    function displayNotification(data) {
+        const notificationContainer = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `<strong>Nouvelle réservation:</strong> ${data.message}`;
+        
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 5000); // Remove notification after 5 seconds
+    }
 </script>
 
 <style>
@@ -82,7 +156,26 @@
     .form-control, .form-select {
         border-radius: 5px;
     }
+
+    /* Style for notifications */
+    #notification-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1050;
+    }
+
+    .notification {
+        background-color: #4e73df;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 </style>
+
 {% endblock %}
 
 {% block footer %}{% endblock %}

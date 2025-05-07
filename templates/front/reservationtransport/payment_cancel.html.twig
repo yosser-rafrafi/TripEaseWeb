@@ -1,0 +1,113 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Paiement annulé{% endblock %}
+
+{% block nav %}
+    <ul>
+        <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
+        <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+        <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+                <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
+        </li>
+
+        <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+                <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+        </li>
+
+        <!-- Notification Bell and Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Notifications <span class="badge bg-danger" id="notificationCount">{{ notifications|length }}</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="notificationDropdown" id="notificationList">
+                {% if notifications|length > 0 %}
+                    {% for notification in notifications %}
+                        <li><a class="dropdown-item" href="#">{{ notification.message }} <small>{{ notification.createdAt|date('Y-m-d H:i:s') }}</small></a></li>
+                    {% endfor %}
+                {% else %}
+                    <li><a class="dropdown-item" href="#">Aucune notification</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </ul>
+{% endblock %}
+
+
+{% block body %}
+
+   <h1>{{ message|default('Paiement annulé.') }}</h1>
+<p>Réservation numéro: {{ reservationtransport.id }}</p>
+<a href="{{ path('app_reservationtransport_index') }}">Retour à vos réservations</a>
+
+
+{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .btn-gradient-primary {
+            background: linear-gradient(to right, #4e73df, #1cc88a);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .bg-light-blue {
+            background-color: #4e73df;
+        }
+        
+        .object-fit-cover {
+            object-fit: cover;
+        }
+        
+        .table th {
+            white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .badge {
+            padding: 0.35em 0.65em;
+            font-weight: 500;
+        }
+        
+        .border-light {
+            border-color: #f8f9fa !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const eventSource = new EventSource("{{ mercure('/reservation/updates')|escape('js') }}");
+
+        eventSource.onmessage = event => {
+            const data = JSON.parse(event.data);
+            alert('Message reçu de Mercure: ' + JSON.stringify(data));
+        };
+    </script>
+{% endblock %}

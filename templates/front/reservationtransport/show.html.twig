@@ -2,6 +2,49 @@
 
 {% block title %}Reservation Details{% endblock %}
 
+{% block nav %}
+    <ul>
+        <li><a href="{{ path('app_employee_home') }}" class="active">Home</a></li>
+        <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+        <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+                <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
+        </li>
+
+        <li><a href="{{ path('app_statut_index') }}">Forum</a></li>
+
+        <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+                <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+        </li>
+
+        <!-- Notification Bell and Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Notifications <span class="badge bg-danger" id="notificationCount">{{ notifications|length }}</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="notificationDropdown" id="notificationList">
+                {% if notifications|length > 0 %}
+                    {% for notification in notifications %}
+                        <li><a class="dropdown-item" href="#">{{ notification.message }} <small>{{ notification.createdAt|date('Y-m-d H:i:s') }}</small></a></li>
+                    {% endfor %}
+                {% else %}
+                    <li><a class="dropdown-item" href="#">Aucune notification</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </ul>
+{% endblock %}
+
 {% block body %}
     <div class="container mt-4">
         <div class="row mb-4">
@@ -17,7 +60,6 @@
                 </a>
             </div>
         </div>
-
 
         <div class="clearfix"></div>
 
@@ -78,9 +120,31 @@
                         <a href="{{ path('app_reservationtransport_index') }}" class="btn btn-sm btn-outline-primary">
                             <i class="fa fa-arrow-left"></i> Back to List
                         </a>
+
+                        {# Add Stripe Payment Button #}
+                        <a href="{{ path('paiement_checkout', {'id': reservationtransport.id}) }}" class="btn btn-gradient mt-3">
+                            <i class="fa fa-credit-card me-2"></i> Pay Now
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {# Notification Section #}
+    <div id="notification-container"></div>
+
 {% endblock %}
+
+{% block footer %}{% endblock %}
+{% block javascripts %}
+    <script>
+        const eventSource = new EventSource("{{ mercure('/reservation/updates')|escape('js') }}");
+
+        eventSource.onmessage = event => {
+            const data = JSON.parse(event.data);
+            alert('Message reçu de Mercure: ' + JSON.stringify(data));
+        };
+    </script>
+{% endblock %}
+

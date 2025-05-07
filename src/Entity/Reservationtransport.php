@@ -63,6 +63,22 @@ class Reservationtransport
         maxMessage: "Les notes ne peuvent pas dépasser 255 caractères."
     )]
     private ?string $notes_reservation = null;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+     private ?string $statusDePaiement = null;
+ 
+     public function getStatusDePaiement(): ?string
+     {
+         return $this->statusDePaiement;
+     }
+ 
+     public function setStatusDePaiement(?string $statusDePaiement): self
+     {
+         $this->statusDePaiement = $statusDePaiement;
+ 
+         return $this;
+     }
+   
     
 
     // Getters and Setters

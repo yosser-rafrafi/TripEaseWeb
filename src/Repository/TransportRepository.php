@@ -16,28 +16,21 @@ class TransportRepository extends ServiceEntityRepository
         parent::__construct($registry, Transport::class);
     }
 
-//    /**
-//     * @return Transport[] Returns an array of Transport objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    // Find transports by selected agency and transport type
+    public function findByFilters(?string $selectedAgency, ?string $selectedTransportType)
+    {
+        $queryBuilder = $this->createQueryBuilder('t');
 
-//    public function findOneBySomeField($value): ?Transport
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($selectedAgency) {
+            $queryBuilder->andWhere('t.transport_agency = :agency')
+                         ->setParameter('agency', $selectedAgency);
+        }
+
+        if ($selectedTransportType) {
+            $queryBuilder->andWhere('t.transport_type = :type')
+                         ->setParameter('type', $selectedTransportType);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

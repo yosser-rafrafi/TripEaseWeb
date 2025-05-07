@@ -5,6 +5,7 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TransportRepository;
+use App\Repository\ReservationtransportRepository;
 
 #[ORM\Entity(repositoryClass: TransportRepository::class)]
 #[ORM\Table(name: 'transport')]
@@ -185,5 +186,12 @@ public function setTransportAgence(?string $transport_agence): self
     $this->transport_agence = $transport_agence;
     return $this;
 }
+// src/Entity/Transport.php
+
+public function hasReservations(ReservationtransportRepository $reservationRepository): bool
+{
+    return $reservationRepository->hasReservations($this);
+}
+
 
 }

@@ -271,7 +271,7 @@
         var destination = "{{ voyage.destination|escape('js') }}";
 
         // Use OpenStreetMap's Nominatim service for geocoding
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)}`)
+        fetch(https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)})
             .then(response => response.json())
             .then(data => {
                 if (data && data.length > 0) {
