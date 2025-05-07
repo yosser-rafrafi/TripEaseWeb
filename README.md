@@ -73,13 +73,15 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 TripEase est une application web complète pour la planification et la gestion des voyages d'affaires :
 
 * Portail **Web** (Symfony/PHP) pour les employés et managers
+* Réservevation des hôtels, des vols et du transport en toute sécurité 
 * Gestion des demandes d'avance de frais et workflow de validation
+* Forum pour échanger les idées et les suggestions.
 
 
 ### 📷 Screenshots
 
 <div align="center">
-  <img src="assets/screenshot.png" alt="Dashboard TripEase" width="600" />
+  <img src="public/assets/images/dash.jpg" alt="Dashboard TripEase" width="600" />
 </div>
 
 ### 👨‍💻 Tech Stack
@@ -117,11 +119,17 @@ TripEase est une application web complète pour la planification et la gestion d
 
 ### 🎯 Features
 
-* voice to speech 
+* Notification de confirmation
+* météo en temps réel
+* Maps 
+* mot de passe oublier avec mail
+* Banner fraude
 * saving data on cloudinary 
-* traducteur pour les posts et commentaires
-* Convertisseur de devises intégrée
+* traducteur intégrée
+* Convertisseur intégrée
 * Génération de rapports financiers PDF
+* Génération code QR
+* Assistance vocale avec AI
 
 ### 🔑 Environment Variables
 
