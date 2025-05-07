@@ -4,8 +4,8 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 
 <div align="center">
 
-  <img src="public/assets/images/tripEaseLogo.png" alt="TripEase Logo" width="200" />
-  <h1>🌍 TripEase</h1>
+  <img src="public/assets/images/tripEaseLogo.png" alt="TripEase Logo" width="300" />
+  <h1>TripEase</h1>
   <p>Application web pour planifier vos voyages d'affaires avec simplicité et efficacité.</p>
 
   <!-- Badges -->
@@ -47,26 +47,26 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 
 # \:notebook\_with\_decorative\_cover: Table of Contents
 
-* [⭐️ About the Project](#star2-about-the-project)
+* [⭐️ About the Project](#about-the-project)
 
-  * [📷 Screenshots](#camera-screenshots)
-  * [👨‍💻 Tech Stack](#space_invader-tech-stack)
-  * [🎯 Features](#dart-features)
-  * [🔑 Environment Variables](#key-environment-variables)
-* [🧰 Getting Started](#toolbox-getting-started)
+  * [📷 Screenshots](#screenshots)
+  * [👨‍💻 Tech Stack](#tech-stack)
+  * [🎯 Features](#features)
+  * [🔑 Environment Variables](#environment-variables)
+* [🧰 Getting Started](#getting-started)
 
-  * [‼️ Prerequisites](#bangbang-prerequisites)
-  * [⚙️ Installation](#gear-installation)
-  * [🏃 Run Locally](#running-run-locally)
-* [👀 Usage](#eyes-usage)
-* [🛣️ Roadmap](#compass-roadmap)
-* [🤝 Contributing](#wave-contributing)
+  * [‼️ Prerequisites](#prerequisites)
+  * [⚙️ Installation](#installation)
+  * [🏃 Run Locally](#run-locally)
+* [👀 Usage](#usage)
+* [🛣️ Roadmap](#roadmap)
+* [🤝 Contributing](#contributing)
 
-  * [📜 Code of Conduct](#scroll-code-of-conduct)
-* [❓ FAQ](#grey_question-faq)
-* [⚠️ License](#warning-license)
-* [🤝 Contact](#handshake-contact)
-* [💎 Acknowledgements](#gem-acknowledgements)
+  * [📜 Code of Conduct](#code-of-conduct)
+* [❓ FAQ](#faq)
+* [⚠️ License](#license)
+* [🤝 Contact](#contact)
+* [💎 Acknowledgements](#acknowledgements)
 
 ## ⭐️ About the Project
 
