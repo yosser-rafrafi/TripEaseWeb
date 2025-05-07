@@ -4,30 +4,30 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 
 <div align="center">
 
-  <img src="assets/background.jpg" alt="VoyagePro Logo" width="200" />
-  <h1>🌍 VoyagePro</h1>
-  <p>Application web et desktop pour planifier vos voyages d'affaires avec efficacité.</p>
+  <img src="assets/background.jpg" alt="TripEase Logo" width="200" />
+  <h1>🌍 TripEase</h1>
+  <p>Application web pour planifier vos voyages d'affaires avec simplicité et efficacité.</p>
 
   <!-- Badges -->
 
   <p>
-    <a href="https://github.com/<utilisateur>/VoyagePro/graphs/contributors">
-      <img src="https://img.shields.io/github/contributors/<utilisateur>/VoyagePro" alt="Contributors" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/graphs/contributors">
+      <img src="https://img.shields.io/github/contributors/yosser-rafrafi/TripEaseWeb" alt="Contributors" />
     </a>
-    <a href="https://github.com/<utilisateur>/VoyagePro/commits/main">
-      <img src="https://img.shields.io/github/last-commit/<utilisateur>/VoyagePro" alt="Last Commit" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/commits/main">
+      <img src="https://img.shields.io/github/last-commit/yosser-rafrafi/TripEaseWeb" alt="Last Commit" />
     </a>
-    <a href="https://github.com/<utilisateur>/VoyagePro/network/members">
-      <img src="https://img.shields.io/github/forks/<utilisateur>/VoyagePro" alt="Forks" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/network/members">
+      <img src="https://img.shields.io/github/forks/yosser-rafrafi/TripEaseWeb" alt="Forks" />
     </a>
-    <a href="https://github.com/<utilisateur>/VoyagePro/stargazers">
-      <img src="https://img.shields.io/github/stars/<utilisateur>/VoyagePro" alt="Stars" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/stargazers">
+      <img src="https://img.shields.io/github/stars/yosser-rafrafi/TripEaseWeb" alt="Stars" />
     </a>
-    <a href="https://github.com/<utilisateur>/VoyagePro/issues">
-      <img src="https://img.shields.io/github/issues/<utilisateur>/VoyagePro" alt="Open Issues" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/issues">
+      <img src="https://img.shields.io/github/issues/yosser-rafrafi/TripEaseWeb" alt="Open Issues" />
     </a>
-    <a href="https://github.com/<utilisateur>/VoyagePro/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/<utilisateur>/VoyagePro" alt="License" />
+    <a href="https://github.com/yosser-rafrafi/TripEaseWeb/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/yosser-rafrafi/TripEaseWeb" alt="License" />
     </a>
   </p>
 
@@ -70,17 +70,16 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 
 ## ⭐️ About the Project
 
-VoyagePro est une solution complète pour la planification des voyages d'affaires :
+TripEase est une application web complète pour la planification et la gestion des voyages d'affaires :
 
 * Portail **Web** (Symfony/PHP) pour les employés et managers
-* Application **Desktop** (JavaFX) pour un accès hors ligne
-* Gestion des avances de frais avec conversion de devises
-* Workflow de validation et rapports automatiques
+* Gestion des demandes d'avance de frais et workflow de validation
+* Intégration d'un convertisseur de devises pour un suivi précis des dépenses
 
 ### 📷 Screenshots
 
 <div align="center">
-  <img src="assets/screenshot.png" alt="Dashboard" width="600" />
+  <img src="assets/screenshot.png" alt="Dashboard TripEase" width="600" />
 </div>
 
 ### 👨‍💻 Tech Stack
@@ -109,14 +108,6 @@ VoyagePro est une solution complète pour la planification des voyages d'affaire
 </details>
 
 <details>
-<summary>Desktop</summary>
-<ul>
-  <li><a href="https://openjfx.io/">JavaFX</a> (Java 17)</li>
-  <li><a href="https://maven.apache.org/">Maven</a> pour le build</li>
-</ul>
-</details>
-
-<details>
 <summary>Dev Tools</summary>
 <ul>
   <li><a href="https://getcomposer.org/">Composer</a></li>
@@ -126,18 +117,17 @@ VoyagePro est une solution complète pour la planification des voyages d'affaire
 
 ### 🎯 Features
 
-* Création, lecture, mise à jour et suppression de voyages (CRUD)
+* CRUD des voyages d'affaires
 * Sélection d'hôtels et moyens de transport
 * Soumission & validation des avances de frais
 * Conversion de devises intégrée
-* Rapports PDF générés automatiquement
-* Application desktop pour usage hors ligne
+* Génération de rapports PDF
 
 ### 🔑 Environment Variables
 
 ```bash
 # Dans .env
-DATABASE_URL=mysql://user:pass@127.0.0.1:3306/voyagepro
+DATABASE_URL=mysql://user:pass@127.0.0.1:3306/tripease
 ```
 
 ## 🧰 Getting Started
@@ -147,7 +137,6 @@ DATABASE_URL=mysql://user:pass@127.0.0.1:3306/voyagepro
 * PHP 8.x, Composer
 * Symfony CLI (`symfony`)
 * Node.js & npm (optionnel)
-* Java 17 & Maven
 * MySQL (via WAMP sur Windows)
 
 ### ⚙️ Installation
@@ -155,8 +144,8 @@ DATABASE_URL=mysql://user:pass@127.0.0.1:3306/voyagepro
 1. Clonez le dépôt :
 
    ```bash
-   git clone https://github.com/<utilisateur>/VoyagePro.git
-   cd VoyagePro
+   git clone https://github.com/yosser-rafrafi/TripEaseWeb.git
+   cd TripEaseWeb
    ```
 2. Backend Symfony :
 
@@ -173,13 +162,6 @@ DATABASE_URL=mysql://user:pass@127.0.0.1:3306/voyagepro
    npm install
    npm run build
    ```
-4. Application Desktop :
-
-   ```bash
-   cd desktop
-   mvn clean package
-   java -jar target/VoyagePro.jar
-   ```
 
 ### 🏃 Run Locally
 
@@ -191,7 +173,6 @@ Après installation, accédez à [http://localhost:8000](http://localhost:8000) 
 
   * Employé : `employe@exemple.com` / `employe123`
   * Manager : `manager@exemple.com` / `manager123`
-* **Desktop** : suivez le wizard au lancement.
 
 ## 🛣️ Roadmap
 
@@ -206,7 +187,7 @@ Contributions sont les bienvenues !
 
 1. Forkez le projet
 2. Créez une branche : `git checkout -b feature/ma-fonctionnalite`
-3. Commitez : \`git commit -m "Ajout de X"
+3. Commitez : `git commit -m "Ajout de X"`
 4. Pushez : `git push origin feature/ma-fonctionnalite`
 5. Ouvrez une PR
 
@@ -220,7 +201,7 @@ Veuillez lire le [Code of Conduct](CODE_OF_CONDUCT.md).
 R1 : Oui, modifiez `DATABASE_URL` dans `.env`.
 
 **Q2 : Comment générer un build desktop ?**
-R2 : Exécutez `mvn clean package` dans `desktop/`.
+R2 : Non applicable pour la version web.
 
 ## ⚠️ License
 
@@ -228,13 +209,12 @@ Distribué sous licence MIT. Voir [LICENSE](LICENSE).
 
 ## 🤝 Contact
 
-Auteur – **Votre Nom** – [@twitter](https://twitter.com/twitter_handle) – [email@exemple.com](mailto:email@exemple.com)
+Auteur – **Yosser Rafrafi** – [github.com/yosser-rafrafi](https://github.com/yosser-rafrafi) – [yosser@example.com](mailto:yosser@example.com)
 
-Project Link: [https://github.com/<utilisateur>/VoyagePro](https://github.com/<utilisateur>/VoyagePro)
+Project Link: [https://github.com/yosser-rafrafi/TripEaseWeb](https://github.com/yosser-rafrafi/TripEaseWeb)
 
 ## 💎 Acknowledgements
 
 * [Shields.io](https://shields.io/)
 * [Symfony](https://symfony.com/)
-* [JavaFX](https://openjfx.io/)
 * [Awesome README](https://github.com/matiassingers/awesome-readme)
