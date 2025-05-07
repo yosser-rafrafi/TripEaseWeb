@@ -4,7 +4,7 @@ Merci d'utiliser cette template pour votre README. Pour toute amélioration, for
 
 <div align="center">
 
-  <img src="assets/background.jpg" alt="TripEase Logo" width="200" />
+  <img src="public/assets/images/tripEaseLogo.png" alt="TripEase Logo" width="200" />
   <h1>🌍 TripEase</h1>
   <p>Application web pour planifier vos voyages d'affaires avec simplicité et efficacité.</p>
 
