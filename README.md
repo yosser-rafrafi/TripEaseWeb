@@ -74,7 +74,7 @@ TripEase est une application web complète pour la planification et la gestion d
 
 * Portail **Web** (Symfony/PHP) pour les employés et managers
 * Gestion des demandes d'avance de frais et workflow de validation
-* Intégration d'un convertisseur de devises pour un suivi précis des dépenses
+
 
 ### 📷 Screenshots
 
@@ -103,7 +103,7 @@ TripEase est une application web complète pour la planification et la gestion d
 <details>
 <summary>Database</summary>
 <ul>
-  <li><a href="https://www.mysql.com/">MySQL</a> (via WAMP)</li>
+  <li><a href="https://www.mysql.com/">MySQL</a> (via WAMP ou XAMP)</li>
 </ul>
 </details>
 
@@ -117,11 +117,11 @@ TripEase est une application web complète pour la planification et la gestion d
 
 ### 🎯 Features
 
-* CRUD des voyages d'affaires
-* Sélection d'hôtels et moyens de transport
-* Soumission & validation des avances de frais
-* Conversion de devises intégrée
-* Génération de rapports PDF
+* voice to speech 
+* saving data on cloudinary 
+* traducteur pour les posts et commentaires
+* Convertisseur de devises intégrée
+* Génération de rapports financiers PDF
 
 ### 🔑 Environment Variables
 
@@ -139,7 +139,7 @@ DATABASE_URL=mysql://user:pass@127.0.0.1:3306/tripease
 * Node.js & npm (optionnel)
 * MySQL (via WAMP sur Windows)
 
-### ⚙️ Installation
+# ⚙️ Installation
 
 1. Clonez le dépôt :
 
