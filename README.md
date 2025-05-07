@@ -1,308 +1,240 @@
 <!--
-Hey, thanks for using the awesome-readme-template template.  
-If you have any enhancements, then fork this project and create a pull request 
-or just open an issue with the label "enhancement".
-
-Don't forget to give this project a star for additional support ;)
-Maybe you can mention me or this repo in the acknowledgements too
+Merci d'utiliser cette template pour votre README. Pour toute amélioration, forkez ce projet et ouvrez une PR ou un issue avec le label "enhancement".
 -->
+
 <div align="center">
 
-  <img src="assets/background.jpg" alt="logo" width="200" height="auto" />
-  <h1>Awesome Readme Template</h1>
-  
+  <img src="assets/background.jpg" alt="VoyagePro Logo" width="200" />
+  <h1>🌍 VoyagePro</h1>
+  <p>Application web et desktop pour planifier vos voyages d'affaires avec efficacité.</p>
+
+  <!-- Badges -->
+
   <p>
-    An awesome README template for your projects! 
+    <a href="https://github.com/<utilisateur>/VoyagePro/graphs/contributors">
+      <img src="https://img.shields.io/github/contributors/<utilisateur>/VoyagePro" alt="Contributors" />
+    </a>
+    <a href="https://github.com/<utilisateur>/VoyagePro/commits/main">
+      <img src="https://img.shields.io/github/last-commit/<utilisateur>/VoyagePro" alt="Last Commit" />
+    </a>
+    <a href="https://github.com/<utilisateur>/VoyagePro/network/members">
+      <img src="https://img.shields.io/github/forks/<utilisateur>/VoyagePro" alt="Forks" />
+    </a>
+    <a href="https://github.com/<utilisateur>/VoyagePro/stargazers">
+      <img src="https://img.shields.io/github/stars/<utilisateur>/VoyagePro" alt="Stars" />
+    </a>
+    <a href="https://github.com/<utilisateur>/VoyagePro/issues">
+      <img src="https://img.shields.io/github/issues/<utilisateur>/VoyagePro" alt="Open Issues" />
+    </a>
+    <a href="https://github.com/<utilisateur>/VoyagePro/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/<utilisateur>/VoyagePro" alt="License" />
+    </a>
   </p>
-  
-  
-<!-- Badges -->
-<p>
-  <a href="https://github.com/Louis3797/awesome-readme-template/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/Louis3797/awesome-readme-template" alt="contributors" />
-  </a>
-  <a href="">
-    <img src="https://img.shields.io/github/last-commit/Louis3797/awesome-readme-template" alt="last update" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/network/members">
-    <img src="https://img.shields.io/github/forks/Louis3797/awesome-readme-template" alt="forks" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/stargazers">
-    <img src="https://img.shields.io/github/stars/Louis3797/awesome-readme-template" alt="stars" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/issues/">
-    <img src="https://img.shields.io/github/issues/Louis3797/awesome-readme-template" alt="open issues" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/Louis3797/awesome-readme-template.svg" alt="license" />
-  </a>
-</p>
-   
-<h4>
-    <a href="https://github.com/Louis3797/awesome-readme-template/">View Demo</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template">Documentation</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Request Feature</a>
+
+  <h4>
+    <a href="#star2-about-the-project">Présentation</a>
+    <span> · </span>
+    <a href="#toolbox-getting-started">Installation</a>
+    <span> · </span>
+    <a href="#eyes-usage">Usage</a>
+    <span> · </span>
+    <a href="#handshake-contact">Contact</a>
   </h4>
+
 </div>
 
 <br />
 
-<!-- Table of Contents -->
-# :notebook_with_decorative_cover: Table of Contents
+# \:notebook\_with\_decorative\_cover: Table of Contents
 
-- [About the Project](#star2-about-the-project)
-  * [Screenshots](#camera-screenshots)
-  * [Tech Stack](#space_invader-tech-stack)
-  * [Features](#dart-features)
-  * [Color Reference](#art-color-reference)
-  * [Environment Variables](#key-environment-variables)
-- [Getting Started](#toolbox-getting-started)
-  * [Prerequisites](#bangbang-prerequisites)
-  * [Installation](#gear-installation)
-  * [Running Tests](#test_tube-running-tests)
-  * [Run Locally](#running-run-locally)
-  * [Deployment](#triangular_flag_on_post-deployment)
-- [Usage](#eyes-usage)
-- [Roadmap](#compass-roadmap)
-- [Contributing](#wave-contributing)
-  * [Code of Conduct](#scroll-code-of-conduct)
-- [FAQ](#grey_question-faq)
-- [License](#warning-license)
-- [Contact](#handshake-contact)
-- [Acknowledgements](#gem-acknowledgements)
+* [⭐️ About the Project](#star2-about-the-project)
 
-  
+  * [📷 Screenshots](#camera-screenshots)
+  * [👨‍💻 Tech Stack](#space_invader-tech-stack)
+  * [🎯 Features](#dart-features)
+  * [🔑 Environment Variables](#key-environment-variables)
+* [🧰 Getting Started](#toolbox-getting-started)
 
-<!-- About the Project -->
-## :star2: About the Project
+  * [‼️ Prerequisites](#bangbang-prerequisites)
+  * [⚙️ Installation](#gear-installation)
+  * [🏃 Run Locally](#running-run-locally)
+* [👀 Usage](#eyes-usage)
+* [🛣️ Roadmap](#compass-roadmap)
+* [🤝 Contributing](#wave-contributing)
 
+  * [📜 Code of Conduct](#scroll-code-of-conduct)
+* [❓ FAQ](#grey_question-faq)
+* [⚠️ License](#warning-license)
+* [🤝 Contact](#handshake-contact)
+* [💎 Acknowledgements](#gem-acknowledgements)
 
-<!-- Screenshots -->
-### :camera: Screenshots
+## ⭐️ About the Project
 
-<div align="center"> 
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
+VoyagePro est une solution complète pour la planification des voyages d'affaires :
+
+* Portail **Web** (Symfony/PHP) pour les employés et managers
+* Application **Desktop** (JavaFX) pour un accès hors ligne
+* Gestion des avances de frais avec conversion de devises
+* Workflow de validation et rapports automatiques
+
+### 📷 Screenshots
+
+<div align="center">
+  <img src="assets/screenshot.png" alt="Dashboard" width="600" />
 </div>
 
-
-<!-- TechStack -->
-### :space_invader: Tech Stack
+### 👨‍💻 Tech Stack
 
 <details>
-  <summary>Client</summary>
-  <ul>
-    <li><a href="https://www.typescriptlang.org/">Typescript</a></li>
-    <li><a href="https://nextjs.org/">Next.js</a></li>
-    <li><a href="https://reactjs.org/">React.js</a></li>
-    <li><a href="https://tailwindcss.com/">TailwindCSS</a></li>
-  </ul>
+<summary>Web Backend</summary>
+<ul>
+  <li><a href="https://symfony.com/">Symfony 6.x</a></li>
+  <li><a href="https://www.php.net/">PHP 8.x</a></li>
+</ul>
 </details>
 
 <details>
-  <summary>Server</summary>
-  <ul>
-    <li><a href="https://www.typescriptlang.org/">Typescript</a></li>
-    <li><a href="https://expressjs.com/">Express.js</a></li>
-    <li><a href="https://go.dev/">Golang</a></li>
-    <li><a href="https://nestjs.com/">Nest.js</a></li>
-    <li><a href="https://socket.io/">SocketIO</a></li>
-    <li><a href="https://www.prisma.io/">Prisma</a></li>    
-    <li><a href="https://www.apollographql.com/">Apollo</a></li>
-    <li><a href="https://graphql.org/">GraphQL</a></li>
-  </ul>
+<summary>Web Frontend</summary>
+<ul>
+  <li><a href="https://twig.symfony.com/">Twig</a></li>
+  <li>HTML, CSS, JavaScript</li>
+</ul>
 </details>
 
 <details>
 <summary>Database</summary>
-  <ul>
-    <li><a href="https://www.mysql.com/">MySQL</a></li>
-    <li><a href="https://www.postgresql.org/">PostgreSQL</a></li>
-    <li><a href="https://redis.io/">Redis</a></li>
-    <li><a href="https://neo4j.com/">Neo4j</a></li>
-    <li><a href="https://www.mongodb.com/">MongoDB</a></li>
-  </ul>
+<ul>
+  <li><a href="https://www.mysql.com/">MySQL</a> (via WAMP)</li>
+</ul>
 </details>
 
 <details>
-<summary>DevOps</summary>
-  <ul>
-    <li><a href="https://www.docker.com/">Docker</a></li>
-    <li><a href="https://www.jenkins.io/">Jenkins</a></li>
-    <li><a href="https://circleci.com/">CircleCLI</a></li>
-  </ul>
+<summary>Desktop</summary>
+<ul>
+  <li><a href="https://openjfx.io/">JavaFX</a> (Java 17)</li>
+  <li><a href="https://maven.apache.org/">Maven</a> pour le build</li>
+</ul>
 </details>
 
-<!-- Features -->
-### :dart: Features
+<details>
+<summary>Dev Tools</summary>
+<ul>
+  <li><a href="https://getcomposer.org/">Composer</a></li>
+  <li><a href="https://git-scm.com/">Git</a></li>
+</ul>
+</details>
 
-- Feature 1
-- Feature 2
-- Feature 3
+### 🎯 Features
 
-<!-- Color Reference -->
-### :art: Color Reference
+* Création, lecture, mise à jour et suppression de voyages (CRUD)
+* Sélection d'hôtels et moyens de transport
+* Soumission & validation des avances de frais
+* Conversion de devises intégrée
+* Rapports PDF générés automatiquement
+* Application desktop pour usage hors ligne
 
-| Color             | Hex                                                                |
-| ----------------- | ------------------------------------------------------------------ |
-| Primary Color | ![#222831](https://via.placeholder.com/10/222831?text=+) #222831 |
-| Secondary Color | ![#393E46](https://via.placeholder.com/10/393E46?text=+) #393E46 |
-| Accent Color | ![#00ADB5](https://via.placeholder.com/10/00ADB5?text=+) #00ADB5 |
-| Text Color | ![#EEEEEE](https://via.placeholder.com/10/EEEEEE?text=+) #EEEEEE |
-
-
-<!-- Env Variables -->
-### :key: Environment Variables
-
-To run this project, you will need to add the following environment variables to your .env file
-
-`API_KEY`
-
-`ANOTHER_API_KEY`
-
-<!-- Getting Started -->
-## 	:toolbox: Getting Started
-
-<!-- Prerequisites -->
-### :bangbang: Prerequisites
-
-This project uses Yarn as package manager
+### 🔑 Environment Variables
 
 ```bash
- npm install --global yarn
+# Dans .env
+DATABASE_URL=mysql://user:pass@127.0.0.1:3306/voyagepro
 ```
 
-<!-- Installation -->
-### :gear: Installation
+## 🧰 Getting Started
 
-Install my-project with npm
+### ‼️ Prerequisites
 
-```bash
-  yarn install my-project
-  cd my-project
-```
-   
-<!-- Running Tests -->
-### :test_tube: Running Tests
+* PHP 8.x, Composer
+* Symfony CLI (`symfony`)
+* Node.js & npm (optionnel)
+* Java 17 & Maven
+* MySQL (via WAMP sur Windows)
 
-To run tests, run the following command
+### ⚙️ Installation
 
-```bash
-  yarn test test
-```
+1. Clonez le dépôt :
 
-<!-- Run Locally -->
-### :running: Run Locally
+   ```bash
+   git clone https://github.com/<utilisateur>/VoyagePro.git
+   cd VoyagePro
+   ```
+2. Backend Symfony :
 
-Clone the project
+   ```bash
+   composer install
+   cp .env.example .env
+   symfony console doctrine:database:create
+   symfony console doctrine:migrations:migrate
+   symfony server:start
+   ```
+3. Frontend (si besoin) :
 
-```bash
-  git clone https://github.com/Louis3797/awesome-readme-template.git
-```
+   ```bash
+   npm install
+   npm run build
+   ```
+4. Application Desktop :
 
-Go to the project directory
+   ```bash
+   cd desktop
+   mvn clean package
+   java -jar target/VoyagePro.jar
+   ```
 
-```bash
-  cd my-project
-```
+### 🏃 Run Locally
 
-Install dependencies
+Après installation, accédez à [http://localhost:8000](http://localhost:8000) pour l’interface web.
 
-```bash
-  yarn install
-```
+## 👀 Usage
 
-Start the server
+* **Web** :
 
-```bash
-  yarn start
-```
+  * Employé : `employe@exemple.com` / `employe123`
+  * Manager : `manager@exemple.com` / `manager123`
+* **Desktop** : suivez le wizard au lancement.
 
+## 🛣️ Roadmap
 
-<!-- Deployment -->
-### :triangular_flag_on_post: Deployment
+* [x] Implémenter CRUD voyages
+* [x] Gestion des avances de frais
+* [ ] Authentification OAuth
+* [ ] Notifications par e-mail
 
-To deploy this project run
+## 🤝 Contributing
 
-```bash
-  yarn deploy
-```
+Contributions sont les bienvenues !
 
+1. Forkez le projet
+2. Créez une branche : `git checkout -b feature/ma-fonctionnalite`
+3. Commitez : \`git commit -m "Ajout de X"
+4. Pushez : `git push origin feature/ma-fonctionnalite`
+5. Ouvrez une PR
 
-<!-- Usage -->
-## :eyes: Usage
+### 📜 Code of Conduct
 
-Use this space to tell a little more about your project and how it can be used. Show additional screenshots, code samples, demos or link to other resources.
+Veuillez lire le [Code of Conduct](CODE_OF_CONDUCT.md).
 
+## ❓ FAQ
 
-```javascript
-import Component from 'my-project'
+**Q1 : Puis-je utiliser PostgreSQL ?**
+R1 : Oui, modifiez `DATABASE_URL` dans `.env`.
 
-function App() {
-  return <Component />
-}
-```
+**Q2 : Comment générer un build desktop ?**
+R2 : Exécutez `mvn clean package` dans `desktop/`.
 
-<!-- Roadmap -->
-## :compass: Roadmap
+## ⚠️ License
 
-* [x] Todo 1
-* [ ] Todo 2
+Distribué sous licence MIT. Voir [LICENSE](LICENSE).
 
+## 🤝 Contact
 
-<!-- Contributing -->
-## :wave: Contributing
+Auteur – **Votre Nom** – [@twitter](https://twitter.com/twitter_handle) – [email@exemple.com](mailto:email@exemple.com)
 
-<a href="https://github.com/Louis3797/awesome-readme-template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Louis3797/awesome-readme-template" />
-</a>
+Project Link: [https://github.com/<utilisateur>/VoyagePro](https://github.com/<utilisateur>/VoyagePro)
 
+## 💎 Acknowledgements
 
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-
-<!-- Code of Conduct -->
-### :scroll: Code of Conduct
-
-Please read the [Code of Conduct](https://github.com/Louis3797/awesome-readme-template/blob/master/CODE_OF_CONDUCT.md)
-
-<!-- FAQ -->
-## :grey_question: FAQ
-
-- Question 1
-
-  + Answer 1
-
-- Question 2
-
-  + Answer 2
-
-
-<!-- License -->
-## :warning: License
-
-Distributed under the no License. See LICENSE.txt for more information.
-
-
-<!-- Contact -->
-## :handshake: Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/Louis3797/awesome-readme-template](https://github.com/Louis3797/awesome-readme-template)
-
-
-<!-- Acknowledgments -->
-## :gem: Acknowledgements
-
-Use this section to mention useful resources and libraries that you have used in your projects.
-
- - [Shields.io](https://shields.io/)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#travel--places)
- - [Readme Template](https://github.com/othneildrew/Best-README-Template)
+* [Shields.io](https://shields.io/)
+* [Symfony](https://symfony.com/)
+* [JavaFX](https://openjfx.io/)
+* [Awesome README](https://github.com/matiassingers/awesome-readme)
