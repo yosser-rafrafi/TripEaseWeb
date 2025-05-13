@@ -1,0 +1,161 @@
+{% block body %}
+<div class="pcoded-container">
+    <div class="pcoded-content">
+        {# Breadcrumb #}
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Form Voyage</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ path('dashboard') }}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form Components</a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form Voyage</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {# Form Content #}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Basic Elements</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.destination) }}
+                                    {{ form_widget(form.destination, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la destination'}}) }}
+                                    {{ form_errors(form.destination) }}
+
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.date_depart) }}
+                                    {{ form_widget(form.date_depart, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de départ'}}) }}
+                                    {{ form_errors(form.date_depart) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.date_retour) }}
+                                    {{ form_widget(form.date_retour, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de retour'}}) }}
+                                    {{ form_errors(form.date_retour) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.budget) }}
+                                    {{ form_widget(form.budget, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le budget'}}) }}
+                                    {{ form_errors(form.budget) }}
+                                </div>
+                               
+                                <div class="form-group">
+                                    {{ form_label(form.title) }}
+                                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre'}}) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.numeroVol) }}
+                                    {{ form_widget(form.numeroVol, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le numéro de vol'}}) }}
+                                    {{ form_errors(form.numeroVol) }}
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.tempUser) }}
+                                    <div class="input-group">
+                                        {{ form_widget(form.tempUser, {'attr': {'class': 'form-control', 'id': 'user_select'}}) }}                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-primary" id="add-user-btn">
+                                                <i class="feather icon-plus"></i> Ajouter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Employés sélectionnés</label>
+                                    <div id="selected-users-container" class="selected-users"> 
+                                        {% for user in voyage.users %}
+                                        <span class="badge badge-primary mr-2 mb-2">
+                                            {{ user.nom }}
+                                            <button type="button" class="close" data-user-id="{{ user.id }}">
+                                                <span>&times;</span>
+                                            </button>
+                                        </span>
+                                    {% endfor %}<!-- Les utilisateurs sélectionnés apparaîtront ici -->
+                                    </div>
+                                    <input type="hidden" name="selected_users" id="selected-users-input" 
+                                    value="{{ selected_users|join(',') }}">                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        {{ form_end(form) }}
+
+                        <a href="{{ path('app_voyage_index') }}">back to list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-user-btn');
+    const userSelect = document.getElementById('{{ form.tempUser.vars.id }}');
+    const selectedUsersContainer = document.getElementById('selected-users-container');
+    const selectedUsersInput = document.getElementById('selected-users-input');
+    
+    // Initialise avec les utilisateurs existants
+    let selectedUsers = selectedUsersInput.value ? selectedUsersInput.value.split(',') : [];
+    
+    addButton.addEventListener('click', function() {
+        const selectedOption = userSelect.options[userSelect.selectedIndex];
+        if (selectedOption.value && !selectedUsers.includes(selectedOption.value)) {
+            selectedUsers.push(selectedOption.value);
+            
+            // Ajouter à l'affichage
+            const userBadge = document.createElement('span');
+            userBadge.className = 'badge badge-primary mr-2 mb-2';
+            userBadge.innerHTML = `
+                ${selectedOption.text}
+                <button type="button" class="close" data-user-id="${selectedOption.value}">
+                    <span>&times;</span>
+                </button>
+            `;
+            selectedUsersContainer.appendChild(userBadge);
+            
+            // Mettre à jour le champ caché
+            selectedUsersInput.value = selectedUsers.join(',');
+            
+            // Ajouter l'écouteur d'événement pour le bouton de suppression
+            userBadge.querySelector('button').addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                selectedUsers = selectedUsers.filter(id => id !== userId);
+                selectedUsersInput.value = selectedUsers.join(',');
+                userBadge.remove();
+            });
+        }
+    });
+
+    // Ajouter les écouteurs d'événements pour les boutons de suppression existants
+    document.querySelectorAll('#selected-users-container .close').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            selectedUsers = selectedUsers.filter(id => id !== userId);
+            selectedUsersInput.value = selectedUsers.join(',');
+            this.closest('.badge').remove();
+        });
+    });
+});
+</script>
+{% endblock %}
+

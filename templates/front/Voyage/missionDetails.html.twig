@@ -1,0 +1,82 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}show Mission{% endblock %}
+
+{% block body %}
+<style>
+    .mission-details {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .mission-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #8cddcd;
+        padding-bottom: 10px;
+    }
+
+    .mission-row {
+        margin-bottom: 15px;
+    }
+
+    .mission-label {
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    .back-btn {
+        margin-top: 30px;
+        display: inline-block;
+        background-color: #8cddcd;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+    }
+
+    .back-btn:hover {
+        background-color: #6fc3b4;
+    }
+</style>
+
+<div class="mission-details">
+    <div class="mission-title">Détails de la Mission</div>
+
+    <div class="mission-row">
+        <span class="mission-label">📌 Titre :</span> {{ mission.title }}
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">📍 Lieu :</span> {{ mission.lieu }}
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">📝 Description :</span> {{ mission.description }}
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">🕒 Date de début :</span> {{ mission.dateDebut ? mission.dateDebut|date('d/m/Y H:i') : '' }}
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">🕓 Date de fin :</span> {{ mission.dateFin ? mission.dateFin|date('d/m/Y H:i') : '' }}
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">📂 Type :</span> 
+        <span class="badge bg-info text-dark">{{ mission.type }}</span>
+    </div>
+    <div class="mission-row">
+        <span class="mission-label">📅 Durée :</span> 
+        <span class="badge bg-secondary">{{ mission.duree }} jour(s)</span>
+    </div>
+
+    <a href="{{ path('app_voyage_show_employee', {'id': mission.voyage.id}) }}" class="back-btn">
+        ← Retour au voyage
+    </a>
+</div>
+{% endblock %}

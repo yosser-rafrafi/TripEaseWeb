@@ -1,0 +1,10 @@
+{% extends '/back/base.html.twig' %}
+
+{% block title %}Edit Voyage{% endblock %}
+
+{% block body %}
+
+    {{ include('back/manager/voyage/_form.html.twig', {'button_label': 'Update'}) }}
+
+    {{ include('back/manager/voyage/_delete_form.html.twig') }}
+{% endblock %}

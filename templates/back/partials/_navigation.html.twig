@@ -1,0 +1,112 @@
+<nav class="pcoded-navbar">
+    <div class="navbar-wrapper">
+        <div class="navbar-content scroll-div">
+            {# User Profile Section #}
+            <div class="main-menu-header">
+                <img class="img-radius" src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="User-Profile-Image">
+                <div class="user-details">
+                    {% if app.user %}
+                        <span>{{ app.user.prenom ~ ' ' ~ app.user.nom }}</span>
+                        <div id="more-details">{{ app.user.role|default('Utilisateur') }}<i class="fa fa-chevron-down m-l-5"></i></div>
+                    {% else %}
+                        <span>Invité</span>
+                        <div id="more-details">Non connecté<i class="fa fa-chevron-down m-l-5"></i></div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="collapse" id="nav-user-link">
+                <ul class="list-unstyled">
+                    {% if app.user %}
+                        <li class="list-group-item"><a href="{{ path('app_user_settings') }}"><i class="feather icon-settings m-r-5"></i>Paramètres</a></li>
+                        <li class="list-group-item"><a href="{{ path('app_logout') }}"><i class="feather icon-log-out m-r-5"></i>Déconnexion</a></li>
+                    {% else %}
+                        <li class="list-group-item"><a href="{{ path('app_login') }}"><i class="feather icon-log-in m-r-5"></i>Connexion</a></li>
+                        <li class="list-group-item"><a href="{{ path('app_register') }}"><i class="feather icon-user-plus m-r-5"></i>Inscription</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            {# Main Navigation Menu #}
+            <ul class="nav pcoded-inner-navbar">
+                {# Dashboard Section #}
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Accueil</label>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'dashboard' %}active{% endif %}" href="{{ path('dashboard') }}">
+                        <span class="pcoded-micon"><i class="feather icon-home"></i></span>
+                        <span class="pcoded-mtext">Tableau de bord</span>
+                    </a>
+                </li>
+
+                {% if app.user %}
+                    {# hotel & Transport Section #}
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Réservation</label>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_hotel_index' %}active{% endif %}" href="{{ path('app_hotel_index') }}">
+                            <span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
+                            <span class="pcoded-mtext">Hôtel</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_transport_index' %}active{% endif %}" href="{{ path('app_transport_index') }}">
+                            <span class="pcoded-micon"><i class="feather icon-align-justify"></i></span>
+                            <span class="pcoded-mtext">Transport</span>
+                        </a>
+                    </li>
+
+                    {# Finance Section #}
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Finance</label>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'manager_avances' %}active{% endif %}" href="{{ path('manager_avances') }}">
+                            <span class="pcoded-micon"><i class="feather icon-dollar-sign"></i></span>
+                            <span class="pcoded-mtext">Avances</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'stats_frais' %}active{% endif %}" href="{{ path('stats_frais') }}">
+                            <span class="pcoded-micon"><i class="feather icon-bar-chart-2"></i></span>
+                            <span class="pcoded-mtext">Statistiques</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    {# Administration Section #}
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Administration</label>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_users_list') }}" class="nav-link {% if app.request.get('_route') == 'app_users_list' %}active{% endif %}">
+                            <span class="pcoded-micon"><i class="feather icon-users"></i></span>
+                            <span class="pcoded-mtext">Gestion Utilisateurs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_statistics' %}active{% endif %}" href="{{ path('app_statistics') }}">
+                            <span class="pcoded-micon"><i class="feather icon-bar-chart-2"></i></span>
+                            <span class="pcoded-mtext">Statistiques Utilisateurs</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if app.user %}
+                    {# Community Section #}
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Community</label>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_statut_index' %}active{% endif %}" href="{{ path('app_statut_index') }}">
+                            <span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span>
+                            <span class="pcoded-mtext">Forum</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

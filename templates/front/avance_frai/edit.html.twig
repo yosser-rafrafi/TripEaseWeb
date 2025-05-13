@@ -1,0 +1,27 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Modifier AvanceFrai{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Modifier AvanceFrai</h1>
+
+        <!-- Formulaire de modification -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Détails de l'Avance</h5>
+                
+                {{ include('front/avance_frai/_form.html.twig', {'button_label': 'Mettre à jour', 'class': 'btn btn-primary btn-block'}) }}
+
+                <!-- Bouton retour à la liste -->
+                <a href="{{ path('app_avance_frai_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+            </div>
+        </div>
+
+        <!-- Formulaire de suppression -->
+        <div class="mt-3">
+            <h5>Supprimer l'Avance</h5>
+            {{ include('front/avance_frai/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

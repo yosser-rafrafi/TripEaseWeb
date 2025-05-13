@@ -1,0 +1,37 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Flight Details{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Flight Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Flight Number:</strong> {{ flight.flight_number }}</p>
+                        <p><strong>Airline:</strong> {{ flight.airline }}</p>
+                        <p><strong>Departure:</strong> 
+                            {{ flight.departureDatetime ? flight.departureDatetime|date('d M Y, H:i') : 'N/A' }}</p>
+                        <p><strong>Departure Airport:</strong> {{ flight.departureAirport }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Arrival Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Arrival:</strong> 
+                            {{ flight.arrivalDatetime ? flight.arrivalDatetime|date('d M Y, H:i') : 'N/A' }}</p>
+                        <p><strong>Arrival Airport:</strong> {{ flight.arrivalAirport }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

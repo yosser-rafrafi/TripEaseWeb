@@ -1,0 +1,80 @@
+/* General Form Styling */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label.custom-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control.custom-input,
+.form-select.custom-select,
+.form-check-input.custom-checkbox {
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem; /* Rounded corners */
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.form-control.custom-input:focus,
+.form-select.custom-select:focus,
+.form-check-input.custom-checkbox:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.form-check-label {
+    margin-left: 0.5rem;
+    font-weight: normal;
+}
+
+/* Button Styling */
+.btn.custom-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem; /* Rounded corners */
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+}
+
+.btn-success.custom-button {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success.custom-button:hover {
+    background-color: #218838;
+    border-color: #218838;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+.btn-danger.custom-button {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger.custom-button:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+/* Card Styling */
+.card.shadow-lg {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+    border-radius: 0.75rem; /* Rounded corners */
+}
+
+.card-header.bg-primary {
+    background-color: #007bff;
+    border-radius: 0.75rem 0.75rem 0 0; /* Rounded top corners */
+}
+
+.card-body.p-4 {
+    padding: 1.5rem;
+    border-radius: 0 0 0.75rem 0.75rem; /* Rounded bottom corners */
+}

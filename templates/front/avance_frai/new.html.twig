@@ -1,0 +1,108 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Nouvelle demande d'avance frais{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <h1 class="mb-4 text-center">Créer une nouvelle demande d'avance frais</h1>
+
+  <div class="row gx-4">
+    {# Colonne 1 : Formulaire #}
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white d-flex align-items-center">
+          <i class="bi bi-pencil-square fs-4 me-2"></i>
+          <span class="fs-5 mb-0">Formulaire de demande</span>
+        </div>
+        <div class="card-body">
+          {{ form_start(form, { 'attr': { 'novalidate': 'novalidate' } }) }}
+            {{ form_row(form.montantDemande, { 'attr': { 'class': 'form-control' } }) }}
+            {{ form_row(form.devise,        { 'attr': { 'class': 'form-select' } }) }}
+            {{ form_row(form.motif,         { 'attr': { 'class': 'form-control' } }) }}
+            {{ form_row(form.typeAvance,    { 'attr': { 'class': 'form-select' } }) }}
+            <button type="submit" class="btn btn-success w-100 mt-3">
+              <i class="bi bi-check-circle me-1"></i>Envoyer la demande
+            </button>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+
+    {# Colonne 2 : Calculatrice de devises #}
+    <div class="col-lg-5 ms-auto">
+      <div class="card shadow-sm border-success h-100">
+        <div class="card-header bg-success text-white d-flex align-items-center">
+          <i class="bi bi-calculator fs-4 me-2"></i>
+          <span class="fs-5 mb-0">Calculatrice de devises</span>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between" style="height: calc(100% - 1rem);">
+          <div>
+            <div class="mb-3">
+              <label for="calc-amount" class="form-label">Montant</label>
+              <input id="calc-amount" type="number" class="form-control" value="1" min="0" step="any">
+            </div>
+
+            <div class="row mb-3 gx-2 align-items-center">
+              <div class="col">
+                <label for="calc-from" class="form-label">De</label>
+                <select id="calc-from" class="form-select">
+                  {% for curr in currencies %}
+                    <option value="{{ curr }}">{{ curr }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-auto text-center">
+                <i class="bi bi-arrow-right fs-3 text-success"></i>
+              </div>
+              <div class="col">
+                <label for="calc-to" class="form-label">À</label>
+                <select id="calc-to" class="form-select">
+                  {% for curr in currencies %}
+                    <option value="{{ curr }}">{{ curr }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid mb-3">
+            <button id="calc-btn" class="btn btn-success">
+              <i class="bi bi-arrow-repeat me-1"></i>Convertir
+            </button>
+          </div>
+
+          <div class="text-center">
+            <div id="calc-result" class="fs-4 fw-bold text-success"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Script JS pour la calculatrice #}
+<script>
+document.getElementById('calc-btn').addEventListener('click', e => {
+  e.preventDefault();
+  const amount = document.getElementById('calc-amount').value;
+  const from   = document.getElementById('calc-from').value;
+  const to     = document.getElementById('calc-to').value;
+  const url    = '{{ path("currency_convert") }}'
+               + `?amount=${amount}&from=${from}&to=${to}`;
+
+  fetch(url)
+    .then(r => r.ok ? r.json() : Promise.reject('Réseau'))
+    .then(data => {
+      if (data.error) {
+        document.getElementById('calc-result').textContent = data.error;
+      } else {
+        document.getElementById('calc-result').textContent =
+          `${amount} ${from} = ${data.converted.toFixed(2)} ${to}`;
+      }
+    })
+    .catch(() => {
+      document.getElementById('calc-result').textContent = 'Erreur de conversion';
+    });
+});
+</script>
+{% endblock %}

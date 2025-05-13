@@ -1,0 +1,76 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Nouveau Transport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/form-styles.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="background-container">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5><a href="{{ path('app_transport_index') }}" class="btn btn-outline-secondary">← Retour à la liste</a></h5>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">Créer un Nouveau Transport</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        {% include 'back/manager/transport/_form.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    margin-top: 0.25rem;
+}
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+.was-validated .form-control:invalid,
+.was-validated .form-select:invalid {
+    border-color: #dc3545;
+}
+.was-validated .form-check-input:invalid {
+    border-color: #dc3545;
+}
+
+.background-container {
+    position: relative;
+    background-image: url('{{ asset('assets/images/transport/manager_form.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.background-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+.container {
+    position: relative;
+    z-index: 1; 
+}
+</style>
+{% endblock %}

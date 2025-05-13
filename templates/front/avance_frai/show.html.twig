@@ -1,0 +1,78 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Détail de l'Avance Frais{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails de l’Avance Frais</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <th>Montant demandé</th>
+                <td>{{ avance_frai.montantDemande }} {{ avance_frai.devise }}</td>
+            </tr>
+            <tr>
+                <th>Montant accordé</th>
+                <td>
+                    {% if avance_frai.montantAccorde %}
+                        {{ avance_frai.montantAccorde }} {{ avance_frai.devise }}
+                    {% else %}
+                        <span class="text-muted">Non encore traité</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Motif</th>
+                <td>{{ avance_frai.motif }}</td>
+            </tr>
+            <tr>
+                <th>Type d'avance</th>
+                <td>{{ avance_frai.typeAvance }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>
+                    {% if avance_frai.statut == 'Traité' %}
+                        <span class="badge bg-success">Traité</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">En attente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Date de demande</th>
+                <td>{{ avance_frai.dateDemande ? avance_frai.dateDemande|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date de validation</th>
+                <td>
+                    {% if avance_frai.dateValidation %}
+                        {{ avance_frai.dateValidation|date('Y-m-d') }}
+                    {% else %}
+                        <span class="text-muted">Pas encore validée</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Commentaire du manager</th>
+                <td>
+                    {{ avance_frai.commentaireManager ? avance_frai.commentaireManager : 'Aucun commentaire' }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4 d-flex gap-3">
+        <a href="{{ path('app_avance_frai_index') }}" class="btn btn-secondary">
+            ← Retour à la liste
+        </a>
+
+        <a href="{{ path('app_avance_frai_edit', {'id': avance_frai.id}) }}" class="btn btn-primary">
+            ✏️ Modifier
+        </a>
+
+        {{ include('front/avance_frai/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

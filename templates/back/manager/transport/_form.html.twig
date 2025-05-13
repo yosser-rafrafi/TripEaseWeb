@@ -1,0 +1,146 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div class="mb-4">
+    {{ form_label(form.transport_name, 'Nom du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_name, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Entrez le nom du transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_name) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_description, 'Description du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_description, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Décrivez le transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_description) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_location, 'Lieu du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_location, {'attr': {'class': 'form-control custom-input', 'id': 'transport_location', 'placeholder': 'Le lieu sera défini après un clic sur la carte'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_location) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_type, 'Type de Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_type, { 'attr': {'class': 'form-select custom-select'} }) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_type) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_agence, 'Agence de Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_agence, {'attr': {'class': 'form-select custom-select'} }) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_agence) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_pays, 'Pays du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_pays, {'attr': {'class': 'form-control custom-input', 'id': 'transport_pays', 'placeholder': 'Le pays sera défini après un clic sur la carte'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_pays) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.transport_prix, 'Prix du Transport', {'label_attr': {'class': 'form-label custom-label'}}) }}
+    {{ form_widget(form.transport_prix, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Entrez le prix du transport'}}) }}
+    <div class="invalid-feedback mt-2">
+        {{ form_errors(form.transport_prix) }}
+    </div>
+</div>
+
+<div class="mb-4">
+    <label class="form-label custom-label">Sélectionnez un lieu sur la carte</label>
+    <div id="transport-map" style="height: 300px; border-radius: 8px; margin-bottom: 1rem;"></div>
+</div>
+
+<div style="display: none;">
+    {{ form_widget(form.latitude, {'attr': {'id': 'transport_latitude'}}) }}
+    {{ form_widget(form.longitude, {'attr': {'id': 'transport_longitude'}}) }}
+</div>
+
+<div class="d-flex justify-content-between mt-4">
+    <button type="submit" class="btn btn-success btn-lg custom-button">Soumettre</button>
+    <a href="{{ path('app_transport_index') }}" class="btn btn-danger btn-lg custom-button">Annuler</a>
+</div>
+
+{{ form_end(form) }}
+
+{# In your Twig template head section #}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        initMap();
+    });
+
+    function initMap() {
+        const defaultLatLng = { lat: 36.8065, lng: 10.1815 };
+        const transportLat = parseFloat(document.getElementById("transport_latitude").value) || defaultLatLng.lat;
+        const transportLng = parseFloat(document.getElementById("transport_longitude").value) || defaultLatLng.lng;
+
+        // Log for debugging
+        console.log("Latitude:", transportLat);
+        console.log("Longitude:", transportLng);
+
+        const map = L.map('transport-map').setView([transportLat, transportLng], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        const marker = L.marker([transportLat, transportLng], { draggable: true }).addTo(map);
+
+        marker.on('dragend', function (event) {
+            const lat = event.target.getLatLng().lat;
+            const lng = event.target.getLatLng().lng;
+            updateLocation(lat, lng);
+        });
+
+        map.on("click", function (event) {
+            const lat = event.latlng.lat;
+            const lng = event.latlng.lng;
+            marker.setLatLng(event.latlng);
+            updateLocation(lat, lng);
+        });
+    }
+
+    function updateLocation(lat, lng) {
+        document.getElementById("transport_latitude").value = lat;
+        document.getElementById("transport_longitude").value = lng;
+
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'TripEaseApp/1.0 (contact@tripease.tn)' // replace with your own email
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const address = data.address || {};
+            const country = address.country || 'Inconnu';
+            const location = data.display_name || '';
+
+            document.getElementById("transport_location").value = location;
+            document.getElementById("transport_pays").value = country;
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération de l'adresse:", error);
+        });
+    }
+</script>

@@ -1,0 +1,167 @@
+{% extends 'back/base.html.twig' %}
+
+{% block body %}
+<style>
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .clickable-row:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+
+    /* Styles pour les ComboBox */
+    .form-select {
+        border-radius: 0.375rem;
+        height: 38px;
+        font-size: 14px;
+    }
+
+    /* Styles pour les boutons de tri */
+    .btn-sort {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">📋 Liste des demandes d’avances</h2>
+
+    <!-- Formulaire recherche -->
+<form method="get" class="row g-3 mb-4 align-items-center">
+  {# Colonne Recherche #}
+  <div class="col-md-4">
+    <input type="text"
+           name="recherche"
+           class="form-control"
+           placeholder="🔍 Recherche par motif"
+           value="{{ rechercheActuelle }}">
+  </div>
+
+  {# Colonne Bouton #}
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+  </div>
+
+  {# Colonne “vide” qui pousse la carte à droite #}
+  <div class="col d-flex justify-content-end">
+    <div id="currency-card" class="card">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <h5 class="card-title mb-0">Taux de Change Actuel:  </h5>
+        <p id="tnd-usd" class="mb-0">…</p>
+        <p  class="mb-0">| </p>
+        <p id="tnd-eur" class="mb-0">…</p>
+      </div>
+    </div>
+  </div>
+</form>
+
+    <!-- Tableau -->
+    <table class="table table-hover table-bordered shadow-sm rounded">
+        <thead class="table-light">
+            <tr>
+                <th><a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'sortBy': 'montantDemande', 'order': app.request.get('order') == 'ASC' ? 'DESC' : 'ASC'})) }}">Montant demandé ⬇️</a></th>
+                <th>Devise</th>
+                <th>Motif</th>
+                <th><a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'sortBy': 'dateDemande', 'order': app.request.get('order') == 'ASC' ? 'DESC' : 'ASC'})) }}">Date de demande 📅</a></th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for demande in demandes %}
+                <tr class="clickable-row" data-href="{{ path('manager_avance_show', {'id': demande.id}) }}">
+                    <td>{{ demande.montantDemande }}</td>
+                    <td>{{ demande.devise }}</td>
+                    <td>{{ demande.motif|length > 20 ? demande.motif[:20] ~ '...' : demande.motif }}</td>
+                    <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : 'Non spécifiée' }}</td>
+                    <td>
+                        {% if demande.statut == 'Traité' %}
+                            <span class="badge bg-success">✅ Traité</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">⏳ En attente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if demande.statut != 'Traité' %}
+                            <a href="{{ path('manager_traiter_avance', {'id': demande.id}) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
+                                <i class="bi bi-pencil-square"></i> Traiter
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('manager_avance_frais', {'id': demande.id}) }}" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation();">
+                            <i class="bi bi-eye"></i> Voir dépenses
+                        </a>
+                            <!-- Ajout du bouton pour générer le PDF -->
+    <a href="{{ path('avance_facture', {'id': demande.id}) }}" class="btn btn-outline-success btn-sm" onclick="event.stopPropagation();">
+        <i class="bi bi-file-earmark-pdf"></i> Générer PDF
+    </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucune demande trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+      {{ knp_pagination_render(demandes,'@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".clickable-row");
+        rows.forEach(row => {
+            row.addEventListener("click", function () {
+                window.location = this.dataset.href;
+            });
+        });
+
+        // Tri  croissant
+        document.getElementById('sortDateAsc').addEventListener('click', function () {
+            filterData('date_demande', 'ASC');
+        });
+
+        // Tri  décroissant
+        document.getElementById('sortDateDesc').addEventListener('click', function () {
+            filterData('date_demande', 'DESC');
+        });
+    });
+
+    function filterData(sortBy, order) {
+        const params = new URLSearchParams(window.location.search);
+        params.set('sortBy', sortBy);
+        params.set('order', order);
+        window.location.search = params.toString(); // Rafraîchit la page avec les nouveaux paramètres
+    }
+
+    
+</script>
+<script>
+  fetch('{{ path("currency_rates") }}')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('tnd-usd').textContent =
+        `1 TND = ${data.TND_USD.toFixed(2)} USD`;
+      document.getElementById('tnd-eur').textContent =
+        `1 TND = ${data.TND_EUR.toFixed(2)} EUR`;
+    })
+    .catch(console.error);
+</script>
+
+
+
+{% endblock %}

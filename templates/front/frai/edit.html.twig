@@ -1,0 +1,21 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Modifier un Frais{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">✏️ Modifier une Dépense</h1>
+
+    <div class="card shadow-sm p-4">
+        {{ include('front/frai/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{{ path('app_frai_index') }}" class="btn btn-outline-secondary">
+            ← Retour à la liste
+        </a>
+
+        {{ include('front/frai/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

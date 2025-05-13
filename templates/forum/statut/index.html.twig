@@ -1,0 +1,272 @@
+{% extends base_template %}
+{% block nav %}
+      <ul>
+          <li><a href="{{ path('app_employee_home') }}" >Home</a></li>
+          <li><a href="{{ path('app_my_travels') }}">Mes voyages</a></li>
+          <li><a href="{{ path('app_expenses') }}">Expenses</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>Réservation</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{{ path('app_transport_list') }}">Transport</a></li>
+              <li><a href="{{ path('app_hotel_list') }}">Hôtel</a></li>
+            </ul>
+
+          <li><a href="{{ path('app_statut_index') }}" class="active">Forum</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>Mon compte</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{{ path('app_user_settings') }}">Paramètres</a></li>
+              <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+            </ul>
+          </li>
+
+           
+          </li>
+        </ul>
+{% endblock %}
+{% block body %}
+<section class="bg-light py-5">
+	<div class="row justify-content-center">
+
+		{# Flash Messages #}
+		<div class="row justify-content-center">
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="alert alert-{{ label }} text-center col-md-10">
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+
+		{% if is_employee %}
+			<div class="row justify-content-center mb-4">
+				<div class="col-md-10">
+					<div class="card shadow-sm rounded-4">
+						<div class="card-body">
+							<form method="post" action="{{ path('app_statut_new') }}" id="newPostForm" enctype="multipart/form-data" novalidate>
+								<div class="mb-3">
+									<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+									<textarea id="postContent" name="contenu" class="form-control rounded-4" rows="3" placeholder="What's on your mind?"></textarea>
+									<script>
+										CKEDITOR.replace('postContent', {
+											toolbar: [
+												{ name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'FontSize', 'Font', 'TextColor'] },
+												{ name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+												{ name: 'insert', items: ['Image', 'Table'] },
+												{ name: 'styles', items: ['Format'] }
+											],
+											font_names: 'Arial;Times New Roman;Verdana;Comic Sans MS',
+											height: 200
+										});
+									</script>
+								</div>
+
+								{# Media Preview Area #}
+								<div id="mediaPreview" class="mb-3 text-center" style="display: none;">
+									<div class="preview-container">
+										<img id="imagePreview" class="img-fluid rounded-4" style="max-height: 300px; display: none;">
+										<video id="videoPreview" class="w-100 rounded-4" controls style="max-height: 300px; display: none;"></video>
+										<button type="button" class="btn btn-danger btn-sm rounded-pill mt-2" onclick="ForumHandler.removeMedia()">
+											<i class="fas fa-times"></i>
+											Remove
+										</button>
+									</div>
+								</div>
+
+								<div class="d-flex justify-content-between align-items-center">
+									<div>
+										<input type="file" name="media" id="mediaInput" accept="image/*,video/*" style="display: none;">
+										<button type="button" class="btn btn-outline-primary rounded-pill" onclick="document.getElementById('mediaInput').click()">
+											<i class="fas fa-image"></i> Photo/Video
+										</button>
+										<span id="selectedFileName" class="ms-2"></span>
+									</div>
+									<div class="d-flex align-items-center gap-2">
+										<select id="languageSelect" class="form-select form-select-sm rounded-pill" style="width: auto;">
+											<option value="en-US" selected>English</option>
+											<option value="fr-FR">Français</option>
+										</select>
+										<button type="button" class="btn btn-outline-secondary rounded-pill" id="voiceBtn">
+											<i class="fas fa-microphone"></i>
+										</button>
+										<button type="reset" class="btn btn-light rounded-pill" id="cancelPost">Cancel</button>
+										<button type="submit" class="btn btn-primary rounded-pill">Share</button>
+									</div>
+								</div>
+
+								<!-- Add the Anonymity Checkbox Here -->
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="anonymous" name="anonymous">
+								<label class="form-check-label" for="anonymous">
+									Post Anonymously
+								</label>
+							</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+
+
+{# VoiceRecognitionHandler should be loaded after CKEditor initialization #}
+<script src="{{ asset('assets/js/voice-input.js') }}"></script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+    CKEDITOR.instances['postContent'].on('instanceReady', function () {
+        VoiceRecognitionHandler.init({
+            startButtonId: "voiceBtn",
+            selectId: "languageSelect",
+            editorInstanceName: "postContent"
+        });
+    });
+});
+
+</script>
+
+			{# Posts List #}
+			<div class="row justify-content-center">
+				<div class="col-md-10">
+					{% for statut in statuts %}
+						<div class="card shadow-sm rounded-4 mb-4" id="post-{{ statut.id }}">
+							<div
+								class="card-body">
+
+								{# User Info #}
+							<div class="d-flex align-items-center mb-3">
+								{% if statut.isAnonymous() %}
+									<img src="{{ asset('assets/images/incognito.jpg') }}" class="rounded-circle shadow me-3" width="60" height="60" alt="avatar">
+									<div>
+										<h6 class="fw-bold text-primary mb-0">Anonymous User</h6>
+										<small class="text-muted">Shared publicly -
+											{{ statut.dateCreation|date('Y-m-d') }}</small>
+									</div>
+								{% else %}
+									<img src="{{ asset('assets/images/profile_pic.png') }}" class="rounded-circle shadow me-3" width="60" height="60" alt="avatar">
+									<div>
+										<h6 class="fw-bold text-primary mb-0">{{ statut.user.prenom }}</h6>
+										<small class="text-muted">Shared publicly -
+											{{ statut.dateCreation|date('Y-m-d') }}</small>
+									</div>
+								{% endif %}
+							</div>
+
+								{# Post Content #}
+								<div class="post-content mb-3" id="translateContainer-post-{{ statut.id }}">
+									<div class="post-text">{{ statut.contenu|raw }}</div> {# Display formatted content #}
+									
+									<select id="languageSelect-post-{{ statut.id }}" class="form-select form-select-sm rounded-pill" style="width: auto; display: inline-block;">
+										<option value="en">English</option>
+										<option value="fr" selected>Français</option>
+										<option value="ar">العربية</option>
+									</select>
+									<button type="button" onclick="translateText({{ statut.id }},'post')" class="btn btn-sm btn-outline-secondary">
+										<i class="fas fa-globe me-2"></i>Translate
+									</button>
+									<div class="translation-status" id="post-translation-status-{{ statut.id }}" style="display:none;">
+										<span class="loader"></span>
+										<span class="status-text">Translating...</span>
+									</div>
+								</div>
+
+								{# Media Content #}
+								{% if statut.mediaUrl %}
+									<div class="text-center mb-3">
+										{% if statut.typeContenu == 'image' %}
+											<img src="{{ statut.mediaUrl }}" class="img-fluid rounded-4" style="max-height: 500px;" alt="Post Image">
+										{% elseif statut.typeContenu == 'video' %}
+											<video controls class="w-100 rounded-4" style="max-height: 500px;">
+												<source src="{{ statut.mediaUrl }}" type="video/mp4">
+												Your browser does not support the video tag.
+											</video>
+										{% endif %}
+									</div>
+								{% endif %}
+
+								{# Action Buttons #}
+								<div class="d-flex justify-content-center flex-wrap gap-2">
+									{% set userReaction = statut.getReactions()|filter(r => (r.user is not null) and (r.user.id == app.user.id))|first %}
+
+									<button type="button" class="btn reaction-button {% if userReaction and userReaction.type == 'LIKE' %}btn-secondary{% else %}btn-outline-secondary{% endif %} rounded-pill" data-action="like" data-statut-id="{{ statut.id }}">
+										<i class="fas fa-thumbs-up me-1"></i>
+										<span class="like-count">{{ statut.getReactions()|filter(r => r.type == 'LIKE')|length }}</span>
+									</button>
+
+									<button type="button" class="btn  reaction-button {% if userReaction and userReaction.type == 'DISLIKE' %}btn-secondary {% else %}btn-outline-secondary{% endif %} rounded-pill" data-action="dislike" data-statut-id="{{ statut.id }}">
+										<i class="fas fa-thumbs-down me-1"></i>
+										<span class="dislike-count">{{ statut.getReactions()|filter(r => r.type == 'DISLIKE')|length }}</span>
+									</button>
+									{#
+
+									<form method="post" novalidate>
+										<button type="button" class="btn btn-outline-secondary rounded-pill">
+											<i class="fas fa-heart"></i>
+										</button>
+
+									</form>
+									#}
+
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_statut_show', {'id': statut.id}) }}" class="btn btn-outline-secondary rounded-pill">
+											<i class="fas fa-eye"></i>
+										</a>
+									{% endif %}
+
+									{% if statut.user.id == app.user.id %}
+										<button type="button" class=" edit-post btn btn-outline-secondary rounded-pill" data-post-id="{{ statut.id }}">
+											<i class="fas fa-edit"></i>
+										</button>
+
+										<form action="{{ path('app_statut_delete', {'id': statut.id}) }}" method="post" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statut.id) }}">
+											<button type="submit" class="btn btn-outline-secondary rounded-pill">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+
+									{% endif %}
+									
+								</div>
+
+								{# Comments Section #}
+								<div class="mt-4">
+									{% include 'forum/commentaire/index.html.twig' with {'commentaires': statut.commentaires} %}
+								</div>
+
+								{# Comment Form #}
+								<div class="card-footer bg-white border-0 mt-3">
+									<form method="post" action="{{ path('app_commentaire_new', {'statutId': statut.id}) }}" novalidate>
+										<div class="d-flex align-items-start">
+											<img src="{{ asset('assets/images/profile_pic.png') }}" class="rounded-circle shadow me-3" width="40" height="40" alt="avatar">
+											<textarea name="contenu" class="form-control rounded-4" rows="2" placeholder="Write a comment..."></textarea>
+										</div>
+										<input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ statut.id) }}">
+										<div class="text-end mt-2">
+											<button type="submit" class="btn btn-sm btn-primary rounded-pill">Post</button>
+											<button type="reset" class="btn btn-sm btn-outline-primary rounded-pill">Cancel</button>
+										</div>
+									</form>
+								</div>
+
+							</div>
+						</div>
+					{% else %}
+						<div class="alert alert-warning text-center">No posts available.</div>
+					{% endfor %}
+				</div>
+			</div>
+		</section>
+
+		<script src="{{ asset('assets/js/forum.js') }}"></script>
+		<script>
+			ForumHandler.init({editToken: '{{ csrf_token('edit-post') }}', removeMediaToken: '{{ csrf_token('remove-media') }}'});
+		</script>
+	{% endblock %}
+
+	{% block javascripts %}
+		{{ parent() }}
+	{% endblock %}

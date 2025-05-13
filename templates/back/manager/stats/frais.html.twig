@@ -1,0 +1,323 @@
+
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Dashboard Statistiques{% endblock %}
+
+{% block body %}
+  <div class="container-fluid p-4">
+    <h1 class="mb-4">Statistiques Frais & Demandes d’Avances</h1>
+
+    {# Charger Google Charts #}
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .card {
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+      .card-header {
+        padding: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .card-body {
+        padding: 1rem;
+        flex: 1;
+      }
+      .chart-container {
+        width: 100%;
+        height: 100%;
+        min-height: 250px;
+      }
+    </style>
+
+    <div class="dashboard-grid">
+      {# Card 1: PieChart frais par type #}
+      <div class="card">
+        <div class="card-header">Répartition des frais par type</div>
+        <div class="card-body">
+          <div id="frais_chart" class="chart-container"></div>
+        </div>
+      </div>
+
+      {# Card 2: Top 5 employés demandes d’avances #}
+      <div class="card">
+        <div class="card-header">Top 5 des employés (demandes d’avances)</div>
+        <div class="card-body">
+          <div id="top5_chart" class="chart-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid mt-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      {# Première ligne - Deux cartes côte à côte #}
+      <div class="card">
+        <div class="card-header">Destinations les plus visitées</div>
+        <div class="card-body">
+          <div class="d-flex">  <!-- Conteneur flex pour aligner horizontalement -->
+            <!-- Graphique - prend 70% de largeur -->
+            <div class="chart-container flex-grow-1" style="height: 300px; width: 70%;">
+              <canvas id="destinationChart"></canvas>
+            </div>
+            
+            <!-- Liste - prend 30% de largeur avec scroll si nécessaire -->
+            <div class="ms-3" style="width: 30%; max-height: 300px; overflow-y: auto;">
+              <ul id="destinationList" class="mt-3 list-group"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-header">Top 5 Compagnies Aériennes</div>
+        <div class="card-body">
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="airlineChart"></canvas>
+          </div>
+        </div>
+      </div>
+    
+      {# Deuxième ligne - Carte pleine largeur #}
+      <div class="card" style="grid-column: 1 / -1;">  {# S'étend sur toutes les colonnes #}
+        <div class="card-header">Répartition des voyages par mois</div>
+        <div class="card-body">
+          <div class="chart-container" style="height: 400px;">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+    {# Initialisation des graphiques #}
+    <script>
+      // PieChart
+      {{ gc_draw(pieChart, 'frais_chart') }}
+
+      // BarChart Top 5
+      {{ gc_draw(barChartTop5, 'top5_chart') }}
+    </script>
+  </div>
+{% endblock %}
+
+
+
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous">
+
+<style>
+  .chart-container {
+      height: 300px;
+      position: relative;
+      margin-bottom: 20px;
+  }
+  .stat-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+  }
+  .pie-chart{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-bottom:80px;
+  }
+
+  /* Ajoutez dans votre block stylesheets */
+   .airline-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    object-fit: contain;
+   }
+   
+   .list-group-item {
+    transition: all 0.3s ease;
+   }
+   
+   .list-group-item:hover {
+    transform: translateX(5px);
+   }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Données des destinations
+        let destinations = {{ destinations|json_encode|raw }};
+        
+        // Trier et limiter aux 6 premières
+        destinations = destinations.sort((a, b) => b.count - a.count).slice(0, 6);
+    
+        // Couleurs pour le pie chart
+        const backgroundColors = [
+            '#3498db', '#2ecc71', '#e74c3c', 
+            '#f39c12', '#9b59b6', '#1abc9c'
+        ];
+    
+        // Création du pie chart
+        const ctx = document.getElementById('destinationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: destinations.map(d => d.destination),
+                datasets: [{
+                    data: destinations.map(d => d.count),
+                    backgroundColor: backgroundColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.raw;
+                                const percentage = Math.round((value / total) * 100);
+                                return `${context.label}: ${value} voyages (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    
+        // Mise à jour de la liste
+        const ul = document.getElementById('destinationList');
+        destinations.forEach((dest, index) => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+            li.innerHTML = `
+                <span>
+                    <span class="color-badge" style="background-color: ${backgroundColors[index]}; width:12px; height:12px; display:inline-block; border-radius:2px; margin-right:8px;"></span>
+                    ${dest.destination}
+                </span>
+                <span class="badge bg-primary rounded-pill">${dest.count}</span>
+            `;
+            ul.appendChild(li);
+        });
+        // Line Chart - Voyages par mois
+        const monthlyData = {{ voyagesParMois|json_encode|raw }};
+        
+        // Préparer les données pour Chart.js
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        const countsByMonth = Array(12).fill(0);
+        
+        monthlyData.forEach(item => {
+            countsByMonth[item.month - 1] = item.count; // -1 car les mois sont 1-12
+        });
+    
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Nombre de voyages',
+                    data: countsByMonth,
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y} voyage(s)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // Dans votre block javascripts
+const airlineData = {{ topAirlines|json_encode|raw }};
+
+new Chart(
+    document.getElementById('airlineChart').getContext('2d'),
+    {
+        type: 'doughnut',
+        data: {
+            labels: airlineData.map(item => item.company),
+            datasets: [{
+                data: airlineData.map(item => item.flightCount),
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', 
+                    '#4BC0C0', '#9966FF'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.raw;
+                            const percentage = Math.round((value / total) * 100);
+                            return `${context.label}: ${value} vols (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    }
+);
+    });
+    </script>
+{% endblock %}

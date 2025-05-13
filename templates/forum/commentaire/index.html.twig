@@ -1,0 +1,255 @@
+{# Import the macro file itself to make it available #}
+{% import _self as macros %}
+<style></style>
+{# Macro to recursively display comments and their replies #}
+{% macro display_comment(comment, all_comments, level = 0) %}
+	{% set indentation = level * 30 %}
+	{# Adjust indentation as needed #}
+
+	<div class="card mb-2" style="margin-left: {{ indentation }}px;">
+		<div class="card-body">
+			<div id="comment-display-{{ comment.id }}">
+				<div class="d-flex justify-content-between">
+						<p class="mb-1">
+						<strong>{{ comment.user.prenom }}
+						</strong>
+						—
+						<small class="text-muted">{{ comment.datePublication|date('Y-m-d H:i') }}</small>
+					</p>
+					<div
+						class="btn-group">
+						{# Show Edit and Delete buttons only for owner or admin #}
+						{% if comment.user.id == app.user.id or is_granted('ROLE_ADMIN') %}
+							<button style="margin-left: 10px;" type="button" onclick="showEditForm({{ comment.id }})" class=" edit-post btn btn-outline-secondary rounded-pill">
+								<i class="fas fa-edit"></i>
+							</button>
+							<form action="{{ path('app_commentaire_delete', {'id': comment.id}) }}" method="post" onsubmit="return confirm('Delete comment?');" style="display: inline-block;">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+								<button style="margin-left: 10px;" type="submit" class="btn btn-outline-secondary rounded-pill ">
+									<i class="fas fa-trash"></i>
+								</button>
+
+							</form>
+						{% endif %}
+						{# Reply button is always visible #}
+						<button style="margin-left: 10px;" type="button" onclick="showReplyForm({{ comment.id }})" class="btn btn-outline-secondary rounded-pill">
+							<i class="fas fa-reply"></i>
+						</button>
+					</div>
+				</div>
+				<div id="translateContainer-comment-{{ comment.id }}">
+					<p class="comment-content">{{ comment.contenu }}</p>
+					<select id="languageSelect-comment-{{ comment.id }}" class="form-select form-select-sm rounded-pill" style="width: auto; display: inline-block;">
+						<option value="en">English</option>
+						<option value="fr" selected>Français</option>
+						<option value="ar">العربية</option>
+					</select>
+					<button type="button" onclick="translateText({{ comment.id }},'comment')" class=" btn btn-sm btn-outline-secondary ms-2">
+						<i class="fas fa-globe me-2"></i>Translate
+					</button>
+					<div class="translation-status" id="comment-translation-status-{{ comment.id }}" style="display: none;">
+						<span class="loader"></span>
+						<span class="status-text">Translating...</span>
+					</div>
+				</div>
+
+			</div>
+
+			{# --- Edit Form Section (Initially Hidden) --- #}
+			<div id="comment-edit-form-{{ comment.id }}" style="display: none;">
+				<form action="{{ path('app_commentaire_edit', {'id': comment.id}) }}" method="post">
+					<input type="hidden" name="_token" value="{{ csrf_token('edit' ~ comment.id) }}">
+					<div class="mb-3">
+						<label for="edit-contenu-{{ comment.id }}" class="form-label">Edit comment:</label>
+						<textarea class="form-control" id="edit-contenu-{{ comment.id }}" name="contenu" rows="3">{{ comment.contenu }}</textarea>
+					</div>
+					<button type="submit" class="btn btn-sm btn-primary">Save</button>
+					<button type="button" onclick="hideEditForm({{ comment.id }})" class="btn btn-sm btn-secondary">Cancel</button>
+				</form>
+			</div>
+
+			{# --- Reply Form Section (Initially Hidden) --- #}
+			<div id="comment-reply-form-{{ comment.id }}" class="card-footer bg-white border-0 mt-3" style="display: none; ">
+				<form action="{{ path('app_commentaire_new', {'statutId': comment.statut.id }) }}" method="post">
+					<input type="hidden" name="_token" value="{{ csrf_token('comment-add' ~ comment.statut.id) }}">
+					<input type="hidden" name="parentCommentId" value="{{ comment.id }}">
+					<div class="d-flex align-items-start">
+						<img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" class="rounded-circle shadow me-3" width="40" height="40" alt="avatar">
+						<textarea name="contenu" class="form-control rounded-4" rows="2" placeholder="Write a reply..." required></textarea>
+					</div>
+					<div class="text-end mt-2">
+						<button type="submit" class="btn btn-sm btn-primary rounded-pill">Reply</button>
+						<button type="button" onclick="hideReplyForm({{ comment.id }})" class="btn btn-sm btn-outline-primary rounded-pill">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		{# End card-body #}
+	</div>
+	{# End card #}
+
+	{# Recursively display replies #}
+	{% for reply in all_comments %}
+		{% if reply.commentaireParentId == comment.id %}
+			{{ _self.display_comment(reply, all_comments, level + 1) }}
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+{# Block for JavaScript needed for inline editing/replying #}
+{% block javascripts %}
+	<script>
+		function showEditForm(commentId) {
+document.getElementById('comment-display-' + commentId).style.display = 'none';
+document.getElementById('comment-edit-form-' + commentId).style.display = 'block';
+}
+
+function hideEditForm(commentId) {
+document.getElementById('comment-display-' + commentId).style.display = 'block';
+document.getElementById('comment-edit-form-' + commentId).style.display = 'none';
+}
+
+function showReplyForm(commentId) {
+document.getElementById('comment-reply-form-' + commentId).style.display = 'block';
+}
+
+function hideReplyForm(commentId) {
+document.getElementById('comment-reply-form-' + commentId).style.display = 'none';
+}
+	</script>
+	<script>
+async function translateText(id, type, targetLanguage) {
+    var container;
+    var contentElement;
+    var statusElement;
+    var originalText;
+
+    // Determine which type of content we're translating (post or comment)
+    if (type === 'post') {
+        container = document.getElementById(`post-${id}`);
+        contentElement = container.querySelector('.post-text');
+        statusElement = document.getElementById(`post-translation-status-${id}`);
+        originalText = contentElement.innerText;
+    } else if (type === 'comment') {
+        container = document.getElementById(`comment-display-${id}`);
+        contentElement = container.querySelector('.comment-content');
+        statusElement = document.getElementById(`comment-translation-status-${id}`);
+        originalText = contentElement.innerText;
+    }
+
+    // Store original text if not already stored
+    if (!contentElement.dataset.originalText) {
+        contentElement.dataset.originalText = originalText;
+    }
+
+    // Show loading indicator while waiting for translation
+    statusElement.style.display = 'inline-block';
+
+    try {
+        // Extract the selected target language
+        const languageSelect = document.getElementById(`languageSelect-${type}-${id}`);
+        const targetLang = languageSelect.value;
+
+        // Send a request to your Python API for translation
+        const response = await fetch('http://127.0.0.1:8001/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: originalText,
+                source_lang: 'auto', // auto-detect source language
+                target_lang: targetLang // use selected language
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.translated_text) {
+                const translatedText = data.translated_text;
+
+                // Store and display translated text
+                contentElement.dataset.translatedText = translatedText;
+                contentElement.innerText = translatedText;
+
+                // Update status message
+                statusElement.querySelector('.status-text').innerText = '✓ Translated';
+                statusElement.querySelector('.loader').style.display = 'none';
+
+                // Add toggle button if not already present
+                let translateButtonContainer;
+                if (type === 'post') {
+                    translateButtonContainer = document.getElementById(`translateContainer-post-${id}`);
+                } else if (type === 'comment') {
+                    translateButtonContainer = document.getElementById(`translateContainer-comment-${id}`);
+                }
+
+                if (!translateButtonContainer.querySelector('.toggle-translation')) {
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.type = 'button';
+                    toggleBtn.className = 'btn btn-sm btn-outline-secondary ms-2 toggle-translation';
+                    toggleBtn.innerHTML = '<i class="fas fa-language"></i> Show Original';
+                    toggleBtn.onclick = () => toggleTranslation(id, type);
+                    translateButtonContainer.appendChild(toggleBtn);
+                }
+            } else {
+                throw new Error('Translation failed');
+            }
+        } else {
+            throw new Error('Translation API request failed');
+        }
+    } catch (error) {
+        console.error('Error during translation:', error);
+        statusElement.querySelector('.status-text').innerText = '❌ Translation failed. Please try again.';
+        statusElement.querySelector('.loader').style.display = 'none';
+
+        setTimeout(() => {
+            statusElement.style.display = 'none';
+        }, 3000);
+    }
+}
+
+async function toggleTranslation(id, type) {
+    var container;
+    var contentElement;
+    var toggleBtn;
+
+    // Determine which type of content we're toggling (post or comment)
+    if (type === 'post') {
+        container = document.getElementById(`post-${id}`);
+        contentElement = container.querySelector('.post-text');
+        toggleBtn = container.querySelector('.toggle-translation');
+    } else if (type === 'comment') {
+        container = document.getElementById(`comment-display-${id}`);
+        contentElement = container.querySelector('.comment-content');
+        toggleBtn = container.querySelector('.toggle-translation');
+    }
+
+    // Toggle between original and translated text
+    if (contentElement.dataset.isShowingOriginal === 'true') {
+        contentElement.innerText = contentElement.dataset.translatedText;
+        contentElement.dataset.isShowingOriginal = 'false';
+        toggleBtn.innerHTML = '<i class="fas fa-language"></i> Show Original';
+    } else {
+        contentElement.innerText = contentElement.dataset.originalText;
+        contentElement.dataset.isShowingOriginal = 'true';
+        toggleBtn.innerHTML = '<i class="fas fa-language"></i> Show Translation';
+    }
+}
+</script>
+
+{% endblock %}
+
+{# Main body iterates only through top-level comments #}
+{% block body %}
+	{% if commentaires is defined and commentaires|length > 0 %}
+		{% for commentaire in commentaires %}
+			{% if commentaire.commentaireParentId is null %}
+				{{ macros.display_comment(commentaire, commentaires) }}
+			{% endif %}
+		{% endfor %}
+	{% else %}
+		<p class="text-muted ms-5">No comments yet.</p>
+	{% endif %}
+{% endblock %}

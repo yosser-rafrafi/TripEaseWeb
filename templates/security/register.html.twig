@@ -1,0 +1,555 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte - TripEase{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 123, 138, 0.85), rgba(0, 0, 0, 0.75));
+            z-index: -1;
+        }
+
+        .register-card {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 40px;
+            animation: fadeIn 1s ease-in-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #007B8A, #00B4D8, #007B8A);
+            animation: gradientMove 3s linear infinite;
+        }
+
+        .card-header {
+            background: transparent;
+            border: none;
+            margin-bottom: 30px;
+        }
+
+        .card-header h3 {
+            color: #007B8A;
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            border-color: #007B8A;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 138, 0.15);
+            background-color: #fff;
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .card-footer {
+            background-color: transparent;
+            font-size: 14px;
+            border: none;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .show-password {
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            color: #007B8A;
+            transition: all 0.3s ease;
+        }
+
+        .show-password:hover {
+            color: #005f6a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        a {
+            color: #007B8A;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        a:hover {
+            color: #005f6a;
+            text-decoration: none;
+        }
+
+        .form-error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .g-recaptcha {
+            margin-bottom: 20px;
+        }
+
+        .form-floating {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-floating > .form-control {
+            padding: 1rem 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus + label,
+        .form-control:not(:placeholder-shown) + label {
+            transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+            color: #007B8A;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            margin-top: 5px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background-color: #dc3545; width: 33.33%; }
+        .strength-medium { background-color: #ffc107; width: 66.66%; }
+        .strength-strong { background-color: #28a745; width: 100%; }
+
+        .form-progress {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: #007B8A;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .progress-step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+
+        .progress-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #007B8A;
+            transition: width 0.3s ease;
+        }
+
+        .form-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .form-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-navigation button {
+            min-width: 120px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #007B8A;
+            color: #007B8A;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #007B8A;
+            color: white;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="register-card">
+                <div class="card-header text-center">
+                    <h3>Bienvenue chez TripEase</h3>
+                    <p>Créez votre compte pour commencer votre voyage d'affaires</p>
+                </div>
+
+                <div class="form-progress">
+                    <div class="progress-steps">
+                        <div class="progress-step active" data-step="1">1</div>
+                        <div class="progress-step" data-step="2">2</div>
+                        <div class="progress-step" data-step="3">3</div>
+                    </div>
+                    <div class="progress-line">
+                        <div class="progress-line-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                {{ form_start(registrationForm, {'attr': {'id': 'registration-form'}}) }}
+                    <div class="form-section active" data-step="1">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(registrationForm.nom, 'Nom') }}
+                                {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.nom) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(registrationForm.prenom, 'Prénom') }}
+                                {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.prenom) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.email, 'Adresse e-mail') }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+
+                        <div class="form-navigation">
+                            <div></div>
+                            <button type="button" class="btn btn-primary next-step" data-next="2">Suivant</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section" data-step="2">
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.numTel, 'Téléphone') }}
+                            {{ form_widget(registrationForm.numTel, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.numTel) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.adresse, 'Adresse') }}
+                            {{ form_widget(registrationForm.adresse, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.adresse) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.role, 'Rôle souhaité') }}
+                            {{ form_widget(registrationForm.role, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.role) }}
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-outline-secondary prev-step" data-prev="1">Précédent</button>
+                            <button type="button" class="btn btn-primary next-step" data-next="3">Suivant</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section" data-step="3">
+                        <div class="mb-3 position-relative">
+                            {{ form_label(registrationForm.plainPassword.first, 'Mot de passe') }}
+                            {{ form_widget(registrationForm.plainPassword.first, {
+                                'attr': {'class': 'form-control', 'id': 'plainPassword'}
+                            }) }}
+                            <span class="show-password" onclick="togglePassword('plainPassword')">👁️</span>
+                            <div class="password-strength">
+                                <div class="password-strength-bar"></div>
+                            </div>
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                        </div>
+
+                        <div class="mb-3 position-relative">
+                            {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe') }}
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                'attr': {'class': 'form-control', 'id': 'confirmPassword'}
+                            }) }}
+                            <span class="show-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                            {{ form_errors(registrationForm.plainPassword.second) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_row(registrationForm.recaptcha) }}
+                            {{ form_errors(registrationForm.recaptcha) }}
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-outline-secondary prev-step" data-prev="2">Précédent</button>
+                            <button type="submit" class="btn btn-primary">Créer mon compte</button>
+                        </div>
+                    </div>
+                {{ form_end(registrationForm) }}
+
+                <div class="card-footer text-center">
+                    <p class="mb-0">Déjà membre ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registration-form');
+            const sections = document.querySelectorAll('.form-section');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressLineFill = document.querySelector('.progress-line-fill');
+            let currentStep = 1;
+
+            function updateProgress() {
+                progressSteps.forEach((step, index) => {
+                    if (index + 1 < currentStep) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index + 1 === currentStep) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+
+                const progress = ((currentStep - 1) / (progressSteps.length - 1)) * 100;
+                progressLineFill.style.width = `${progress}%`;
+            }
+
+            function validateStep(step) {
+                const currentSection = document.querySelector(`.form-section[data-step="${step}"]`);
+                const requiredInputs = currentSection.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('is-invalid');
+                        
+                        let errorDiv = input.nextElementSibling;
+                        if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            input.parentNode.insertBefore(errorDiv, input.nextSibling);
+                        }
+                        errorDiv.textContent = 'Ce champ est requis';
+                    } else {
+                        input.classList.remove('is-invalid');
+                        const errorDiv = input.nextElementSibling;
+                        if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                            errorDiv.textContent = '';
+                        }
+                    }
+                });
+
+                return isValid;
+            }
+
+            function showStep(step) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.querySelector(`.form-section[data-step="${step}"]`).classList.add('active');
+                currentStep = step;
+                updateProgress();
+            }
+
+            // Gestionnaire pour le bouton Suivant
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextStep = parseInt(this.dataset.next);
+                    if (validateStep(currentStep)) {
+                        showStep(nextStep);
+                    }
+                });
+            });
+
+            // Gestionnaire pour le bouton Précédent
+            document.querySelectorAll('.prev-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStep = parseInt(this.dataset.prev);
+                    showStep(prevStep);
+                });
+            });
+
+            // Gestionnaire pour le formulaire
+            form.addEventListener('submit', function(e) {
+                if (!validateStep(currentStep)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input) {
+                input.type = (input.type === 'password') ? 'text' : 'password';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            const strengthBar = document.querySelector('.password-strength-bar');
+            let strength = 0;
+            
+            if (password.length >= 8) strength += 1;
+            if (password.match(/[a-z]+/)) strength += 1;
+            if (password.match(/[A-Z]+/)) strength += 1;
+            if (password.match(/[0-9]+/)) strength += 1;
+            if (password.match(/[^a-zA-Z0-9]+/)) strength += 1;
+
+            strengthBar.className = 'password-strength-bar';
+            if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 4) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        }
+
+        document.getElementById('plainPassword').addEventListener('input', function(e) {
+            checkPasswordStrength(e.target.value);
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block body %}
+    <h1>Frais liés à l'Avance de Frais #{{ avance_frai.montantDemande }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Date de dépense</th>
+                <th>Justificatif</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for frai in frais %}
+            <tr>
+                <td>{{ frai.id }}</td>
+                <td>{{ frai.type }}</td>
+                <td>{{ frai.montant }}</td>
+                <td>{{ frai.dateDepense ? frai.dateDepense|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('frai_pdf', {'id': frai.id}) }}" class="btn btn-primary">Voir le PDF</a>
+                </td>
+                
+                <td><a href="{{ path('app_frai_edit', {'id': frai.id}) }}" class="btn btn-warning">Modifier</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun frais trouvé pour cette avance</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_avance_frai_index') }}" class="btn btn-secondary">Retour à la liste des avances de frais</a>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'front/employee_home/index.html.twig' %}
+
+{% block title %}Gestion des Réservations Hôtel{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mt-4"><i class="fas fa-calendar-alt me-2"></i>Réservations Hôtel</h1>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <i class="fas fa-table me-1"></i>
+                Liste des Réservations
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date Réservation</th>
+                                <th>Période</th>
+                                <th>Statut</th>
+                                <th>QR Code</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservationhotel in reservationhotels %}
+                                <tr>
+                                    <td>{{ reservationhotel.dateReservation|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <strong>{{ reservationhotel.dateDebut|date('d/m/Y') }}</strong> au 
+                                        <strong>{{ reservationhotel.dateFin|date('d/m/Y') }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if reservationhotel.statut == 'Confirmé' %}
+                                            <span class="badge bg-success rounded-pill">
+                                                <i class="fas fa-check-circle me-1"></i> Confirmé
+                                            </span>
+                                        {% elseif reservationhotel.statut == 'En attente' %}
+                                            <span class="badge bg-warning rounded-pill text-dark">
+                                                <i class="fas fa-clock me-1"></i> En attente
+                                            </span>
+                                        {% elseif reservationhotel.statut == 'Annulé' %}
+                                            <span class="badge bg-danger rounded-pill">
+                                                <i class="fas fa-times-circle me-1"></i> Annulé
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill">
+                                                {{ reservationhotel.statut }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if reservationhotel.qrcode %}
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#qrcodeModal{{ reservationhotel.id_reservation }}">
+                                                <i class="fas fa-qrcode"></i> Voir QR Code
+                                            </button>
+                                        {% else %}
+                                            <span class="text-muted">Non généré</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_reservationhotel_edit', {'id_reservation': reservationhotel.id_reservation}) }}" 
+                                               class="btn btn-sm btn-outline-secondary" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            <!-- Bouton de suppression avec modal -->
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ reservationhotel.id_reservation }}"
+                                                    title="Supprimer">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {# Modal pour afficher le QR Code #}
+                                {% if reservationhotel.qrcode %}
+                                <div class="modal fade" id="qrcodeModal{{ reservationhotel.id_reservation }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">QR Code Réservation</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <img src="{{ asset(reservationhotel.qrcode) }}" alt="QR Code" class="img-fluid">
+                                                <p class="mt-2 small text-muted">ID: {{ reservationhotel.id_reservation }}</p>
+                                                <a href="{{ asset(reservationhotel.qrcode) }}" download class="btn btn-outline-primary btn-sm mt-2">
+                                                    <i class="fas fa-download me-1"></i> Télécharger
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {# Modal de confirmation de suppression #}
+                                <div class="modal fade" id="deleteModal{{ reservationhotel.id_reservation }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="deleteModalLabel">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>Confirmation de suppression
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <i class="fas fa-exclamation-circle text-danger fs-3 me-3"></i>
+                                                    <div>
+                                                        <h6 class="mb-1">Êtes-vous sûr de vouloir supprimer cette réservation ?</h6>
+                                                        <p class="small text-muted mb-0">Réservation ID: #{{ reservationhotel.id_reservation }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="alert alert-warning small mb-0">
+                                                    <i class="fas fa-info-circle me-2"></i>Cette action est irréversible.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                    <i class="fas fa-times me-1"></i> Annuler
+                                                </button>
+                                                <form method="post" action="{{ path('app_reservationhotel_delete', {'id_reservation': reservationhotel.id_reservation}) }}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservationhotel.id_reservation) }}">
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <i class="fas fa-trash-alt me-1"></i> Confirmer
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="fas fa-info-circle fa-2x mb-3"></i><br>
+                                        Aucune réservation trouvée
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        .rounded-pill {
+            padding-right: 0.6em;
+            padding-left: 0.6em;
+        }
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
+{% endblock %}
