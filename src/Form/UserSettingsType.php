@@ -52,12 +52,7 @@ class UserSettingsType extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'New Password',
-                'attr' => ['class' => 'form-control', 'placeholder' => 'Leave blank to keep current password'],
-                'required' => false,
-                'mapped' => false,
-                'constraints' => [
-                    new Length(['min' => 6, 'max' => 4096]),
-                ],
+         
             ]);
     }
 

@@ -20,8 +20,13 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function settings(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $user = $this->getUser();
+     /*   $user = $this->getUser();
         if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }*/
+        
+        $user = $this->getUser();
+        if (!$user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -30,8 +35,12 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword) {
-                $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
+            if ($form->get('plainPassword')->getData()) {
+                $user->setPassword(
+                  
+                        $form->get('plainPassword')->getData()
+                    
+                );
             }
 
             $entityManager->flush();

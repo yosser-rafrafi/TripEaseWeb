@@ -28,10 +28,9 @@ class UserSettingsController extends AbstractController
             // Handle password change if provided
             if ($form->get('plainPassword')->getData()) {
                 $user->setPassword(
-                    $passwordHasher->hashPassword(
-                        $user,
+                  
                         $form->get('plainPassword')->getData()
-                    )
+                    
                 );
             }
 

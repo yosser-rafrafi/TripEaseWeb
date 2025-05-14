@@ -28,7 +28,7 @@ class EmployeeHomeController extends AbstractController
          $user = $this->getUser();
 
          // Récupérer toutes les notifications non lues de l'utilisateur connecté
-         $notifications = $entityManager->getRepository(NotificationVoyage::class)->findBy([
+         $notificationsVoyage = $entityManager->getRepository(NotificationVoyage::class)->findBy([
             'user' => $user,
             'isRead' => 0
         ], ['createdAt' => 'DESC']);
@@ -38,7 +38,7 @@ class EmployeeHomeController extends AbstractController
 
         return $this->render('front/employee_home/index.html.twig', [
             
-            'notifications' => $notifications,
+            'notificationsVoyage' => $notificationsVoyage,
         ]);
     }
 
